@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<persistence xmlns="http://java.sun.com/xml/ns/persistence"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_1_0.xsd"
+	version="1.0">
+	
+	<persistence-unit name="vertica" transaction-type="RESOURCE_LOCAL">
+		<provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+		<properties>
+			<property name="javax.persistence.jdbc.driver" value="com.vertica.jdbc.Driver" />
+			<property name="javax.persistence.jdbc.url" value="jdbc:vertica://10.1.10.15:5433/HD" />
+			<property name="javax.persistence.jdbc.user" value="dbadmin" />
+			<property name="javax.persistence.jdbc.password" value="w@ct10n" />
+			<property name="eclipselink.ddl-generation" value="drop-and-create-tables" />
+			<property name="eclipselink.ddl-generation.output-mode" value="both"/>
+		</properties>
+	</persistence-unit>
+
+	<persistence-unit name="MetadataStore" transaction-type="RESOURCE_LOCAL">
+        <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+      <!--   <class>hd.runtime.MetaInfo.Schema</class>
+        <class>hd.runtime.MetaInfo.Type</class>
+        <class>hd.runtime.MetaInfo.TypeAttr</class>
+        <class>hd.runtime.MetaInfo.Stream</class>
+        <class>hd.runtime.MetaInfo.Window</class>-->
+        <class>com.datasphere.runtime.MetaInfo.CQuery</class>
+		<!--  <exclude-unlisted-classes /> -->
+		<properties>
+			<property name="eclipselink.metadata-source" value="XML" />
+			<property name="eclipselink.weaving" value="static" />
+			<property name="eclipselink.metadata-source.xml.file" value="META-INF/MetadataRepos-orm.xml" />
+		</properties>
+	</persistence-unit>
+
+	<persistence-unit name="CDCMetadataStore" transaction-type="RESOURCE_LOCAL">
+		<provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+		<!--   <class>hd.runtime.MetaInfo.Schema</class>
+            <class>hd.runtime.MetaInfo.Type</class>
+            <class>hd.runtime.MetaInfo.TypeAttr</class>
+            <class>hd.runtime.MetaInfo.Stream</class>
+            <class>hd.runtime.MetaInfo.Window</class>-->
+		<!--  <exclude-unlisted-classes /> -->
+		<properties>
+			<property name="eclipselink.metadata-source" value="XML" />
+			<property name="eclipselink.weaving" value="static" />
+			<property name="eclipselink.metadata-source.xml.file" value="META-INF/CDCMetadata-orm.xml" />
+		</properties>
+	</persistence-unit>
+
+	<persistence-unit name="FileMetadataStore" transaction-type="RESOURCE_LOCAL">
+		<provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+		<!--   <class>hd.runtime.MetaInfo.Schema</class>
+            <class>hd.runtime.MetaInfo.Type</class>
+            <class>hd.runtime.MetaInfo.TypeAttr</class>
+            <class>hd.runtime.MetaInfo.Stream</class>
+            <class>hd.runtime.MetaInfo.Window</class>-->
+		<!--  <exclude-unlisted-classes /> -->
+		<properties>
+			<property name="eclipselink.metadata-source" value="XML" />
+			<property name="eclipselink.weaving" value="static" />
+			<property name="eclipselink.metadata-source.xml.file" value="META-INF/FileMetadata-orm.xml" />
+			<property name="eclipselink.cache.shared.default" value="false"/>
+		</properties>
+	</persistence-unit>
+
+
+	<persistence-unit name="cli" transaction-type="RESOURCE_LOCAL">
+		<provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+		<properties/>
+	</persistence-unit>
+
+
+	<persistence-unit name="mysql" transaction-type="RESOURCE_LOCAL">
+		<provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+		<properties/>
+	</persistence-unit>
+
+    <persistence-unit name="sqlmx">
+        <provider>org.hibernate.ejb.HibernatePersistence</provider>
+        <properties/>
+    </persistence-unit>
+    
+    <persistence-unit name="sqlmx1">
+        <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+        <properties/>
+    </persistence-unit>
+
+    <persistence-unit name="derby" transaction-type="RESOURCE_LOCAL">
+        <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+        <properties/>
+    </persistence-unit>
+
+	<persistence-unit name="derby1" transaction-type="RESOURCE_LOCAL">
+		<provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+		<properties/>
+	</persistence-unit>
+
+
+	<persistence-unit name="oracle" transaction-type="RESOURCE_LOCAL">
+		<provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+		<properties/>
+	</persistence-unit>
+
+
+	<persistence-unit name="mongodb" transaction-type="RESOURCE_LOCAL">
+		<provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+		<properties/>
+	</persistence-unit>
+
+	<persistence-unit name="mongodb1" transaction-type="RESOURCE_LOCAL">
+		<provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+		<properties/>
+	</persistence-unit>
+
+
+	<persistence-unit name="mongodb-target-stringarray" transaction-type="RESOURCE_LOCAL">
+		<provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+		<mapping-file>META-INF/MongoStringArray-orm.xml</mapping-file>
+		
+		<class>com.x.hd.proc.MongoWriter_1_0.StringArrayDO</class>
+		
+		<properties>
+			<property name="eclipselink.target-database" value="org.eclipse.persistence.nosql.adapters.mongo.MongoPlatform"/>
+			<property name="eclipselink.nosql.connection-spec" value="org.eclipse.persistence.nosql.adapters.mongo.MongoConnectionSpec"/>
+			<property name="eclipselink.nosql.property.mongo.port" value="27017"/>
+			<property name="eclipselink.nosql.property.mongo.host" value="localhost"/>
+			<property name="eclipselink.nosql.property.mongo.db" value="db"/>
+			<property name="eclipselink.logging.level" value="FINEST"/>
+			<property name="eclipselink.logging.file" value="logs/eclipselink.log"/>
+			<property name="eclipselink.orm.validate.schema" value="false"/>
+		</properties>
+	</persistence-unit>
+	
+	<persistence-unit name="derby-server-monitor" transaction-type="RESOURCE_LOCAL">
+		<provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+		<mapping-file>META-INF/Monitor-orm.xml</mapping-file>
+		
+		<properties>
+			<property name="javax.persistence.jdbc.driver" value="org.apache.derby.jdbc.ClientDriver" />
+			<property name="javax.persistence.jdbc.url" value="jdbc:derby://localhost:1527/hdrepos;create=true" />
+			<property name="javax.persistence.jdbc.user" value="hd" />
+			<property name="javax.persistence.jdbc.password" value="hd" />
+
+			<!-- EclipseLink should create the database schema automatically -->
+			<property name="eclipselink.ddl-generation" value="create-tables" />
+			<!--
+			<property name="eclipselink.ddl-generation.output-mode" value="both" />
+			<property name="eclipselink.ddl-generation" value="drop-and-create-tables" />
+			-->
+			<property name="eclipselink.logging.level" value="INFO"/>
+			<property name="eclipselink.logging.file" value="logs/eclipselink.log"/>
+		</properties>
+
+	</persistence-unit>
+	
+	<persistence-unit name="status-data-cache" transaction-type="RESOURCE_LOCAL">
+		<provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+		<mapping-file>META-INF/RestartPosition-orm.xml</mapping-file>
+		
+		<properties>
+			<property name="javax.persistence.jdbc.driver" value="org.apache.derby.jdbc.ClientDriver" />
+			<property name="javax.persistence.jdbc.url" value="jdbc:derby://localhost:1527/hdrepos;create=true" />
+			<property name="javax.persistence.jdbc.user" value="hd" />
+			<property name="javax.persistence.jdbc.password" value="hd" />
+
+			<!-- EclipseLink should create the database schema automatically -->
+			<property name="eclipselink.ddl-generation" value="create-tables" />
+			<!--
+			<property name="eclipselink.ddl-generation.output-mode" value="both" />
+			<property name="eclipselink.ddl-generation" value="drop-and-create-tables" />
+			-->
+			<property name="eclipselink.logging.level" value="INFO"/>
+			<property name="eclipselink.logging.file" value="logs/eclipselink.log"/>
+		</properties>
+
+	</persistence-unit>
+
+    <persistence-unit name="UsageMetrics">
+        <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+        <!-- <class>com.datasphere.usagemetrics.persistence.jpa.ApplicationLimits</class> -->
+        <!-- <class>com.datasphere.usagemetrics.persistence.jpa.InstallationDetails</class> -->
+        <!-- <class>com.datasphere.usagemetrics.persistence.jpa.UsageAudit</class> -->
+        <!-- <class>com.datasphere.usagemetrics.persistence.jpa.UsageException</class> -->
+        <class>com.datasphere.usagemetrics.persistence.jpa.UsageMetrics</class>
+
+        <!--
+         !==  UsageMetrics
+         !==
+         !==  The properties in this persistence unit are used for testing, only.
+         !==  When the main application is active, the properties below are
+         !==  ignored and the properties from the MetadataStore persistence unit
+         !==  are used instead.
+          -->
+        <properties>
+            <property name="javax.persistence.jdbc.url"      value="jdbc:mysql://localhost:3306/UsageMetrics"/>
+            <property name="javax.persistence.jdbc.driver"   value="com.mysql.jdbc.Driver"/>
+            <property name="javax.persistence.jdbc.user"     value="UsageMetrics"/>
+            <property name="javax.persistence.jdbc.password" value="UsageMetrics"/>
+
+            <property name="eclipselink.ddl-generation"      value="drop-and-create-tables" />
+            <property name="eclipselink.logging.level"       value="INFO"/>
+            <property name="eclipselink.logging.file"        value="logs/eclipselink.UsageMetrics.log"/>
+        </properties>
+    </persistence-unit>
+    
+    <persistence-unit name="KafkaWriterCheckpoint" transaction-type="RESOURCE_LOCAL">
+		<provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+		<mapping-file>META-INF/KWCheckpoint-orm.xml</mapping-file>
+		
+		<properties>
+			<property name="eclipselink.logging.level" value="INFO"/>
+			<property name="eclipselink.logging.file" value="logs/eclipselink.KafkaWriterCheckpoint.log"/>
+		</properties>
+	</persistence-unit>
+
+</persistence>

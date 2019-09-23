@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<entity-mappings
+        xmlns="http://www.eclipse.org/eclipselink/xsds/persistence/orm"
+        version="2.4">
+    <converter class="com.datasphere.runtime.converters.BinaryConverter" name="BinaryConverter"/>
+    <converter class="com.datasphere.runtime.converters.UUIDConverter" name="UUIDConverter"/>
+
+    <persistence-unit-metadata>
+        <xml-mapping-metadata-complete />
+        <exclude-default-mappings />
+    </persistence-unit-metadata>
+
+    <entity class="com.datasphere.runtime.meta.cdc.OracleCDCMetadataExtension">
+        <table name="CDCMetadata" />
+        <attributes>
+            <basic name="tableMetadata">
+                <column name="tableMetadata" />
+                <convert>BinaryConverter</convert>
+            </basic>
+            <basic name="dictBeginOffset">
+                <column name="dictBeginOffset" />
+            </basic>
+            <basic name="dictEndOffset">
+                <column name="dictEndOffset" />
+            </basic>
+            <basic name="parentComponent">
+                <column name="parentComponent" />
+            </basic>
+            <id name="typeUUID">
+                <column name="typeUUID" />
+                <convert>UUIDConverter</convert>
+            </id>
+            <basic name="tableName">
+                <column name="tableName" />
+            </basic>
+            <basic name="DDLcommand">
+                <column name="DDLcommand" />
+            </basic>
+        </attributes>
+    </entity>
+
+</entity-mappings>

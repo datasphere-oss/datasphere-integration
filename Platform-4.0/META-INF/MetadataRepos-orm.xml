@@ -1,0 +1,713 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-mappings version="2.3"
+                 xmlns="http://www.eclipse.org/eclipselink/xsds/persistence/orm"
+                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+    <package>com.datasphere.runtime.meta</package>
+    <converter class="com.datasphere.runtime.converters.UUIDConverter" name="UUIDConverter"/>
+    <converter class="com.datasphere.runtime.converters.JsonNodeConverter" name="JsonNodeConverter"/>
+    <converter class="com.datasphere.runtime.converters.IntervalPolicyConverter" name="IntervalPolicyConverter"/>
+    <converter class="com.datasphere.runtime.converters.StringSplitter" name="StringSplitter"/>
+    <converter class="com.datasphere.runtime.converters.CQExecutionPlanConverter" name="CQExecutionPlanConverter"/>
+    <converter class="com.datasphere.runtime.converters.MapConverter" name="MapConverter"/>
+    <converter class="com.datasphere.runtime.converters.IntervalConverter" name="IntervalConverter"/>
+    <converter class="com.datasphere.runtime.converters.ClassConverter" name="ClassConverter"/>
+    <converter class="com.datasphere.runtime.converters.BinaryConverter" name="BinaryConverter"/>
+    <converter class="com.datasphere.metaRepository.PropertyDefConverter" name="PropertyDefConverter"/>
+    <converter class="com.datasphere.metaRepository.StringListConverter" name="StringListConverter"/>
+    <converter class="com.datasphere.metaRepository.ListOutputClausesConverter" name="ListOutputClausesConverter"/>
+
+
+    <converter class="com.datasphere.metaRepository.StringSetConverter" name="StringSetConverter"/>
+    <converter class="com.datasphere.metaRepository.QueryProjectionListConverter" name="QueryProjectionListConverter"/>
+
+    <converter class="com.datasphere.metaRepository.ContactListConverter" name="ContactListConverter"/>
+    <converter class="com.datasphere.metaRepository.PermissionsListConverter" name="PermissionsListConverter"/>
+    <converter class="com.datasphere.metaRepository.RolesListConverter" name="RolesListConverter"/>
+    <converter class="com.datasphere.metaRepository.UUIDListConverter" name="UUIDListConverter"/>
+    <converter class="com.datasphere.metaRepository.UUIDSetConverter" name="UUIDSetConverter"/>
+    <converter class="com.datasphere.metaRepository.BooleanConverter" name="BooleanConverter" />
+    <converter class="com.datasphere.metaRepository.LongConverter" name="LongConverter" />
+    <converter class="com.datasphere.metaRepository.IntConverter" name="IntConverter" />
+
+    <converter class="com.datasphere.metaRepository.NullToEmptyStringConverter" name="NullToEmptyStringConverter" />
+
+    <converter class="com.datasphere.metaRepository.FlowMapConverter" name="FlowMapConverter"/>
+    <converter class="com.datasphere.metaRepository.FlowDeploymentPlanConverter" name="FlowDeploymentPlanConverter"/>
+    <converter class="com.datasphere.metaRepository.LinkedMapConverter" name="LinkedMapConverter"/>
+    <converter class="com.datasphere.metaRepository.GroupMembersConverter" name="GroupMembersConverter"/>
+    <converter class="com.datasphere.metaRepository.MetaInfoStatusConverter" name="MetaInfoStatusConverter"/>
+    <converter class="com.datasphere.metaRepository.UserTypeEnumConverter" name="UserTypeEnumConverter"/>
+    <converter class="com.datasphere.metaRepository.EntityTypeEnumConverter" name="EntityTypeEnumConverter"/>
+    <converter class="com.datasphere.metaRepository.PropertyListConverter" name="PropertyListConverter"/>
+    <persistence-unit-metadata>
+        <xml-mapping-metadata-complete />
+        <exclude-default-mappings />
+    </persistence-unit-metadata>
+
+    <entity class="MetaInfo$MetaObject">
+        <table name="HDOBJECT" />
+        <inheritance strategy="JOINED" />
+        <discriminator-value>0</discriminator-value>
+        <discriminator-column name="type" />
+        <attributes>
+            <id name="uuid">
+                <column name="objectid" />
+                <convert>UUIDConverter</convert>
+            </id>
+            <basic name="uri" />
+            <basic name="metaObjectClass"/>
+            <basic name="type" >
+                <column name="type" />
+                <convert>EntityTypeEnumConverter</convert>
+            </basic>
+
+            <basic name="name"/>
+            <basic name="owner">
+                <column name="owner"/>
+                <convert>IntConverter</convert>
+            </basic>
+            <basic name="ctime">
+                <column name="CreationTime" />
+                <convert>LongConverter</convert>
+            </basic>
+            <basic name="version">
+                <column name="version"/>
+                <convert>IntConverter</convert>
+            </basic>
+            <basic name="namespaceId">
+                <convert>UUIDConverter</convert>
+            </basic>
+            <basic name="nsName" />
+            <basic name="description">
+                <column name="DESCRIPTION" />
+            </basic>
+            <basic name="sourceText"></basic>
+            <basic name="metaInfoStatus">
+                <convert>MetaInfoStatusConverter</convert>
+            </basic>
+            <basic name="reverseIndexObjectDependencies">
+                <convert>UUIDSetConverter</convert>
+            </basic>
+            <basic name="coDependentObjects">
+                <convert>UUIDSetConverter</convert>
+            </basic>
+
+        </attributes>
+    </entity>
+
+    <entity class="MetaInfo$Namespace">
+        <table name="HDSCHEMA" />
+        <discriminator-value>22</discriminator-value>
+        <attributes/>
+    </entity>
+
+
+    <!--
+    <entity class="MetaInfo$TypeAttr" >
+            <table name="HDTYPEATTRIBUTE" />
+            <attributes>
+                    <id name="uuid">
+                            <column name="TYPEATTRID" />
+                            <convert>UUIDConverter</convert>
+                    </id>
+                    <many-to-one name="type" fetch="LAZY">
+                        <join-column name="TypeId" referenced-column-name="TypeId"/>
+                        <cascade>
+                            <cascade-all/>
+                        </cascade>
+                    </many-to-one>
+                    <basic name="name"/>
+                    <basic name="position" column="POSITION"/>
+            </attributes>
+    </entity>
+    -->
+    <entity class="MetaInfo$Stream">
+        <discriminator-value>2</discriminator-value>
+        <table name="HDSTREAM" />
+        <attributes>
+            <basic name="dataType">
+                <column name="TYPEID" />
+                <convert>UUIDConverter</convert>
+            </basic>
+            <basic name="partitioningFields">
+                <column name="PartitioningFields" />
+                <convert>StringListConverter</convert>
+            </basic>
+            <basic name="gracePeriodInterval">
+                <convert>IntervalConverter</convert>
+            </basic>
+            <basic name="gracePeriodField" />
+            <basic name="pset">
+                <column name="propertyset" />
+            </basic>
+            <basic name="avroSchema" />
+        </attributes>
+    </entity>
+
+    <entity class="MetaInfo$StreamGenerator">
+        <discriminator-value>24</discriminator-value>
+        <table name="HDSTREAMGEN" />
+        <attributes>
+            <basic name="dataType">
+                <column name="TYPEID" />
+                <convert>UUIDConverter</convert>
+            </basic>
+            <basic name="className" />
+            <basic name="args">
+                <convert>BinaryConverter</convert>
+            </basic>
+        </attributes>
+    </entity>
+
+    <entity class="MetaInfo$Window">
+        <discriminator-value>3</discriminator-value>
+        <table name="HDWINDOW" />
+        <attributes>
+            <basic name="stream">
+                <column name="STRMID" />
+                <convert>UUIDConverter</convert>
+            </basic>
+            <basic name="jumping">
+                <column name="jumping" />
+                <convert>BooleanConverter</convert>
+            </basic>
+            <basic name="implicit">
+                <column name="implicit" />
+                <convert>BooleanConverter</convert>
+            </basic>
+            <basic name="persistent">
+                <column name="persistent" />
+                <convert>BooleanConverter</convert>
+            </basic>
+            <basic name="windowLen">
+                <column name="INTERVALPOLICY" />
+                <convert>IntervalPolicyConverter</convert>
+            </basic>
+            <basic name="slidePolicy">
+                <column name="SLIDEPOLICY" />
+                <convert>IntervalPolicyConverter</convert>
+            </basic>
+
+            <basic name="partitioningFields">
+                <column name="PARTITIONFIELDS" />
+                <convert>StringListConverter</convert>
+            </basic>
+
+        </attributes>
+    </entity>
+
+    <entity class="MetaInfo$Type">
+        <table name="HDTYPE" />
+        <discriminator-value>4</discriminator-value>
+        <attributes>
+            <basic name="className">
+                <column name="classname" />
+            </basic>
+            <basic name="classId">
+                <column name="classid" />
+            </basic>
+            <basic name="generated">
+                <column name="generated" />
+                <convert>BooleanConverter</convert>
+            </basic>
+            <basic name="keyFields">
+                <column name="keyfields" />
+                <convert>StringListConverter</convert>
+            </basic>
+            <basic name="fields">
+                <column name="fields" />
+                <convert>LinkedMapConverter</convert>
+            </basic>
+            <basic name="extendsType">
+                <column name="EXTENDSTYPE" />
+                <convert>UUIDConverter</convert>
+            </basic>
+            <basic name="extendedBy">
+                <column name="EXTENDEDBY" />
+                <convert>UUIDListConverter</convert>
+            </basic>
+
+            <!--
+                  <one-to-many name="fields" mapped-by="type">
+                      <cascade>
+                          <cascade-all />
+                      </cascade>
+                      <join-column name="typeid" referenced-column-name="TypeId" />
+                  </one-to-many>
+                  -->
+        </attributes>
+    </entity>
+
+    <entity class="MetaInfo$CQ">
+        <table name="HDCQ" />
+        <discriminator-value>5</discriminator-value>
+        <attributes>
+            <basic name="stream">
+                <column name="STRMID" />
+                <convert>UUIDConverter</convert>
+            </basic>
+
+            <basic name="plan" access="FIELD">
+                <convert>CQExecutionPlanConverter</convert>
+            </basic>
+            <basic name="select">
+                <column name="slcttxt" />
+            </basic>
+            <basic name="fieldList">
+                <column name="fieldList" />
+                <convert>StringListConverter</convert>
+            </basic>
+            <basic name="uiConfig">
+                <column name="uiConfig" />
+            </basic>
+        </attributes>
+    </entity>
+
+    <entity class="MetaInfo$Source">
+        <table name="HDSOURCE" />
+        <discriminator-value>6</discriminator-value>
+        <attributes>
+            <basic name="adapterClassName" />
+            <basic name="outputStream">
+                <convert>UUIDConverter</convert>
+            </basic>
+            <basic name="properties">
+                <convert>MapConverter</convert>
+            </basic>
+            <basic name="parserProperties">
+                <convert>MapConverter</convert>
+            </basic>
+            <basic name="outputClauses">
+                <convert>ListOutputClausesConverter</convert>
+            </basic>
+        </attributes>
+    </entity>
+
+    <entity class="MetaInfo$Target">
+        <table name="HDTARGET" />
+        <discriminator-value>7</discriminator-value>
+        <attributes>
+            <basic name="adapterClassName" />
+            <basic name="inputStream">
+                <convert>UUIDConverter</convert>
+            </basic>
+            <basic name="properties">
+                <convert>MapConverter</convert>
+            </basic>
+            <basic name="formatterProperties">
+                <convert>MapConverter</convert>
+            </basic>
+            <basic name="parallelismProperties">
+                <convert>MapConverter</convert>
+            </basic>
+        </attributes>
+    </entity>
+
+    <!--      <entity class="MetaInfo$Application">
+                <table name="HDAPPLICATION" />
+                <discriminator-value>1</discriminator-value>
+                <attributes>
+                    <basic name="objects">
+                        <convert>FlowMapConverter</convert>
+                    </basic>
+                </attributes>
+          </entity>
+     -->
+    <entity class="MetaInfo$Flow">
+        <table name="HDFLOW" />
+        <discriminator-value>8</discriminator-value>
+        <attributes>
+            <basic name="objects">
+                <convert>FlowMapConverter</convert>
+            </basic>
+            <basic name="deploymentPlan">
+                <convert>FlowDeploymentPlanConverter</convert>
+            </basic>
+            <basic name="recoveryType" />
+            <basic name="recoveryPeriod" />
+            <basic name="encrypted">
+                <column name="encrypted" />
+                <convert>BooleanConverter</convert>
+            </basic>
+            <basic name="flowStatus" />
+            <basic name="importStatements">
+                <column name="IMPORTSTATEMENTS" />
+                <convert>StringSetConverter</convert>
+            </basic>
+            <basic name="ehandlers">
+                <convert>MapConverter</convert>
+            </basic>
+
+        </attributes>
+    </entity>
+
+
+    <entity class="MetaInfo$PropertySet">
+        <table name="HDPROPSET" />
+        <discriminator-value>9</discriminator-value>
+        <attributes>
+            <basic name="properties">
+                <convert>MapConverter</convert>
+            </basic>
+        </attributes>
+    </entity>
+
+    <entity class="MetaInfo$PropertyVariable">
+        <table name="HDPROPVARIABLE" />
+        <discriminator-value>34</discriminator-value>
+        <attributes>
+            <basic name="properties">
+                <convert>MapConverter</convert>
+            </basic>
+        </attributes>
+    </entity>
+
+    <entity class="MetaInfo$HDStore">
+        <table name="HDSTORE" />
+        <discriminator-value>10</discriminator-value>
+        <attributes>
+            <basic name="contextType">
+                <convert>UUIDConverter</convert>
+            </basic>
+            <basic name="frequency">
+                <convert>IntervalConverter</convert>
+            </basic>
+            <basic name="eventTypes">
+                <convert>UUIDListConverter</convert>
+            </basic>
+            <basic name="eventKeys">
+                <convert>StringListConverter</convert>
+            </basic>
+            <basic name="properties">
+                <convert>MapConverter</convert>
+            </basic>
+            <basic name="hdstoretype">
+            </basic>
+        </attributes>
+    </entity>
+
+    <entity class="MetaInfo$PropertyTemplateInfo">
+        <table name="HDPROPTEMPLATE" />
+        <discriminator-value>11</discriminator-value>
+        <attributes>
+            <basic name="propertyMap">
+                <column name="properties" />
+                <convert>PropertyDefConverter</convert>
+            </basic>
+            <basic name="className" />
+            <basic name="adapterType" />
+            <basic name="type" />
+            <basic name="inputClassName" />
+            <basic name="outputClassName" />
+            <basic name="requiresParser">
+                <column name="requiresParser" />
+                <convert>BooleanConverter</convert>
+            </basic>
+            <basic name="requiresFormatter">
+                <column name="requiresFormatter" />
+                <convert>BooleanConverter</convert>
+            </basic>
+            <basic name="adapterVersion" />
+            <basic name="isParallelizable">
+                <column name="isParallelizable" />
+                <convert>BooleanConverter</convert>
+            </basic>
+        </attributes>
+    </entity>
+
+
+
+    <entity class="MetaInfo$Cache">
+        <table name="HDCACHE" />
+        <discriminator-value>12</discriminator-value>
+        <attributes>
+            <basic name="adapterClassName" />
+            <basic name="reader_properties">
+                <convert>MapConverter</convert>
+            </basic>
+            <basic name="parser_properties">
+                <convert>MapConverter</convert>
+            </basic>
+            <basic name="query_properties">
+                <convert>MapConverter</convert>
+            </basic>
+            <basic name="typename">
+                <convert>UUIDConverter</convert>
+            </basic>
+            <basic name="retType">
+                <convert>ClassConverter</convert>
+            </basic>
+        </attributes>
+    </entity>
+
+
+    <entity class="MetaInfo$User">
+        <table name="USERS" />
+        <discriminator-value>16</discriminator-value>
+        <attributes>
+            <basic name="userId">
+                <column name = "USERID"/>
+            </basic>
+            <basic name="firstName">
+                <column name="FIRSTNAME" />
+            </basic>
+            <basic name="lastName">
+                <column name="LASTNAME" />
+            </basic>
+            <basic name="userTimeZone">
+                <column name="USERTIMEZONE" />
+                <convert>NullToEmptyStringConverter</convert>
+            </basic>
+            <basic name="mainEmail">
+                <column name="MAINEMAIL" />
+            </basic>
+            <basic name="encryptedPassword">
+                <column name="PASSWORD" />
+            </basic>
+            <basic name="alias">
+                <column name = "ALIAS"/>
+            </basic>
+            <basic name="contactMechanisms">
+                <column name="CONTACTS" />
+                <convert>ContactListConverter</convert>
+            </basic>
+            <basic name="permissions" >
+                <column name="PERMISSIONS" />
+                <convert>PermissionsListConverter</convert>
+            </basic>
+            <basic name="roleUUIDs">
+                <column name="ROLES" />
+                <convert>UUIDListConverter</convert>
+            </basic>
+            <basic name="defaultNamespace">
+                <column name="DEFAULTNAMESPACE" />
+            </basic>
+            <basic name="ldap">
+                <column name="LDAP" />
+            </basic>
+            <basic name="originType">
+                <column name="ORIGINTYPE" />
+                <convert>UserTypeEnumConverter</convert>
+            </basic>
+        </attributes>
+    </entity>
+    <entity class="MetaInfo$Role">
+        <table name="ROLES" />
+        <discriminator-value>17</discriminator-value>
+        <attributes>
+            <basic name="domain">
+                <column name = "DOMAIN"/>
+            </basic>
+            <basic name="roleName">
+                <column name = "ROLENAME"/>
+            </basic>
+            <basic name="permissions" >
+                <column name="PERMISSIONS" />
+                <convert>PermissionsListConverter</convert>
+            </basic>
+            <basic name="roleUUIDs">
+                <column name="ROLES" />
+                <convert>UUIDListConverter</convert>
+            </basic>
+        </attributes>
+    </entity>
+
+    <entity class="MetaInfo$Visualization">
+        <table name="VISUALIZATION" />
+        <discriminator-value>20</discriminator-value>
+        <attributes>
+            <basic name="visName">
+                <column name = "VISNAME"/>
+            </basic>
+            <!--                <basic name="appUuid">
+                                <column>APPUUID</column>
+                                <convert>UUIDConverter</convert>
+                            </basic> -->
+            <basic name="json" >
+                <column name = "JSON"/>
+            </basic>
+            <basic name="fname" >
+            </basic>
+        </attributes>
+    </entity>
+    <entity class="MetaInfo$Query">
+        <table name="Query" />
+        <discriminator-value>32</discriminator-value>
+        <attributes>
+            <basic name="queryDefinition">
+            </basic>
+            <basic name="adhocQuery">
+                <column name="adhocQuery" />
+                <convert>BooleanConverter</convert>
+            </basic>
+            <basic name="appUUID">
+                <convert>UUIDConverter</convert>
+            </basic>
+            <basic name="cqUUID">
+                <convert>UUIDConverter</convert>
+            </basic>
+            <basic name="streamUUID">
+                <convert>UUIDConverter</convert>
+            </basic>
+            <basic name="queryParameters">
+                <column name="queryParameters" />
+                <convert>StringListConverter</convert>
+            </basic>
+            <basic name="projectionFields">
+                <column name="projectionFields" />
+                <convert>QueryProjectionListConverter</convert>
+            </basic>
+
+            <basic name="typeInfo">
+                <convert>MapConverter</convert>
+            </basic>
+            <basic name="bindParameters">
+                <convert>PropertyListConverter</convert>
+            </basic>
+        </attributes>
+    </entity>
+    <entity class="MetaInfo$DeploymentGroup">
+        <table name="HDDG" />
+        <discriminator-value>19</discriminator-value>
+        <attributes>
+            <basic name="configuredMembers" >
+                <column>CONFIGUREDMEMBERS</column>
+                <convert>GroupMembersConverter</convert>
+            </basic>
+            <basic name="minimumRequiredServers">
+                <column name="minimumRequiredServers" />
+            </basic>
+	    <basic name="maxApps">
+                <column name="maxApps" />
+            </basic>
+        </attributes>
+    </entity>
+
+
+    <entity class="MetaInfo$ExceptionHandler">
+        <table name="EXCEPTIONHANDLER" />
+        <discriminator-value>23</discriminator-value>
+        <attributes>
+            <basic name="exceptions">
+                <column name = "EXCEPTIONS"/>
+                <convert>StringListConverter</convert>
+            </basic>
+            <basic name="components">
+                <column name = "COMPONENTS"/>
+                <convert>StringListConverter</convert>
+            </basic>
+            <basic name="cmd">
+                <column name="CMD" />
+            </basic>
+            <basic name="properties">
+                <column name="PROPERTIES" />
+                <convert>MapConverter</convert>
+            </basic>
+        </attributes>
+    </entity>
+
+    <entity class="MetaInfo$Sorter">
+        <discriminator-value>25</discriminator-value>
+        <table name="HDSORTER" />
+        <attributes>
+            <basic name="errorStream">
+                <convert>UUIDConverter</convert>
+            </basic>
+            <basic name="sortTimeInterval">
+                <convert>IntervalConverter</convert>
+            </basic>
+            <basic name="inOutRules" />
+        </attributes>
+    </entity>
+
+    <entity class="MetaInfo$WAStoreView">
+        <discriminator-value>26</discriminator-value>
+        <table name="WASTOREVIEW" />
+        <attributes>
+            <basic name="wastoreID">
+                <convert>UUIDConverter</convert>
+            </basic>
+            <basic name="isJumping">
+                <column name="isJumping" />
+                <convert>BooleanConverter</convert>
+            </basic>
+            <basic name="subscribeToUpdates">
+                <column name="subscribeToUpdates" />
+                <convert>BooleanConverter</convert>
+            </basic>
+            <basic name="viewSize">
+                <column name="INTERVALPOLICY" />
+                <convert>IntervalPolicyConverter</convert>
+            </basic>
+            <basic name="query">
+                <convert>BinaryConverter</convert>
+            </basic>
+        </attributes>
+    </entity>
+    <entity class="MetaInfo$Dashboard">
+        <discriminator-value>28</discriminator-value>
+        <table name="DASHBOARD" />
+        <attributes>
+            <basic name="title" />
+            <basic name="defaultLandingPage" />
+            <basic name="pages">
+                <convert>StringListConverter</convert>
+            </basic>
+
+        </attributes>
+    </entity>
+
+    <entity class="MetaInfo$Page">
+        <discriminator-value>29</discriminator-value>
+        <table name="PAGE" />
+        <attributes>
+            <basic name="title" />
+            <basic name="gridJSON" />
+            <basic name="queryVisualizations">
+                <convert>StringListConverter</convert>
+            </basic>
+        </attributes>
+    </entity>
+
+    <entity class="MetaInfo$QueryVisualization">
+        <discriminator-value>30</discriminator-value>
+        <table name="QueryVisualization" />
+        <attributes>
+            <basic name="title" />
+            <basic name="visualizationType" />
+            <basic name="query" />
+            <basic name="config" />
+        </attributes>
+    </entity>
+
+
+    <!--
+        gopi:remove
+        <entity class="MetaInfo$QueryVisualization">
+            <discriminator-value>30</discriminator-value>
+            <table name="QueryVisualization" />
+            <attributes>
+                <basic name="title" />
+                <basic name="query_id" />
+                <basic name="gridJSON" />
+                <basic name="composite" />
+                <basic name="dataVisualizations">
+                    <convert>StringListConverter</convert>
+                </basic>
+            </attributes>
+        </entity>
+
+        <entity class="MetaInfo$DataVisualization">
+            <discriminator-value>31</discriminator-value>
+            <table name="DataVisualization" />
+            <attributes>
+                <basic name="typeOfViz" />
+                <basic name="config" />
+                <basic name="editor"/>
+            </attributes>
+        </entity>
+
+    -->
+
+</entity-mappings>

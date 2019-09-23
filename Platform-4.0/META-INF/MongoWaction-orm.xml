@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- These were experimental development mappings when we experimented with Mongo. -->
+<!-- If someone wants to use them they'll need to be updated and tested. Talk to Nicholas or Gopi for more information. -->
+<entity-mappings version="2.3"
+	xmlns="http://www.eclipse.org/eclipselink/xsds/persistence/orm"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+	<persistence-unit-metadata>
+		<xml-mapping-metadata-complete />
+		<exclude-default-mappings />
+	</persistence-unit-metadata>
+
+	<entity name="HD" class="com.datasphere.hd.HD">
+		<no-sql data-format="MAPPED" />
+		<attributes>
+			<id name="_id">
+				<generated-value />
+			</id>
+				
+			<basic name="ts" />
+			<basic name="status" />
+			<basic name="key">
+				<access-methods get-method="getKeyString" set-method="setKeyString" />
+			</basic>
+			
+			<one-to-one name="context">
+				<cascade>
+					<cascade-all />
+				</cascade>
+			</one-to-one>
+			
+			<many-to-many name="events" fetch="EAGER">
+				<cascade>
+					<cascade-all />
+				</cascade>
+			</many-to-many>
+			
+			<embedded name="uuid" />
+			<embedded name="context" />
+			<embedded name="mapKey" />
+		</attributes>
+	</entity>
+
+	<embeddable class="com.datasphere.hd.HDContext">
+		<no-sql data-format="MAPPED" />
+		<attributes>
+			<basic name="id">
+				<field name="context_id" />
+			</basic>
+		</attributes>
+	</embeddable>
+	
+	<embeddable class="com.datasphere.uuid.UUID">
+		<no-sql data-format="MAPPED" />
+		<attributes>
+			<basic name="time">
+				<field name="uuid_time" />
+			</basic>
+			<basic name="clockSeqAndNode">
+				<field name="uuid_clockSeqAndNode" />
+			</basic>
+		</attributes>
+	</embeddable>
+
+	<embeddable class="com.datasphere.hd.HDKey">
+		<no-sql data-format="MAPPED" />
+		<attributes>
+			<basic name="key" attribute-type="String">
+				<field name="MapKey_Key" />
+			</basic>
+		</attributes>
+	</embeddable>
+
+	<embeddable class="com.datasphere.event.SimpleEvent">
+		<no-sql data-format="MAPPED" />
+		<attributes>
+			<id name="_id">
+				<generated-value />
+			</id>
+			<basic name="dbid" attribute-type="String">
+				<access-methods get-method="getDbId" set-method="setDbId" />
+			</basic>
+			<basic name="timeStamp" />
+			<basic name="duration" />
+			<basic name="expiration" />
+			<basic name="nanos" />
+			<basic name="originatorNanos" />
+			<basic name="key" />
+			
+			<embedded name="ID">
+				<field name="SimpleEventID" />
+			</embedded>
+			<embedded name="originatorID" />
+		</attributes>
+	</embeddable>
+</entity-mappings>

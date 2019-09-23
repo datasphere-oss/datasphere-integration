@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-mappings
+    xmlns="http://www.eclipse.org/eclipselink/xsds/persistence/orm"
+    version="2.4">
+    
+    <converter class="com.datasphere.recovery.PathItemListConverter" name="PathItemListConverter"/>
+    <converter class="com.datasphere.runtime.converters.JodaDateConverter" name="JodaDateConverter" />
+    <converter class="com.datasphere.runtime.converters.JsonNodeConverter" name="JsonNodeConverter" />
+    
+    <persistence-unit-metadata>
+        <xml-mapping-metadata-complete />
+        <exclude-default-mappings />
+    </persistence-unit-metadata>
+    <entity name="HDStoreCheckpoint" class="com.datasphere.recovery.CheckpointPath">
+            <table name="$CHECKPOINT_TABLENAME" />
+    
+        <attributes>
+            <id name ="idStr" attribute-type="String">
+                <access-methods get-method="getIdString"  set-method="setIdString" />
+            </id>
+            <basic name="pathItems" attribute-type="String" >
+                <column length="4000" />
+                <access-methods get-method="getPathItemsAsString" set-method="setPathItemsAsString" />
+            </basic>
+            <basic name="lowSourcePosition"></basic>
+            <basic name="highSourcePosition"></basic>
+            <basic name="atOrAfter"></basic>
+            <basic name="updated" />
+        </attributes>
+        <pre-persist method-name="prePersist"/>
+        <pre-update method-name="preUpdate"/>
+    </entity>
+    <mapped-superclass name="HD" class="com.datasphere.hd.HD">
+        <fetch-group name="noEvents">
+            <attribute name="uuid" />
+            <attribute name="mapKey" />
+            <attribute name="key" />
+            <attribute name="hdTs" />
+            <attribute name="hdStatus" />
+        </fetch-group>
+        <attributes>
+            <id name="uuid" attribute-type="String">
+                <access-methods get-method="getUUIDString"
+                    set-method="setUUIDString" />
+            </id>
+            <basic name="hdTs" attribute-type="long" >
+                <column name="hdTs" nullable="true" />
+                <access-methods get-method="getHDTs" set-method="setHDTs" />
+                <index/>            
+            </basic>
+            <basic name="key">
+                <column length="$HD_KEY_LENGTH" name="partitionKey" nullable="true" />
+                <access-methods get-method="getKeyString" set-method="setKeyString" />
+                <index/>
+            </basic>
+            <basic name="mapKey">
+                <column length="$HD_KEY_LENGTH" name="hdKey" nullable="true" />
+                <access-methods get-method="getMapKeyString" set-method="setMapKeyString" />
+                <index/>
+            </basic>
+            <basic name="hdStatus" />
+            <element-collection name="jsonEvents">
+                <collection-table name="$EVENTS_TABLENAME">
+                    <join-columns>
+                        <join-column name="mapKey" />
+                    </join-columns>
+
+                </collection-table>
+                <access-methods get-method="getJsonEvents" set-method="setJsonEvents" />
+            </element-collection>
+        </attributes>
+    </mapped-superclass>
+
+    <embeddable name="eventsStrings" class="com.datasphere.event.EventJson"
+        access="FIELD">
+        <attributes>
+            <basic name="eventType" attribute-type="String">
+                <column name="EVENTTYPE" nullable="true" />
+                <access-methods get-method="getEventType" set-method="setEventType" />
+            </basic>
+            <basic name="eventString" attribute-type="String">
+                <column name="JSON" nullable="true" length="32672" />
+                <access-methods get-method="getEventString" set-method="setEventString" />
+            </basic>
+        </attributes>
+    </embeddable>
+</entity-mappings>

@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-mappings
+    xmlns="http://www.eclipse.org/eclipselink/xsds/persistence/orm"
+    version="2.4">
+    
+    <converter class="com.datasphere.recovery.PathItemListConverter" name="PathItemListConverter" />
+    <converter class="com.datasphere.runtime.converters.JodaDateConverter" name="JodaDateConverter" />
+    <converter class="com.datasphere.runtime.converters.JsonNodeConverter" name="JsonNodeConverter" />
+    
+    <persistence-unit-metadata>
+        <xml-mapping-metadata-complete />
+        <exclude-default-mappings />
+    </persistence-unit-metadata>
+    
+    <entity name="HDStoreCheckpoint" class="com.datasphere.recovery.CheckpointPath" cacheable="false">
+            <table name="$CHECKPOINT_TABLENAME" />
+    
+        <attributes>
+            <id name ="idStr" attribute-type="String">
+                <access-methods get-method="getIdString"  set-method="setIdString" />
+            </id>
+            <basic name="pathItems" attribute-type="String" >
+                <column length="4000" />
+                <access-methods get-method="getPathItemsAsString" set-method="setPathItemsAsString" />
+            </basic>
+            <basic name="lowSourcePosition"></basic>
+            <basic name="highSourcePosition"></basic>
+            <basic name="atOrAfter"></basic>
+            <basic name="updated" />
+        </attributes>
+        <pre-persist method-name="prePersist"/>
+        <pre-update method-name="preUpdate"/>
+    </entity>
+    
+    <entity name="$HD_ENTITY" class="$RUNTIME_HD_CLASS_NAME" cacheable="false">
+        <table name="$HD_TABLENAME" />
+        <fetch-group name="noEvents">
+            <attribute name="uuid" />
+            <attribute name="mapKey" />
+            <attribute name="key" />
+            <attribute name="hdTs" />
+            <attribute name="hdStatus" />
+        </fetch-group>
+        <attributes>
+            <id name="uuid" attribute-type="String" >
+                <access-methods get-method="getUUIDString"  set-method="setUUIDString" />
+            </id>
+
+            <basic name="mapKey" attribute-type="String" >
+                <column length="$HD_KEY_LENGTH" name="hdKey" nullable="true" />
+                <access-methods get-method="getMapKeyString" set-method="setMapKeyString" />
+                <index/>
+            </basic>
+            
+            <basic name="key">
+                <column length="$HD_KEY_LENGTH" name="partitionKey" nullable="true" />
+                <access-methods get-method="getKeyString" set-method="setKeyString" />
+                <index/>
+            </basic>            
+            
+            <basic name="hdTs" attribute-type="long" >
+                <column name="hdTs" nullable="true" />
+                <access-methods get-method="getHDTs" set-method="setHDTs" />
+                <index/>            
+            </basic>
+            
+            <basic name="hdStatus" attribute-type="int" >
+                <column name="hdStatus" nullable="true" />
+                <access-methods get-method="getHDStatus" set-method="setHDStatus" />
+            </basic>
+            
+            <element-collection name="events" fetch="LAZY" target-class="$EVENT_TARGET_CLASS" >
+                <collection-table name="$EVENTS_TABLENAME" />
+                <batch-fetch type="IN" size="50" />
+                <access-methods get-method="getEvents" set-method="setEvents" />
+            </element-collection>
+
+        </attributes>
+    </entity>
+
+</entity-mappings>

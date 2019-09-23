@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<entity-mappings
+	xmlns="http://www.eclipse.org/eclipselink/xsds/persistence/orm"
+	version="2.4">
+	<persistence-unit-metadata>
+		<xml-mapping-metadata-complete />
+		<exclude-default-mappings />
+	</persistence-unit-metadata>
+
+	<entity name="HD" class="com.datasphere.hd.HD">
+		<table name="hds" />
+		<attributes>
+			<id name="mapKey" attribute-type="String">
+				<column name="hdid" nullable="false" />
+				<access-methods get-method="getW_id" set-method="setW_id" />
+
+			</id>
+			<basic name="storeName" attribute-type="String" />
+			<basic name="ts" attribute-type="Long" />
+			<basic name="status" attribute-type="int">
+				<column name="STATUS" nullable="true" />
+			</basic>
+			<embedded name="uuid" />
+			<one-to-one name="context">
+				<join-column name="CONTEXT_ID" />
+				<cascade>
+					<cascade-all />
+				</cascade>
+			</one-to-one>
+			<many-to-many name="events" cascade="CascadeType.PERSIST">
+				<cascade>
+					<cascade-all />
+				</cascade>
+				<join-table name="HDsEvents">
+					<join-column name="HDMapKey" />
+					<inverse-join-column name="EventId" />
+				</join-table>
+			</many-to-many>
+		</attributes>
+	</entity>
+
+	<entity class="com.datasphere.hd.HDKey">
+		<table name="hdkey" />
+		<attributes>
+			<id name="id" attribute-type="String">
+				<access-methods get-method="getId" set-method="setId" />
+			</id>
+			<basic name="key" attribute-type="String">
+				<column name="wakey" />
+			</basic>
+		</attributes>
+
+	</entity>
+
+	<mapped-superclass class="com.datasphere.hd.HDContext">
+		<table name="HDCONTEXT" />
+		<inheritance strategy="TABLE_PER_CLASS" />
+		<attributes>
+			<id name="id" attribute-type="String">
+				<column name="CONTEXT_ID" />
+			</id>
+		</attributes>
+	</mapped-superclass>
+
+	<entity class="com.datasphere.hd.HDContext">
+		<table name="HDCONTEXT" />
+		<inheritance strategy="TABLE_PER_CLASS" />
+		<attributes>
+			<id name="id" attribute-type="String">
+				<column name="CONTEXT_ID" />
+			</id>
+		</attributes>
+	</entity>
+
+	<mapped-superclass class="com.datasphere.event.Event">
+		<table name="Events" />
+		<inheritance strategy="TABLE_PER_CLASS" />
+		<attributes>
+			<id name="id" attribute-type="String">
+				<column name="EVENT_ID" />
+				<access-methods get-method="getDbId" set-method="setDbId" />
+			</id>
+		</attributes>
+	</mapped-superclass>
+
+	<entity class="com.datasphere.event.Event">
+		<table name="Events" />
+		<inheritance strategy="TABLE_PER_CLASS" />
+		<attributes>
+			<id name="id" attribute-type="String">
+				<column name="EVENT_ID" />
+				<access-methods get-method="getDbId" set-method="setDbId" />
+			</id>
+		</attributes>
+	</entity>
+
+
+	<entity class="com.datasphere.event.SimpleEvent">
+		<table name="SimpleEvent" />
+		<inheritance strategy="TABLE_PER_CLASS" />
+		<attributes>
+			<id name="id" attribute-type="String">
+				<column name="EVENT_ID" />
+				<access-methods get-method="getDbId" set-method="setDbId" />
+			</id>
+		</attributes>
+	</entity>
+
+
+	<embeddable name="uuid" class="com.datasphere.uuid.UUID">
+		<attributes>
+			<basic name="time" attribute-type="Long">
+				<column name="uuid_time" />
+			</basic>
+			<basic name="clockSeqAndNode" attribute-type="Long">
+				<column name="uuid_clockSeqAndNode" nullable="false" />
+			</basic>
+		</attributes>
+	</embeddable>
+
+</entity-mappings>

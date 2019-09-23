@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<entity-mappings
+    xmlns="http://www.eclipse.org/eclipselink/xsds/persistence/orm"
+    version="2.4">
+
+    <converter class="com.datasphere.metaRepository.BooleanConverter" name="BooleanConverter" />
+    <converter class="com.datasphere.metaRepository.SourcePositionConverter" name="SourcePositionConverter"/>
+
+    <persistence-unit-metadata>
+        <xml-mapping-metadata-complete />
+        <exclude-default-mappings />
+    </persistence-unit-metadata>
+
+    <entity name="AppCheckpoint" class="com.datasphere.recovery.CheckpointPath">
+        <attributes>
+            <id name="id">
+                <generated-value/>
+            </id>
+            <basic name="flowUuid">
+                <column name="flowUuid" />
+            </basic>
+            <basic name="pathItems" attribute-type="String" >
+                <column length="4000" />
+                <access-methods get-method="getPathItemsAsString" set-method="setPathItemsAsString" />
+            </basic>
+            <basic name="lowSourcePosition">
+                <column name="lowSourcePosition" />
+                <convert>SourcePositionConverter</convert>
+            </basic>
+            <basic name="highSourcePosition">
+                <column name="highSourcePosition" />
+                <convert>SourcePositionConverter</convert>
+            </basic>
+            <basic name="atOrAfter">
+                <column name="atOrAfter" />
+                <convert>BooleanConverter</convert>
+            </basic>
+            <basic name="updated" />
+        </attributes>
+        <pre-persist method-name="prePersist"/>
+        <pre-update method-name="preUpdate"/>
+    </entity>
+
+    <entity name="PendingAppCheckpoint" class="com.datasphere.recovery.PendingCheckpointPath">
+        <attributes>
+            <id name="id">
+                <generated-value/>
+            </id>
+            <basic name="flowUuid">
+                <column name="flowUuid" />
+            </basic>
+            <basic name="pathItems" attribute-type="String" >
+                <column length="4096" />
+                <access-methods get-method="getPathItemsAsString" set-method="setPathItemsAsString" />
+            </basic>
+            <basic name="lowSourcePosition" />
+            <basic name="highSourcePosition" />
+            <basic name="atOrAfter">
+                <column name="atOrAfter" />
+                <convert>BooleanConverter</convert>
+            </basic>
+            <basic name="commandTimestamp" />
+            <basic name="updated" />
+        </attributes>
+        <pre-persist method-name="prePersist"/>
+        <pre-update method-name="preUpdate"/>
+    </entity>
+
+    <entity name="AppCheckpointSummary" class="com.datasphere.recovery.AppCheckpointSummary">
+        <attributes>
+            <id name="id">
+                <generated-value/>
+            </id>
+            <basic name="nodeUri"/>
+            <basic name="flowUri"/>
+            <basic name="componentUri"/>
+            <basic name="sourceUri"/>
+            <basic name="lowSourcePosition">
+                <column name="lowSourcePosition" />
+                <convert>SourcePositionConverter</convert>
+            </basic>
+            <basic name="lowSourcePositionText" attribute-type="String" >
+                <column length="512" />
+                <access-methods get-method="getLowSourcePositionTextTrim" set-method="setLowSourcePositionText" />
+            </basic>
+            <basic name="highSourcePosition">
+                <column name="highSourcePosition" />
+                <convert>SourcePositionConverter</convert>
+            </basic>
+            <basic name="highSourcePositionText" attribute-type="String" >
+                <column length="512" />
+                <access-methods get-method="getHighSourcePositionTextTrim" set-method="setHighSourcePositionText" />
+            </basic>
+            <basic name="atOrAfter">
+                <column name="atOrAfter" />
+                <convert>BooleanConverter</convert>
+            </basic>
+            <basic name="updated" />
+        </attributes>
+        <pre-persist method-name="prePersist"/>
+        <pre-update method-name="preUpdate"/>
+    </entity>
+    <entity name="PendingAppCheckpointSummary" class="com.datasphere.recovery.PendingAppCheckpointSummary">
+        <attributes>
+            <id name="id">
+                <generated-value/>
+            </id>
+            <basic name="nodeUri"/>
+            <basic name="flowUri"/>
+            <basic name="componentUri"/>
+            <basic name="sourceUri"/>
+            <basic name="lowSourcePosition">
+                <column name="lowSourcePosition" />
+                <convert>SourcePositionConverter</convert>
+            </basic>
+            <basic name="lowSourcePositionText" attribute-type="String" >
+                <column length="512" />
+                <access-methods get-method="getLowSourcePositionTextTrim" set-method="setLowSourcePositionText" />
+            </basic>
+            <basic name="highSourcePosition">
+                <column name="highSourcePosition" />
+                <convert>SourcePositionConverter</convert>
+            </basic>
+            <basic name="highSourcePositionText" attribute-type="String" >
+                <column length="512" />
+                <access-methods get-method="getHighSourcePositionTextTrim" set-method="setHighSourcePositionText" />
+            </basic>
+            <basic name="atOrAfter">
+                <column name="atOrAfter" />
+                <convert>BooleanConverter</convert>
+            </basic>
+            <basic name="commandTimestamp" />
+            <basic name="updated" />
+        </attributes>
+        <pre-persist method-name="prePersist"/>
+        <pre-update method-name="preUpdate"/>
+    </entity>
+</entity-mappings>

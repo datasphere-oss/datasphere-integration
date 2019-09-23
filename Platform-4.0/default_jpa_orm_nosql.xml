@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-mappings 
+    xmlns="http://www.eclipse.org/eclipselink/xsds/persistence/orm"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    version="2.4">
+    
+    <converter class="com.datasphere.recovery.PathItemListConverter" name="PathItemListConverter"/>
+    <converter class="com.datasphere.runtime.converters.JodaDateConverter" name="JodaDateConverter" />
+    <converter class="com.datasphere.runtime.converters.JsonNodeConverter" name="JsonNodeConverter" />
+
+    
+    <persistence-unit-metadata>
+        <xml-mapping-metadata-complete />
+        <exclude-default-mappings />
+    </persistence-unit-metadata>
+
+    <entity name="HDStoreCheckpoint" class="com.datasphere.recovery.CheckpointPath">
+    <no-sql data-format="MAPPED" />
+    <table name="$CHECKPOINT_TABLENAME" />
+    
+        <attributes>
+            <id name ="idStr" attribute-type="String">
+                <access-methods get-method="getIdString"  set-method="setIdString" />
+            </id>
+            <basic name="pathItems" attribute-type="String" >
+                <column length="4096" />
+                <access-methods get-method="getPathItemsAsString" set-method="setPathItemsAsString" />
+            </basic>
+            <basic name="lowSourcePosition"></basic>
+            <basic name="highSourcePosition"></basic>
+            <basic name="atOrAfter"></basic>
+        </attributes>
+    </entity>
+
+    <entity name="HD" class="com.datasphere.hd.HD">
+        <no-sql data-format="MAPPED" />
+        <attributes>
+            <id name="uuid" attribute-type="String">
+                <access-methods get-method="getUUIDString" set-method="setUUIDString" />
+            </id>
+            <basic name="hdTs" />
+            <basic name="key">
+                <column name="partitionKey" nullable="true" />
+                <access-methods get-method="getKeyString" set-method="setKeyString" />
+            </basic>
+            <basic name="mapKey">
+                <column name="hdKey" nullable="true" />
+                <access-methods get-method="getMapKeyString" set-method="setMapKeyString" />
+            </basic>
+            <basic name="hdStatus" />
+            <element-collection name="events">
+                <access-methods get-method="getEvents" set-method="setEvents" />
+            </element-collection>
+        </attributes>
+    </entity>
+
+</entity-mappings>

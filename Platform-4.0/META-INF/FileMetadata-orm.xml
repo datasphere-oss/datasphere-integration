@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<entity-mappings
+        xmlns="http://www.eclipse.org/eclipselink/xsds/persistence/orm"
+        version="2.4">
+    <converter class="com.datasphere.runtime.converters.BinaryConverter" name="BinaryConverter"/>
+    <converter class="com.datasphere.runtime.converters.UUIDConverter" name="UUIDConverter"/>
+
+    <persistence-unit-metadata>
+        <xml-mapping-metadata-complete />
+        <exclude-default-mappings />
+    </persistence-unit-metadata>
+
+    <entity class="com.datasphere.runtime.fileMetaExtension.FileMetadataExtension">
+        <table name="FileMetadata" />
+        <attributes>
+            <id name="fileName">
+                <column name="fileName" />
+            </id>
+            <id name="directoryName">
+                <column name="directoryName" />
+            </id>
+            <basic name="status">
+                <column name="status" />
+            </basic>
+            <id name="parentComponent">
+                <column name="parentComponent" />
+            </id>
+            <id name="parentComponentUUID">
+                <column name="parentComponentUUID"/>
+                <convert>UUIDConverter</convert>
+            </id>
+            <basic name="creationTimeStamp">
+                <column name="creationTimeStamp" />
+            </basic>
+            <basic name="lastEventCheckPointValue">
+                <column name="lastEventCheckPointValue" />
+                <convert>BinaryConverter</convert>
+            </basic>
+            <basic name="rollOverTimeStamp">
+                <column name="rollOverTimeStamp" />
+            </basic>
+            <basic name="reasonForRollOver">
+                <column name="reasonForRollOver" />
+            </basic>
+            <basic name="sequenceNumber">
+                <column name="sequenceNumber" />
+            </basic>
+            <basic name="field1">
+                <column name="field1" />
+            </basic>
+            <basic name="field2">
+                <column name="field2" />
+            </basic>
+            <basic name="wrapNumber">
+                <column name="wrapNumber" />
+            </basic>
+            <basic name="numberOfEvents">
+                <column name="numberOfEvents" />
+            </basic>
+            <basic name="owner">
+                <column name="owner" />
+            </basic>
+            <basic name="firstEventPosition">
+                <column name="firstEventPosition" />
+            </basic>
+            <basic name="lastEventPosition">
+                <column name="lastEventPosition" />
+            </basic>
+            <basic name="firstEventTimestamp">
+                <column name="firstEventTimestamp" />
+            </basic>
+            <basic name="lastEventTimestamp">
+                <column name="lastEventTimestamp" />
+            </basic>
+            <basic name="externalFileCreationTime">
+                <column name="externalFileCreationTime" />
+            </basic>
+	        <id name="distributionID">
+                <column name="distributionID" />
+            </id>
+        </attributes>
+    </entity>
+
+</entity-mappings>
+
+
+
+

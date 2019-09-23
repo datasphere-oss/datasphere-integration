@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<entity-mappings
+	xmlns="http://www.eclipse.org/eclipselink/xsds/persistence/orm"
+	version="2.4">
+	<persistence-unit-metadata>
+		<xml-mapping-metadata-complete />
+		<exclude-default-mappings />
+	</persistence-unit-metadata>
+
+	<entity name="MongoTargetData" class="com.datasphere.data.StringArrayDO">
+		<no-sql data-format="MAPPED" />
+		<attributes>
+			<id name="_id">
+				<generated-value />
+			</id>
+				
+			<element-collection name="data" fetch="EAGER" />
+			
+		</attributes>
+	</entity>
+</entity-mappings>

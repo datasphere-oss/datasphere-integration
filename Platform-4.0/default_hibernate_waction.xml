@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping default-access="property" >
+	<class name="$CLASSNAME" table="$TABLENAME" >
+		<id name="UUIDString" type="string">
+			<column name="UUIDSTR" not-null="true" length="50" />
+		</id>
+		<property name="hdTs" type="long"  access="field" >
+		    <column name="HDTS" not-null="true" />
+		</property>
+		<property name="KeyString" access="property"  length="50" >
+			<column name="PARTITIONKEY" not-null="true" />
+		</property>
+        <property name="MapKeyString" access="property"  length="50" >
+            <column name="HDKEY" not-null="true" />                
+        </property>
+        <property name="hdStatus" access="field" >
+            <column name="STATUS" not-null="true" />
+        </property>
+        <!--        <property name="eventsStr"  access="property"  type="string" length="24576">
+            <column name="EVENTS" not-null="false" />
+        </property> -->
+	</class>
+</hibernate-mapping>
