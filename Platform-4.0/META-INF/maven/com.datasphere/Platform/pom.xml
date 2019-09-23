@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.datasphere</groupId>
   <artifactId>Platform</artifactId>
-  <version>3.8.3</version>
+  <version>4.0</version>
   <packaging>jar</packaging>
   <name>Platform</name>
   <properties>
@@ -20,19 +20,7 @@
     <jackson.version>1.9.6</jackson.version>
     <guice.version>3.0</guice.version>
   </properties>
-  <!-- distributionManagement block contains URLs to nexus repositories -->
-  <distributionManagement>
-    <repository>
-      <id>releases</id>
-      <name>releases</name>
-      <url>http://nexus.datalliance.com:8080/nexus/content/repositories/releases</url>
-    </repository>
-    <snapshotRepository>
-      <id>snapshots</id>
-      <name>snapshots</name>
-      <url>http://nexus.datalliance.com:8080/nexus/content/repositories/snapshots</url>
-    </snapshotRepository>
-  </distributionManagement>
+  
   <dependencies>
       <!-- start of Platform project depends -->
       
@@ -665,11 +653,11 @@
         </excludes>
       </resource>
       <resource>
-        <directory>target/generated-sources/com/datalliance/runtime/compiler/</directory>
+        <directory>target/generated-sources/com/datasphere/runtime/compiler/</directory>
         <includes>
           <include>action_table.dat</include>
         </includes>
-        <targetPath>com/datalliance/runtime/compiler/</targetPath>
+        <targetPath>com/datasphere/runtime/compiler/</targetPath>
       </resource>
     </resources>
     <plugins>
@@ -796,7 +784,7 @@
           </execution>
         </executions>
         <configuration>
-          <sourceDirectory implementation="java.io.File">${project.basedir}/src/main/java/com/datalliance/runtime/compiler/grammar</sourceDirectory>
+          <sourceDirectory implementation="java.io.File">${project.basedir}/src/main/java/com/datasphere/runtime/compiler/grammar</sourceDirectory>
           <dumpGrammar>true</dumpGrammar>
           <outputDirectory implementation="java.lang.String">${project.build.directory}/generated-sources/</outputDirectory>
         </configuration>
