@@ -85,16 +85,16 @@ public class TestDeploy
     
     public static final void main(final String[] args) {
         final WALoader bl = WALoader.get(true);
-        testDeploy(bl, "/Users/steve/Code/WebAction/LoadTestSample1/loadTestSample1.jar", "loadTestSample");
+        testDeploy(bl, "/Users/steve/Code/HD/LoadTestSample1/loadTestSample1.jar", "loadTestSample");
         testAddType(bl);
         testAddType2(bl);
         testUndeploy(bl, "loadTestSample");
         testRemoveType(bl);
         testAddType(bl);
-        testDeploy(bl, "/Users/steve/Code/WebAction/LoadTestSample2/loadTestSample2.jar", "loadTestSample");
+        testDeploy(bl, "/Users/steve/Code/HD/LoadTestSample2/loadTestSample2.jar", "loadTestSample");
         testUndeploy(bl, "loadTestSample");
-        testDeploy(bl, "/Users/steve/Code/WebAction/LoadTestSample2/loadTestSample2.jar", "loadTestSample");
-        testDeploy(bl, "/Users/steve/Code/WebAction/LoadTestSample2/loadTestSample2.jar", "loadTestSample2");
+        testDeploy(bl, "/Users/steve/Code/HD/LoadTestSample2/loadTestSample2.jar", "loadTestSample");
+        testDeploy(bl, "/Users/steve/Code/HD/LoadTestSample2/loadTestSample2.jar", "loadTestSample2");
         System.exit(0);
     }
     

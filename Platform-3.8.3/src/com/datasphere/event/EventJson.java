@@ -5,7 +5,7 @@ import org.apache.log4j.Logger;
 import com.datalliance.event.ObjectMapperFactory;
 import com.datalliance.event.SimpleEvent;
 import com.datasphere.uuid.UUID;
-import com.datasphere.waction.Waction;
+import com.datasphere.hd.HD;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class EventJson
@@ -82,6 +82,6 @@ public class EventJson
     
     static {
         EventJson.jsonMapper = ObjectMapperFactory.newInstance();
-        EventJson.logger = Logger.getLogger((Class)Waction.class);
+        EventJson.logger = Logger.getLogger((Class)HD.class);
     }
 }

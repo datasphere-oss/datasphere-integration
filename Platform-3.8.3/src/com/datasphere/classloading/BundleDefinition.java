@@ -93,7 +93,7 @@ public class BundleDefinition implements Serializable
         queryTask, 
         keyFactory, 
         fieldFactory, 
-        waction, 
+        hd, 
         recordConverter, 
         attrExtractor;
     }

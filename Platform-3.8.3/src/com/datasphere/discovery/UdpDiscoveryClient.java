@@ -12,7 +12,7 @@ import java.util.*;
  */
 public class UdpDiscoveryClient
 {
-    public static final String DISCOVERY_REQUEST_HEADER = "DISCOVER WEBACTION SERVER";
+    public static final String DISCOVERY_REQUEST_HEADER = "DISCOVER HD SERVER";
     private static final int MAX_DATAGRAM_PACKET_SIZE = 1024;
     private static final int TIMEOUT_IN_MSEC = 5000;
     private static final Logger logger;
@@ -26,7 +26,7 @@ public class UdpDiscoveryClient
         this.clusterName = cluster;
     }
     
-    public String discoverWebActionServers() {
+    public String discoverHDServers() {
         DatagramSocket socket = null;
         try {
             socket = new DatagramSocket();
@@ -43,7 +43,7 @@ public class UdpDiscoveryClient
                 final String resp = new String(recvPacket.getData()).trim();
                 String payload = null;
                 if (this.saltId != null) {
-                    payload = WASecurityManager.decrypt(resp, this.saltId.toEightBytes());
+                    payload = HSecurityManager.decrypt(resp, this.saltId.toEightBytes());
                 }
                 else {
                     payload = resp;
@@ -51,7 +51,7 @@ public class UdpDiscoveryClient
                 final StringTokenizer tokenizer = new StringTokenizer(payload, "\n");
                 if (tokenizer.countTokens() > 1) {
                     final String header = tokenizer.nextToken().trim();
-                    if ("WEBACTION SERVER NODE".equals(header)) {
+                    if ("HD SERVER NODE".equals(header)) {
                         return tokenizer.nextToken().trim();
                     }
                     continue;
@@ -60,11 +60,11 @@ public class UdpDiscoveryClient
             return null;
         }
         catch (SocketTimeoutException ste) {
-            UdpDiscoveryClient.logger.info((Object)"No WebAction Server could be discovered within the specified timeout. Either specify Server Address or check the network setting to enable broadcast");
+            UdpDiscoveryClient.logger.info((Object)"No HD Server could be discovered within the specified timeout. Either specify Server Address or check the network setting to enable broadcast");
             return null;
         }
         catch (Exception e) {
-            UdpDiscoveryClient.logger.warn((Object)"No WebAction Server could be discovered due to exception", (Throwable)e);
+            UdpDiscoveryClient.logger.warn((Object)"No HD Server could be discovered due to exception", (Throwable)e);
             return null;
         }
         finally {
@@ -100,7 +100,7 @@ public class UdpDiscoveryClient
     }
     
     private String getDiscoveryMessage() {
-        final StringBuffer buffer = new StringBuffer("DISCOVER WEBACTION SERVER");
+        final StringBuffer buffer = new StringBuffer("DISCOVER HD SERVER");
         buffer.append("\nCluster:" + this.clusterName);
         buffer.append("\nRequestTime:" + System.currentTimeMillis());
         return buffer.toString();

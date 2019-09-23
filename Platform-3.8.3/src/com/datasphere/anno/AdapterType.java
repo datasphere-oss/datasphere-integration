@@ -9,7 +9,7 @@ public enum AdapterType
     parser, 
     proces, 
     formatter, 
-    wactionstore, 
+    hdstore, 
     stream, 
     cache;
 }

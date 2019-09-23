@@ -16,7 +16,7 @@ import com.datasphere.runtime.ExceptionEvent;
 import com.datasphere.runtime.components.EntityType;
 import com.datasphere.runtime.components.Flow;
 import com.datasphere.runtime.meta.MetaInfo;
-import com.datasphere.security.WASecurityManager;
+import com.datasphere.security.HSecurityManager;
 import com.datasphere.utility.WaitUtility;
 import com.datasphere.uuid.UUID;
 
@@ -115,7 +115,7 @@ public class NodeManager
             NodeManager.logger.debug((Object)("NodeManager WAITING on " + waitSet.size() + " components to " + commandType + ":"));
             for (final UUID u : waitSet) {
                 try {
-                    final MetaInfo.MetaObject mo = MetadataRepository.getINSTANCE().getMetaObjectByUUID(u, WASecurityManager.TOKEN);
+                    final MetaInfo.MetaObject mo = MetadataRepository.getINSTANCE().getMetaObjectByUUID(u, HSecurityManager.TOKEN);
                     NodeManager.logger.debug((Object)("   * " + u + " ~ " + mo.getName()));
                 }
                 catch (MetaDataRepositoryException ex) {}
@@ -132,7 +132,7 @@ public class NodeManager
         }
         if (Logger.getLogger("Commands").isDebugEnabled()) {
             try {
-                final MetaInfo.MetaObject mo = MetadataRepository.getINSTANCE().getMetaObjectByUUID(compUuid, WASecurityManager.TOKEN);
+                final MetaInfo.MetaObject mo = MetadataRepository.getINSTANCE().getMetaObjectByUUID(compUuid, HSecurityManager.TOKEN);
                 Logger.getLogger("Commands").debug((Object)("NodeManager notified of expected " + commandType + " processed by expected component " + mo.getName()));
             }
             catch (MetaDataRepositoryException e) {

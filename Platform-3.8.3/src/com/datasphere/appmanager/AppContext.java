@@ -22,7 +22,7 @@ import com.datasphere.runtime.DistributedExecutionManager;
 import com.datasphere.runtime.ExceptionEvent;
 import com.datasphere.runtime.Property;
 import com.datasphere.runtime.meta.MetaInfo;
-import com.datasphere.security.WASecurityManager;
+import com.datasphere.security.HSecurityManager;
 import com.datasphere.utility.DeployUtility;
 import com.datasphere.utility.WaitUtility;
 import com.datasphere.uuid.UUID;
@@ -75,7 +75,7 @@ public class AppContext implements Serializable
     
     public MetaInfo.StatusInfo.Status getDesiredAppStatus() throws MetaDataRepositoryException {
         final MDRepository metadataRepository = MetadataRepository.getINSTANCE();
-        final MetaInfo.Flow flow = (MetaInfo.Flow)metadataRepository.getMetaObjectByUUID(this.appId, WASecurityManager.TOKEN);
+        final MetaInfo.Flow flow = (MetaInfo.Flow)metadataRepository.getMetaObjectByUUID(this.appId, HSecurityManager.TOKEN);
         return flow.getFlowStatus();
     }
     
@@ -145,32 +145,32 @@ public class AppContext implements Serializable
     public void execute(final ActionType action, final Long epoch, final List<UUID> servers) throws MetaDataRepositoryException {
         final MetaInfo.Flow flow = this.getFlow();
         AppContext.logger.info((Object)("Executing action " + action + " for flow " + flow.getFullName() + " with Epoch " + epoch + " on nodes: " + this.getManagedNodes()));
-        this.execute(new Context.ChangeFlowState(action, this.getFlow(), servers, (UUID)WASecurityManager.TOKEN, null, epoch), servers);
+        this.execute(new Context.ChangeFlowState(action, this.getFlow(), servers, (UUID)HSecurityManager.TOKEN, null, epoch), servers);
     }
     
     public void execute(final ActionType action, final boolean incrementEpoch, final List<UUID> servers) throws MetaDataRepositoryException {
         final long epoch = incrementEpoch ? this.incrementAndGetEpochNumber() : this.getEpochNumber();
         final MetaInfo.Flow flow = this.getFlow();
         AppContext.logger.info((Object)("Executing action " + action + " for flow " + flow.getFullName() + " with Epoch " + epoch + " on nodes: " + this.getManagedNodes()));
-        this.execute(new Context.ChangeFlowState(action, this.getFlow(), servers, (UUID)WASecurityManager.TOKEN, null, epoch), servers);
+        this.execute(new Context.ChangeFlowState(action, this.getFlow(), servers, (UUID)HSecurityManager.TOKEN, null, epoch), servers);
     }
     
     public void execute(final ActionType action, final MetaInfo.Flow flow, final List<Property> params, final boolean incrementEpoch) throws MetaDataRepositoryException {
         final long epoch = incrementEpoch ? this.incrementAndGetEpochNumber() : this.getEpochNumber();
         AppContext.logger.info((Object)("Executing action " + action + " for flow " + flow.getFullName() + " with Epoch " + epoch + " on nodes: " + this.getManagedNodes()));
-        this.execute(new Context.ChangeFlowState(action, flow, this.getManagedNodes(), (UUID)WASecurityManager.TOKEN, params, epoch), this.getManagedNodes());
+        this.execute(new Context.ChangeFlowState(action, flow, this.getManagedNodes(), (UUID)HSecurityManager.TOKEN, params, epoch), this.getManagedNodes());
     }
     
     public void execute(final ActionType action, final boolean incrementEpoch, final List<UUID> servers, final List<UUID> flows) throws MetaDataRepositoryException {
         final long epoch = incrementEpoch ? this.incrementAndGetEpochNumber() : this.getEpochNumber();
         AppContext.logger.info((Object)("Executing action " + action + " for flow " + this.getFlow().getFullName() + " with Epoch " + epoch));
-        this.execute(new Context.ChangeFlowState(action, this.getFlow(), flows, (UUID)WASecurityManager.TOKEN, null, epoch), servers);
+        this.execute(new Context.ChangeFlowState(action, this.getFlow(), flows, (UUID)HSecurityManager.TOKEN, null, epoch), servers);
     }
     
     public void execute(final ActionType action, final ArrayList<UUID> servers, final List<Property> params, final boolean incrementEpoch) throws MetaDataRepositoryException {
         final long epoch = incrementEpoch ? this.incrementAndGetEpochNumber() : this.getEpochNumber();
         AppContext.logger.info((Object)("Executing action " + action + " for flow " + this.getFlow().getFullName() + " with Epoch " + epoch));
-        this.execute(new Context.ChangeFlowState(action, this.getFlow(), servers, (UUID)WASecurityManager.TOKEN, params, epoch), servers);
+        this.execute(new Context.ChangeFlowState(action, this.getFlow(), servers, (UUID)HSecurityManager.TOKEN, params, epoch), servers);
     }
     
     public void resetCaches() {

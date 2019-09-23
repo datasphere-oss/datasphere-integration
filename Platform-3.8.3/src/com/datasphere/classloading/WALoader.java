@@ -17,7 +17,7 @@ import com.esotericsoftware.kryo.*;
 import com.datasphere.runtime.compiler.*;
 import com.datasphere.runtime.meta.*;
 import javassist.*;
-import com.datasphere.waction.*;
+import com.datasphere.hd.*;
 import com.hazelcast.core.*;
 
 public class WALoader extends DistributedClassLoader
@@ -736,9 +736,9 @@ public class WALoader extends DistributedClassLoader
         return (BundleDefinition)bundles.get(bundleUri);
     }
     
-    private String makeSetFromWActionMethod(final Map<String, String> fields, final ClassPool pool) throws NotFoundException {
+    private String makeSetFromHDMethod(final Map<String, String> fields, final ClassPool pool) throws NotFoundException {
         final StringBuilder sb = new StringBuilder();
-        sb.append("public void convertFromWactionToEvent(long timestamp,").append(UUID.class.getCanonicalName()).append(" id, String key,java.util.Map context) {\n");
+        sb.append("public void convertFromHDToEvent(long timestamp,").append(UUID.class.getCanonicalName()).append(" id, String key,java.util.Map context) {\n");
         sb.append("setTimeStamp(timestamp); \n");
         sb.append("setID(id); \n");
         sb.append("setKey(key); \n");
@@ -764,8 +764,8 @@ public class WALoader extends DistributedClassLoader
             final CtClass bclass = pool.makeClass(className);
             bclass.addConstructor(CtNewConstructor.defaultConstructor(bclass));
             final CtClass sclass = pool.get(SimpleEvent.class.getCanonicalName());
-            final CtClass wactionConvertibleInterface = pool.get(WactionConvertible.class.getCanonicalName());
-            final CtClass[] interfaceList = { wactionConvertibleInterface };
+            final CtClass hdConvertibleInterface = pool.get(HDConvertible.class.getCanonicalName());
+            final CtClass[] interfaceList = { hdConvertibleInterface };
             bclass.setSuperclass(sclass);
             bclass.setInterfaces(interfaceList);
             final String eventConstructorSource = "public " + bclass.getSimpleName() + "(long timestamp) {\n  super(timestamp);\n  fieldIsSet = new byte[" + (fields.size() / 7 + 1) + "];\n}\n";
@@ -834,11 +834,11 @@ public class WALoader extends DistributedClassLoader
             }
             final CtMethod m5 = CtMethod.make(setFromContextMapMethod, bclass);
             bclass.addMethod(m5);
-            final String setFromWActionMethod = this.makeSetFromWActionMethod(fields, pool);
+            final String setFromHDMethod = this.makeSetFromHDMethod(fields, pool);
             if (WALoader.logger.isTraceEnabled()) {
-                WALoader.logger.trace(setFromWActionMethod);
+                WALoader.logger.trace(setFromHDMethod);
             }
-            final CtMethod m6 = CtMethod.make(setFromWActionMethod, bclass);
+            final CtMethod m6 = CtMethod.make(setFromHDMethod, bclass);
             bclass.addMethod(m6);
             final CtField mapper = CtField.make("public static com.fasterxml.jackson.databind.ObjectMapper  mapper = com.datasphere.event.ObjectMapperFactory.newInstance();", bclass);
             bclass.addField(mapper);
@@ -872,25 +872,25 @@ public class WALoader extends DistributedClassLoader
         }
     }
     
-    public void addWactionClass(final String className, final MetaInfo.Type metaInfo) throws Exception {
+    public void addHDClass(final String className, final MetaInfo.Type metaInfo) throws Exception {
         final IMap<String, BundleDefinition> bundles = DistributedClassLoader.getBundles();
         if (metaInfo == null) {
             throw new ClassNotFoundException("metaInfo is null");
         }
         if (WALoader.logger.isTraceEnabled()) {
-            WALoader.logger.trace(("trying to create a run time Waction sub class : " + metaInfo.className));
+            WALoader.logger.trace(("trying to create a run time HD sub class : " + metaInfo.className));
         }
         final String appName = metaInfo.nsName;
-        String bundleUri = this.getBundleUri(appName, BundleDefinition.Type.waction, className);
+        String bundleUri = this.getBundleUri(appName, BundleDefinition.Type.hd, className);
         final BundleDefinition def = (BundleDefinition)bundles.get(bundleUri);
         if (def != null) {
             throw new IllegalArgumentException("Class for type " + className + " is already defined");
         }
-        bundleUri = this.addBundleDefinition(appName, BundleDefinition.Type.waction, className);
+        bundleUri = this.addBundleDefinition(appName, BundleDefinition.Type.hd, className);
         final BundleLoader bl = this.getBundleLoader(bundleUri);
         final ClassPool pool = bl.getPool();
         final CtClass bclass = pool.makeClass(className);
-        final CtClass sclass = pool.get(Waction.class.getName());
+        final CtClass sclass = pool.get(HD.class.getName());
         SerialVersionUID.setSerialVersionUID(bclass);
         bclass.setSuperclass(sclass);
         final int noOfFields = metaInfo.fields.size();
@@ -960,15 +960,15 @@ public class WALoader extends DistributedClassLoader
         this.addBundleClass(bundleUri, className, bytecode, true);
     }
     
-    public void addWactionContextClassNoEventType(final MetaInfo.Type metaInfo) throws Exception {
+    public void addHDContextClassNoEventType(final MetaInfo.Type metaInfo) throws Exception {
         final IMap<String, BundleDefinition> bundles = DistributedClassLoader.getBundles();
         if (metaInfo == null) {
             throw new ClassNotFoundException("metaInfo is null");
         }
         if (WALoader.logger.isTraceEnabled()) {
-            WALoader.logger.trace(("inside instantiateWactionContextClass : " + metaInfo.className));
+            WALoader.logger.trace(("inside instantiateHDContextClass : " + metaInfo.className));
         }
-        final String className = metaInfo.className + "_wactionContext";
+        final String className = metaInfo.className + "_hdContext";
         final String appName = metaInfo.nsName;
         String bundleUri = this.getBundleUri(appName, BundleDefinition.Type.context, className);
         final BundleDefinition def = (BundleDefinition)bundles.get(bundleUri);
@@ -980,7 +980,7 @@ public class WALoader extends DistributedClassLoader
         final ClassPool pool = bl.getPool();
         final CtClass bclass = pool.makeClass(className);
         bclass.addConstructor(CtNewConstructor.defaultConstructor(bclass));
-        final CtClass sclass = pool.get(WactionContext.class.getName());
+        final CtClass sclass = pool.get(HDContext.class.getName());
         SerialVersionUID.setSerialVersionUID(bclass);
         bclass.setSuperclass(sclass);
         final int noOfFields = metaInfo.fields.size();
@@ -1047,15 +1047,15 @@ public class WALoader extends DistributedClassLoader
         this.addBundleClass(bundleUri, className, bytecode, true);
     }
     
-    public void addWactionContextClass(final MetaInfo.Type metaInfo) throws Exception {
+    public void addHDContextClass(final MetaInfo.Type metaInfo) throws Exception {
         final IMap<String, BundleDefinition> bundles = DistributedClassLoader.getBundles();
         if (metaInfo == null) {
             throw new ClassNotFoundException("metaInfo is null");
         }
         if (WALoader.logger.isTraceEnabled()) {
-            WALoader.logger.trace(("inside instantiateWactionContextClass : " + metaInfo.className));
+            WALoader.logger.trace(("inside instantiateHDContextClass : " + metaInfo.className));
         }
-        final String className = metaInfo.className + "_wactionContext";
+        final String className = metaInfo.className + "_hdContext";
         final String appName = metaInfo.nsName;
         String bundleUri = this.getBundleUri(appName, BundleDefinition.Type.context, className);
         final BundleDefinition def = (BundleDefinition)bundles.get(bundleUri);
@@ -1067,7 +1067,7 @@ public class WALoader extends DistributedClassLoader
         final ClassPool pool = bl.getPool();
         final CtClass bclass = pool.makeClass(className);
         bclass.addConstructor(CtNewConstructor.defaultConstructor(bclass));
-        final CtClass sclass = pool.get(WactionContext.class.getName());
+        final CtClass sclass = pool.get(HDContext.class.getName());
         SerialVersionUID.setSerialVersionUID(bclass);
         bclass.setSuperclass(sclass);
         final int noOfFields = metaInfo.fields.size();

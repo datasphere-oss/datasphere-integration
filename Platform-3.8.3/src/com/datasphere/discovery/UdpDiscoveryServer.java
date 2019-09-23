@@ -17,7 +17,7 @@ import java.nio.*;
  */
 public class UdpDiscoveryServer implements Runnable
 {
-    public static final String DISCOVERY_RESPONSE_HEADER = "WEBACTION SERVER NODE";
+    public static final String DISCOVERY_RESPONSE_HEADER = "HD SERVER NODE";
     private static final int MAX_DATAGRAM_PACKET_SIZE = 1024;
     private static final Logger logger;
     private final int boundPort;
@@ -88,7 +88,7 @@ public class UdpDiscoveryServer implements Runnable
         if (header == null || header.trim().isEmpty()) {
             return false;
         }
-        if (!"DISCOVER WEBACTION SERVER".equals(header)) {
+        if (!"DISCOVER HD SERVER".equals(header)) {
             return false;
         }
         if (requestedCluster == null || requestedCluster.trim().isEmpty()) {
@@ -104,10 +104,10 @@ public class UdpDiscoveryServer implements Runnable
     }
     
     private String formatResponse() throws UnsupportedEncodingException, GeneralSecurityException {
-        final StringBuffer buffer = new StringBuffer("WEBACTION SERVER NODE \n");
+        final StringBuffer buffer = new StringBuffer("HD SERVER NODE \n");
         buffer.append(this.hazelcastBindAddress + ":" + this.hazelcastBindPort);
         if (this.salt != null) {
-            return WASecurityManager.encrypt(buffer.toString(), this.salt.toEightBytes());
+            return HSecurityManager.encrypt(buffer.toString(), this.salt.toEightBytes());
         }
         return buffer.toString();
     }
