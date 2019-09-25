@@ -8,16 +8,16 @@ import com.esotericsoftware.kryo.*;
 import com.esotericsoftware.kryo.io.*;
 
 @EventType(schema = "Internal", classification = "All", uri = "com.datasphere.proc.events:StriimParserEvent:1.0")
-public class StriimParserEvent extends SimpleEvent
+public class HDParserEvent extends SimpleEvent
 {
     @EventTypeData
     public Object data;
     public Map<String, Object> metadata;
     
-    public StriimParserEvent() {
+    public HDParserEvent() {
     }
     
-    public StriimParserEvent(final long timestamp) {
+    public HDParserEvent(final long timestamp) {
         super(timestamp);
     }
     
