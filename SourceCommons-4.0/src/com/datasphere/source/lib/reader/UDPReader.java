@@ -19,7 +19,7 @@ import com.datasphere.common.exc.AdapterException;
 import com.datasphere.recovery.CheckpointDetail;
 import com.datasphere.source.lib.prop.Property;
 
-public class UDPReader extends WASocket
+public class UDPReader extends HDSocket
 {
     private String serverName;
     private int serverPort;

@@ -6,18 +6,18 @@ import com.datasphere.source.lib.prop.*;
 
 import java.io.*;
 
-public class WASocket extends ReaderBase
+public class HDSocket extends ReaderBase
 {
     protected Socket clientSocket;
     protected String serverIP;
     protected int serverPort;
     protected int listenPort;
     
-    public WASocket(final ReaderBase link) throws AdapterException {
+    public HDSocket(final ReaderBase link) throws AdapterException {
         super(link);
     }
     
-    protected WASocket(final Property prop) throws AdapterException {
+    protected HDSocket(final Property prop) throws AdapterException {
         super(prop);
     }
     

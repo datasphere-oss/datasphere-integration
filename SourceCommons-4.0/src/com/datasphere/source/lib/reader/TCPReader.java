@@ -17,7 +17,7 @@ import com.datasphere.common.exc.AdapterException;
 import com.datasphere.recovery.CheckpointDetail;
 import com.datasphere.source.lib.prop.Property;
 
-public class TCPReader extends WASocket
+public class TCPReader extends HDSocket
 {
     private SocketChannel channel;
     private ServerSocketChannel serverSocket;
