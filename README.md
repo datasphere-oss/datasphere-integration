@@ -26,6 +26,6 @@ DataSphere 数据集成平台是集数据采集、数据接入、数据交换、
 
 ## 快速入门
 ----------------------------------------------
-请阅读 快速入门 文档
+请阅读  [快速入门](https://github.com/datasphere-oss/datasphere-integration/blob/master/QUICKSTART.md) 文档
 
 
