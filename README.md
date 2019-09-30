@@ -53,5 +53,9 @@ DataSphere 数据集成平台是集数据采集、数据接入、数据交换、
 | Apache Flink|   √    |     √     |    √      |
 | MQTT        |   √    |     √     |    √      |
 | JMS         |   √    |     √     |    √      |
+| Weblogic    |   √    |     √     |    √      |
+| WebSphere   |   √    |     √     |    √      |
+
+
 
 数据源支持持续更新中...
