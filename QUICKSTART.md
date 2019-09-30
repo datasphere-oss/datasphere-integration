@@ -32,15 +32,18 @@ Web客户端已经在Chrome上测试通过。其他的Web浏览器也可以运�
 
 ### Windows 环境安装
 
-下载 jdk-7u79-windows-x64.exe， http://www.oracle.com/technetwork/java/javase/downloads/jdk7-downloads-18802 60.html, 运行 Installer，按照提示步骤依次操作。
+下载 jdk-7u79-windows-x64.exe， http://www.oracle.com/technetwork/java/javase/downloads/jdk7-downloads-1880260.html, 运行 Installer，按照提示步骤依次操作。
 
 ### Mac 环境安装
-在 OSX 10 上, 下载 jdk-7u79-macosx-x64.dmg， http://www.oracle.com/technetwork/java/javase/downloads/jdk7-downloads-1880260 .html, 按照提示步骤依次操作。
+在 OSX 10 上, 下载 jdk-7u79-macosx-x64.dmg， http://www.oracle.com/technetwork/java/javase/downloads/jdk7-downloads-1880260.html, 按照提示步骤依次操作。
 
 
 然后验证 Java 安装的正确性，在命令行输入如下命令: </br>
+
 java -version </br>
+
 输出如下: </br>
+
 java version "1.7.0_79" </br>
 Java(TM) SE Runtime Environment (build 1.7.0_79-b15) </br>
 Java HotSpot(TM) 64-Bit Server VM (build 24.79-b02, mixed mode) </br>
