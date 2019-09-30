@@ -34,7 +34,7 @@ import com.datasphere.anno.AdapterType;
 import com.datasphere.anno.PropertyTemplate;
 import com.datasphere.anno.PropertyTemplateProperty;
 import com.datasphere.appmanager.AppManager;
-import com.datasphere.classloading.WALoader;
+import com.datasphere.classloading.HDLoader;
 import com.datasphere.common.constants.Constant;
 import com.datasphere.common.exc.AdapterException;
 import com.datasphere.event.Event;
