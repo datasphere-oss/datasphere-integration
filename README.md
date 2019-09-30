@@ -32,3 +32,26 @@ DataSphere 数据集成平台是集数据采集、数据接入、数据交换、
 请阅读  [快速入门](https://github.com/datasphere-oss/datasphere-integration/blob/master/QUICKSTART.md) 文档
 
 
+## 数据源列表
+
+
+| 数据端名称  | 数据源端 | 数据目标端  | 开源  |
+|-------------|:------:|-----------|----------:|
+| Oracle      |   √    |     √     |    √      |
+| MSSQL       |   √    |     √     |    √      |
+| PostgreSQL  |   √    |     √     |    √      |
+| TiDB        |   √    |     √     |    √      |
+| Hashdata    |   √    |     √     |    √      |
+| Greenplum   |   √    |     √     |    √      |
+| Clickhouse  |   √    |     √     |    √      |
+| Apache Hive |   √    |     √     |    √      |
+| Apache HAWQ |   √    |     √     |    √      |
+| Apache HBase|   √    |     √     |    √      |
+| Apache HDFS |   √    |     √     |    √      |
+| Apache Kafka|   √    |     √     |    √      |
+| Apache Spark|   √    |     √     |    √      |
+| Apache Flink|   √    |     √     |    √      |
+| MQTT        |   √    |     √     |    √      |
+| JMS         |   √    |     √     |    √      |
+
+数据源支持持续更新中...
