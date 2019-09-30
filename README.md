@@ -25,7 +25,7 @@ DataSphere 数据集成平台是集数据采集、数据接入、数据交换、
 
 ## 架构原理
 ----------------------------------------------
-请阅读 [架构] 文档
+请阅读 [架构原理](https://github.com/datasphere-oss/datasphere-integration/blob/master/docs/architecture.md) 文档
 
 ## 快速入门
 ----------------------------------------------
