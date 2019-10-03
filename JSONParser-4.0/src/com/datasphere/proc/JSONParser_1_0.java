@@ -438,7 +438,7 @@ public class JSONParser_1_0 extends BaseParser implements CheckpointProvider, Ob
 
 	public static void main(final String[] args) throws Exception {
 		final Map<String, Object> props = new HashMap<String, Object>();
-		props.put("directory", "/home/arul/Workspace/repo/Product/IntegrationTests/TestData");
+		props.put("directory", "/home/theseusyang/Product/IntegrationTests/TestData");
 		props.put("wildcard", "simpleapp.json");
 		props.put("positionByEOF", false);
 		props.put("eventType", "");
