@@ -12,7 +12,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.joda.time.DateTime;
 
 import com.datasphere.appmanager.DisapproveQuiesceException;
-import com.datasphere.classloading.WALoader;
+import com.datasphere.classloading.HDLoader;
 import com.datasphere.drop.DropMetaObject;
 import com.datasphere.event.Event;
 import com.datasphere.intf.SourceMetadataProvider;
@@ -299,7 +299,7 @@ public abstract class SourceProcess extends BaseProcess
     }
     
     public void createTypesFromTableDef(final Map<String, TypeDefOrName> metaMap) throws Exception {
-        final WALoader loader = WALoader.get();
+        final HDLoader loader = HDLoader.get();
         if (metaMap != null) {
             final MetaInfo.Source sourceInfo = (MetaInfo.Source)MetadataRepository.getINSTANCE().getMetaObjectByUUID(this.sourceUUID, HSecurityManager.TOKEN);
             Context ctx = Context.createContext(HSecurityManager.TOKEN);

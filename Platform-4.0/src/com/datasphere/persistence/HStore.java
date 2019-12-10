@@ -37,7 +37,7 @@ import com.datasphere.cache.CachingProvider;
 import com.datasphere.cache.Filter;
 import com.datasphere.cache.ICache;
 import com.datasphere.classloading.BundleDefinition;
-import com.datasphere.classloading.WALoader;
+import com.datasphere.classloading.HDLoader;
 import com.datasphere.distribution.HIndex;
 import com.datasphere.distribution.HQuery;
 import com.datasphere.event.ObjectMapperFactory;
@@ -485,7 +485,7 @@ public class HStore extends FlowComponent implements HDListener, PubSub
         final Map<String, Object> props = new HashMap<String, Object>();
         props.putAll(storePropCopy);
         props.put("javax.persistence.transactionType", PersistenceUnitTransactionType.RESOURCE_LOCAL.name());
-        props.put("eclipselink.classloader", WALoader.getDelegate());
+        props.put("eclipselink.classloader", HDLoader.getDelegate());
         props.put("eclipselink.logging.level", (storePropCopy.get("LOGGING_LEVEL") == null) ? "SEVERE" : storePropCopy.get("LOGGING_LEVEL"));
         props.put("eclipselink.weaving.changetracking", "false");
         props.put("eclipselink.weaving", "false");
@@ -707,9 +707,9 @@ public class HStore extends FlowComponent implements HDListener, PubSub
         if (this.usesOldHDStore() && this.storeMetaInfo.frequency != null) {
             this.createORMXmlDoc();
         }
-        final WALoader wal = WALoader.get();
+        final HDLoader wal = HDLoader.get();
         final String bundleUri = wal.createIfNotExistsBundleDefinition(appName, BundleDefinition.Type.fieldFactory, this.getMetaName());
-        final BundleDefinition bundleDefinition = WALoader.get().getBundleDefinition(bundleUri);
+        final BundleDefinition bundleDefinition = HDLoader.get().getBundleDefinition(bundleUri);
         this.ctxKeyFacs = new ArrayList<Pair<String, FieldFactory>>();
         this.ctxFieldFacs = new ArrayList<Pair<String, FieldFactory>>();
         final List<String> classNames = bundleDefinition.getClassNames();
@@ -1424,7 +1424,7 @@ public class HStore extends FlowComponent implements HDListener, PubSub
         }
     }
     
-    public static FieldFactory genFieldFactory(final String bundleUri, final WALoader wal, final String eventTypeClassName, final String fieldName) throws Exception {
+    public static FieldFactory genFieldFactory(final String bundleUri, final HDLoader wal, final String eventTypeClassName, final String fieldName) throws Exception {
         final ClassPool pool = wal.getBundlePool(bundleUri);
         final String className = "FieldFactory" + System.nanoTime();
         final CtClass cc = pool.makeClass(className);

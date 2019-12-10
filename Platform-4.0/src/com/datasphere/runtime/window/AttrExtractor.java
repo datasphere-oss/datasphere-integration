@@ -7,7 +7,7 @@ import java.util.Date;
 import org.joda.time.DateTime;
 
 import com.datasphere.classloading.BundleDefinition;
-import com.datasphere.classloading.WALoader;
+import com.datasphere.classloading.HDLoader;
 import com.datasphere.exception.SecurityException;
 import com.datasphere.exception.ServerException;
 import com.datasphere.metaRepository.MetaDataRepositoryException;
@@ -30,7 +30,7 @@ public abstract class AttrExtractor
     public abstract Long getAttr(final Object p0);
     
     private static Pair<AttrExtractor, String> genAttrExtractor(final MetaInfo.Window wi, final String fieldName, final BaseServer srv) throws ServerException, ClassNotFoundException, NotFoundException, CannotCompileException, NoSuchFieldException, SecurityException, IOException, InstantiationException, IllegalAccessException, MetaDataRepositoryException {
-        final WALoader wal = WALoader.get();
+        final HDLoader wal = HDLoader.get();
         final String bundleUri = wal.createIfNotExistsBundleDefinition(wi.nsName, BundleDefinition.Type.attrExtractor, wi.name);
         final MetaInfo.Stream si = srv.getStreamInfo(wi.stream);
         final MetaInfo.Type t = srv.getTypeInfo(si.dataType);
@@ -106,7 +106,7 @@ public abstract class AttrExtractor
     }
     
     public static void removeAttrExtractor(final MetaInfo.Window wi) {
-        final WALoader wal = WALoader.get();
+        final HDLoader wal = HDLoader.get();
         wal.removeBundle(wi.nsName, BundleDefinition.Type.attrExtractor, wi.name);
     }
 }

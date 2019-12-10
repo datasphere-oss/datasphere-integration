@@ -40,7 +40,7 @@ import org.elasticsearch.action.search.ShardSearchFailure;
 import com.datasphere.anno.AdapterType;
 import com.datasphere.anno.PropertyTemplate;
 import com.datasphere.anno.PropertyTemplateProperty;
-import com.datasphere.classloading.WALoader;
+import com.datasphere.classloading.HDLoader;
 import com.datasphere.common.errors.CommonError;
 import com.datasphere.common.errors.IError;
 import com.datasphere.errorhandling.DatallException;
@@ -238,7 +238,7 @@ public class MonitorModel extends BaseProcess implements Subscriber, Runnable
         this.currentHealthReportBuilder = new HealthRecordBuilder();
         this.metaDataDBDetails = new MetaDataDBDetails();
         this.setPersistence(monitorPersistenceIsEnabled());
-        final WALoader loader = WALoader.get();
+        final HDLoader loader = HDLoader.get();
         try {
             loader.loadClass("com.datasphere.runtime.monitor.MonitorBatchEvent");
         }

@@ -48,7 +48,7 @@ import com.datasphere.cache.CacheManager;
 import com.datasphere.cache.CachingProvider;
 import com.datasphere.cache.ICache;
 import com.datasphere.classloading.DSSClassLoader;
-import com.datasphere.classloading.WALoader;
+import com.datasphere.classloading.HDLoader;
 import com.datasphere.distribution.HQueue;
 import com.datasphere.event.QueryResultEvent;
 import com.datasphere.exception.SecurityException;
@@ -283,7 +283,7 @@ public class Tungsten
             catch (IOException ioe) {
                 Tungsten.logger.warn((Object)("Unable to load modules from modulepath : " + ioe.getMessage()), (Throwable)ioe);
             }
-            WALoader.get();
+            HDLoader.get();
             printf(".");
             printf(".");
             printf(".");
@@ -641,7 +641,7 @@ public class Tungsten
                             printf("Insufficient privileges for Operation");
                             continue;
                         }
-                        WALoader.get().listAllBundles();
+                        HDLoader.get().listAllBundles();
                         continue;
                     }
                     case "CID": {
@@ -649,7 +649,7 @@ public class Tungsten
                             printf("Insufficient privileges for Operation");
                             continue;
                         }
-                        WALoader.get().listClassAndId();
+                        HDLoader.get().listClassAndId();
                         continue;
                     }
                     case "MGET": {

@@ -21,12 +21,12 @@ public class CacheRecordConverter
     private final String namespaceName;
     private final String cacheName;
     private final Class typeClass;
-    private final WALoader classLoader;
+    private final HDLoader classLoader;
     private final String className;
     private String keyField;
     private String bundleURI;
     
-    public CacheRecordConverter(final WALoader classLoader, final String namespaceName, final String cacheName, final Class typeClass, final String keyField) {
+    public CacheRecordConverter(final HDLoader classLoader, final String namespaceName, final String cacheName, final Class typeClass, final String keyField) {
         this.bundleURI = null;
         if (classLoader == null || namespaceName == null || cacheName == null || typeClass == null) {
             throw new IllegalArgumentException("Missing parameter passed");

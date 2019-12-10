@@ -12,7 +12,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import com.datasphere.classloading.BundleDefinition;
-import com.datasphere.classloading.WALoader;
+import com.datasphere.classloading.HDLoader;
 import com.datasphere.event.QueryResultEvent;
 import com.datasphere.proc.events.DynamicEvent;
 import com.datasphere.runtime.Pair;
@@ -163,7 +163,7 @@ public class MatchGenerator extends Generator
     
     private List<byte[]> generateExecutionPlan() throws NotFoundException, CannotCompileException, IOException {
         final String ns = this.compiler.getContext().getCurNamespace().name;
-        final WALoader wal = WALoader.get();
+        final HDLoader wal = HDLoader.get();
         final String uri = wal.getBundleUri(ns, BundleDefinition.Type.query, this.cqName);
         try {
             wal.lockBundle(uri);
@@ -179,7 +179,7 @@ public class MatchGenerator extends Generator
         return Collections.singletonList(code);
     }
     
-    private byte[] genSubTaskClass(final WALoader wal, final String bundleUri, final Class<?> superClass) throws NotFoundException, CannotCompileException, IOException {
+    private byte[] genSubTaskClass(final HDLoader wal, final String bundleUri, final Class<?> superClass) throws NotFoundException, CannotCompileException, IOException {
         final List<String> methodsCode = this.genMethods(superClass);
         final ClassPool pool = wal.getBundlePool(bundleUri);
         final StringBuilder src = new StringBuilder();

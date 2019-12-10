@@ -15,7 +15,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.apache.log4j.Logger;
 
-import com.datasphere.classloading.WALoader;
+import com.datasphere.classloading.HDLoader;
 import com.datasphere.distribution.HQueue;
 import com.datasphere.event.Event;
 import com.datasphere.event.SimpleEvent;
@@ -115,7 +115,7 @@ public class CQTask extends FlowComponent implements PubSub, Compound
         this.consoleOutStatsAdded = 0;
         this.consoleOutStatsRemoved = 0;
         this.allSourcesReady = null;
-        final ClassLoader cl = WALoader.get();
+        final ClassLoader cl = HDLoader.get();
         assert cl != null;
         this.cqinfo = cqinfo;
         this.plan = cqinfo.plan;

@@ -17,7 +17,7 @@ import org.apache.commons.codec.binary.Base64;
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 
-import com.datasphere.classloading.WALoader;
+import com.datasphere.classloading.HDLoader;
 import com.datasphere.event.SimpleEvent;
 import com.datasphere.kafka.ConsumerIntf;
 import com.datasphere.kafka.KafkaConstants;
@@ -60,7 +60,7 @@ class KafkaPullerTask implements Runnable
     private boolean isAvro;
     private SpecificDatumReader avroReader;
     private MDRepository mdr;
-    private WALoader wal;
+    private HDLoader wal;
     private MetaInfo.Type streamDataTye;
     private Object streamDataTypeInstance;
     private Class streamDataTypeClass;
@@ -73,7 +73,7 @@ class KafkaPullerTask implements Runnable
         this.ex = null;
         this.isUserTriggered = false;
         this.mdr = MetadataRepository.getINSTANCE();
-        this.wal = WALoader.get();
+        this.wal = HDLoader.get();
         Thread.currentThread().setContextClassLoader(kafkaPuller.kafkaUtils.getClass().getClassLoader());
         this.kafkaPuller = kafkaPuller;
         this.rcvr = kafkaPuller.rcvr;

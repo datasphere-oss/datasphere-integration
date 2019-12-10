@@ -50,7 +50,7 @@ public class BundleLoader extends DistributedClassLoader
         synchronized (this.loadedClasses) {
             if (this.loadedClasses.containsKey(name)) {
                 if (NoLongerValid.class.equals(clazz)) {
-                    clazz = ((WALoader)this.getParent()).defineClass(name, loaderName, b, off, len);
+                    clazz = ((HDLoader)this.getParent()).defineClass(name, loaderName, b, off, len);
                 }
                 else {
                     clazz = this.loadedClasses.get(name);

@@ -49,7 +49,7 @@ import com.datasphere.anno.NotSet;
 import com.datasphere.appmanager.ApplicationStatusResponse;
 import com.datasphere.appmanager.ChangeApplicationStateResponse;
 import com.datasphere.appmanager.FlowUtil;
-import com.datasphere.classloading.WALoader;
+import com.datasphere.classloading.HDLoader;
 import com.datasphere.drop.DropMetaObject;
 import com.datasphere.event.SimpleEvent;
 import com.datasphere.exception.AlterException;
@@ -2222,7 +2222,7 @@ public class Compiler
     }
     
     public Object compileLoadOrUnloadJar(final LoadUnloadJarStmt stmt) {
-        final WALoader loader = WALoader.get();
+        final HDLoader loader = HDLoader.get();
         final String ns = this.ctx.getCurNamespace().name;
         final int i = stmt.pathToJar.lastIndexOf(47);
         String name;
@@ -2715,7 +2715,7 @@ public class Compiler
         final JarEntry jarEntry = new JarEntry(fqn + ".class");
         jarEntry.setTime(System.currentTimeMillis());
         target.putNextEntry(jarEntry);
-        final byte[] typeClassByteCode = WALoader.get().getClassBytes(typeName);
+        final byte[] typeClassByteCode = HDLoader.get().getClassBytes(typeName);
         target.write(typeClassByteCode, 0, typeClassByteCode.length);
         target.closeEntry();
     }

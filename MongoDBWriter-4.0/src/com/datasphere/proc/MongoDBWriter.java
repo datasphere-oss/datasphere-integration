@@ -80,7 +80,7 @@ public class MongoDBWriter extends BaseProcess {
 			this.dataType = ((Type) MetadataRepository.getINSTANCE().getMetaObjectByUUID(stream.dataType,
 					HDSecurityManager.TOKEN));
 
-			Class<?> typeClass = WALoader.get().loadClass(this.dataType.className);
+			Class<?> typeClass = HDLoader.get().loadClass(this.dataType.className);
 			if (typeClass.getSimpleName().equals("HDEvent")) {
 				this.isHDEvent = true;
 			}

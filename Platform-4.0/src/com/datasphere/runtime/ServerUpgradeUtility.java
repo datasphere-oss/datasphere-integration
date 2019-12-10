@@ -35,7 +35,7 @@ import com.datasphere.anno.NotSet;
 import com.datasphere.anno.PropertyTemplate;
 import com.datasphere.anno.PropertyTemplateProperty;
 import com.datasphere.classloading.DSSClassLoader;
-import com.datasphere.classloading.WALoader;
+import com.datasphere.classloading.HDLoader;
 import com.datasphere.event.ObjectMapperFactory;
 import com.datasphere.exception.ServerException;
 import com.datasphere.exception.Warning;
@@ -975,7 +975,7 @@ public class ServerUpgradeUtility
         catch (IOException ioe) {
             ServerUpgradeUtility.logger.warn((Object)("dss.modules.path is not set correctly, reason: " + ioe.getMessage()), (Throwable)ioe);
         }
-        WALoader.get();
+        HDLoader.get();
         if (ServerUpgradeUtility.action.equals(MODE.EXPORT)) {
             suu.exportMetaData();
             suu.exportCheckpoints();

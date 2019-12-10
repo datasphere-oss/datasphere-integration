@@ -41,7 +41,7 @@ import com.datasphere.anno.NotSet;
 import com.datasphere.anno.PropertyTemplate;
 import com.datasphere.appmanager.FlowUtil;
 import com.datasphere.classloading.BundleDefinition;
-import com.datasphere.classloading.WALoader;
+import com.datasphere.classloading.HDLoader;
 import com.datasphere.event.ObjectMapperFactory;
 import com.datasphere.exception.SecurityException;
 import com.datasphere.exceptionhandling.ExceptionType;
@@ -857,7 +857,7 @@ public class MetaInfo
             this.fields = ((fields == null) ? Collections.emptyMap() : preprocessFieldNames(fields));
             this.generated = generated;
             if (generated) {
-                this.classId = WALoader.get().getClassId(className);
+                this.classId = HDLoader.get().getClassId(className);
             }
         }
         
@@ -871,7 +871,7 @@ public class MetaInfo
         }
         
         public synchronized void generateClass() throws Exception {
-            final WALoader loader = WALoader.get();
+            final HDLoader loader = HDLoader.get();
             loader.setClassId(this.className, this.classId);
             if (this.generated) {
                 final AtomicBoolean isSuccesful = new AtomicBoolean(true);
@@ -914,7 +914,7 @@ public class MetaInfo
         
         public synchronized void removeClass() {
             if (this.generated) {
-                final WALoader loader = WALoader.get();
+                final HDLoader loader = HDLoader.get();
                 loader.lockClass(this.className);
                 try {
                     loader.removeTypeClass(this.nsName, this.className);
@@ -1665,7 +1665,7 @@ public class MetaInfo
         }
         
         public synchronized void removeClass() {
-            final WALoader wal = WALoader.get();
+            final HDLoader wal = HDLoader.get();
             final String uri = wal.getBundleUri(this.nsName, BundleDefinition.Type.query, this.getName());
             try {
                 wal.lockBundle(uri);
@@ -4176,7 +4176,7 @@ public class MetaInfo
         }
         
         public Class<?> getHDType() throws MetaDataRepositoryException {
-            final WALoader loader = WALoader.get();
+            final HDLoader loader = HDLoader.get();
             final Type contextBeanDef = (Type)MetadataRepository.getINSTANCE().getMetaObjectByUUID(this.contextType, HSecurityManager.TOKEN);
             final String fullTableName = this.nsName + "_" + this.name;
             final String hdClassName = "wa.HD_" + fullTableName;
@@ -4185,7 +4185,7 @@ public class MetaInfo
                 hdClass = loader.loadClass(hdClassName);
             }
             catch (ClassNotFoundException e2) {
-                final String wbundleUri = WALoader.get().getBundleUri(this.nsName, BundleDefinition.Type.hd, hdClassName);
+                final String wbundleUri = HDLoader.get().getBundleUri(this.nsName, BundleDefinition.Type.hd, hdClassName);
                 try {
                     loader.lockBundle(wbundleUri);
                     loader.addHDClass(hdClassName, contextBeanDef);
@@ -4318,20 +4318,20 @@ public class MetaInfo
         }
         
         public void generateClasses() throws Exception {
-            final WALoader waLoader = WALoader.get();
+            final HDLoader waLoader = HDLoader.get();
             final Type contextBeanDef = (Type)MetadataRepository.getINSTANCE().getMetaObjectByUUID(this.contextType, HSecurityManager.TOKEN);
             final String hdContextClassName = contextBeanDef.className + "_hdContext";
             final String fullTableName = this.nsName + "_" + this.name;
             final String hdClassName = "wa.HD_" + fullTableName;
             this.classId = waLoader.getClassId(hdContextClassName);
-            final String cbundleUri = WALoader.get().getBundleUri(this.nsName, BundleDefinition.Type.context, hdContextClassName);
-            WALoader.get().lockBundle(cbundleUri);
+            final String cbundleUri = HDLoader.get().getBundleUri(this.nsName, BundleDefinition.Type.context, hdContextClassName);
+            HDLoader.get().lockBundle(cbundleUri);
             try {
                 if (this.eventTypes == null || this.eventTypes.isEmpty()) {
-                    WALoader.get().addHDContextClassNoEventType(contextBeanDef);
+                    HDLoader.get().addHDContextClassNoEventType(contextBeanDef);
                 }
                 else {
-                    WALoader.get().addHDContextClass(contextBeanDef);
+                    HDLoader.get().addHDContextClass(contextBeanDef);
                 }
             }
             catch (IllegalArgumentException e) {
@@ -4343,12 +4343,12 @@ public class MetaInfo
                 MetaInfo.logger.error((Object)("Problem creating hd context class for " + this.getFullName()), (Throwable)e2);
             }
             finally {
-                WALoader.get().unlockBundle(cbundleUri);
+                HDLoader.get().unlockBundle(cbundleUri);
             }
-            final String wbundleUri = WALoader.get().getBundleUri(this.nsName, BundleDefinition.Type.hd, hdClassName);
-            WALoader.get().lockBundle(wbundleUri);
+            final String wbundleUri = HDLoader.get().getBundleUri(this.nsName, BundleDefinition.Type.hd, hdClassName);
+            HDLoader.get().lockBundle(wbundleUri);
             try {
-                WALoader.get().addHDClass(hdClassName, contextBeanDef);
+                HDLoader.get().addHDClass(hdClassName, contextBeanDef);
                 if (MetaInfo.logger.isDebugEnabled()) {
                     MetaInfo.logger.debug((Object)("Generated HD class for HD Store " + this.name + " of type " + contextBeanDef.getFullName()));
                 }
@@ -4362,9 +4362,9 @@ public class MetaInfo
                 MetaInfo.logger.error((Object)("Problem creating hd context class for " + this.getFullName()), (Throwable)e4);
             }
             finally {
-                WALoader.get().unlockBundle(wbundleUri);
+                HDLoader.get().unlockBundle(wbundleUri);
             }
-            final String bundleUri = WALoader.get().createIfNotExistsBundleDefinition(this.nsName, BundleDefinition.Type.fieldFactory, this.name);
+            final String bundleUri = HDLoader.get().createIfNotExistsBundleDefinition(this.nsName, BundleDefinition.Type.fieldFactory, this.name);
             for (final String fname : contextBeanDef.fields.keySet()) {
                 try {
                     this.genFieldFactory(bundleUri, contextBeanDef.className, fname, this.name + "_" + contextBeanDef.name, contextBeanDef.nsName);
@@ -4380,7 +4380,7 @@ public class MetaInfo
         }
         
         private void genFieldFactory(final String bundleUri, final String eventTypeClassName, final String fieldName, final String typeName, final String typeNamespaceName) throws IllegalArgumentException, NotFoundException, CannotCompileException, IOException {
-            final WALoader wal = WALoader.get();
+            final HDLoader wal = HDLoader.get();
             final ClassPool pool = wal.getBundlePool(bundleUri);
             final String className = "FieldFactory_" + fieldName + "_" + typeNamespaceName + "_" + typeName;
             final CtClass cc = pool.makeClass(className);
@@ -4407,9 +4407,9 @@ public class MetaInfo
             final String hdContextClassName = contextBeanDef.className + "_hdContext";
             final String fullTableName = this.nsName + "_" + this.name;
             final String hdClassName = "wa.HD_" + fullTableName;
-            WALoader.get().removeBundle(this.nsName, BundleDefinition.Type.fieldFactory, this.name);
-            WALoader.get().removeBundle(this.nsName, BundleDefinition.Type.context, hdContextClassName);
-            WALoader.get().removeBundle(this.nsName, BundleDefinition.Type.hd, hdClassName);
+            HDLoader.get().removeBundle(this.nsName, BundleDefinition.Type.fieldFactory, this.name);
+            HDLoader.get().removeBundle(this.nsName, BundleDefinition.Type.context, hdContextClassName);
+            HDLoader.get().removeBundle(this.nsName, BundleDefinition.Type.hd, hdClassName);
         }
         
         @Override

@@ -18,7 +18,7 @@ class XJavaFileObject extends SimpleJavaFileObject
     
     @Override
     public InputStream openInputStream() throws IOException {
-        final byte[] bytes = WALoader.get().getClassDefinition(this.name).getByteCode();
+        final byte[] bytes = HDLoader.get().getClassDefinition(this.name).getByteCode();
         return new ByteArrayInputStream(bytes);
     }
 }

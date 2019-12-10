@@ -366,7 +366,7 @@ public class KuduWriter extends BaseDataStoreWriter
                     final MetaInfo.Type dataType = (MetaInfo.Type)MetadataRepository.getINSTANCE().getMetaObjectByUUID(event.typeUUID, WASecurityManager.TOKEN);
                     keys = (List<String>)dataType.keyFields;
                     this.typeUUIDKeyCache.put(event.typeUUID, keys);
-                    final Class<?> typeClass = (Class<?>)WALoader.get().loadClass(dataType.className);
+                    final Class<?> typeClass = (Class<?>)HDLoader.get().loadClass(dataType.className);
                     fieldsOfThisTable = typeClass.getDeclaredFields();
                     this.typeUUIDCache.put(event.typeUUID, fieldsOfThisTable);
                 }
@@ -404,7 +404,7 @@ public class KuduWriter extends BaseDataStoreWriter
                     final MetaInfo.Type dataType = (MetaInfo.Type)MetadataRepository.getINSTANCE().getMetaObjectByUUID(event.typeUUID, WASecurityManager.TOKEN);
                     keys = (List<String>)dataType.keyFields;
                     this.typeUUIDKeyCache.put(event.typeUUID, keys);
-                    final Class<?> typeClass = (Class<?>)WALoader.get().loadClass(dataType.className);
+                    final Class<?> typeClass = (Class<?>)HDLoader.get().loadClass(dataType.className);
                     fieldsOfThisTable = typeClass.getDeclaredFields();
                     this.typeUUIDCache.put(event.typeUUID, fieldsOfThisTable);
                 }

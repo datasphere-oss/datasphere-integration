@@ -49,7 +49,7 @@ import com.datasphere.appmanager.AppManagerServerLocation;
 import com.datasphere.appmanager.EventQueueManager;
 import com.datasphere.appmanager.event.Event;
 import com.datasphere.classloading.DSSClassLoader;
-import com.datasphere.classloading.WALoader;
+import com.datasphere.classloading.HDLoader;
 import com.datasphere.discovery.UdpDiscoveryServer;
 import com.datasphere.distribution.HQueue;
 import com.datasphere.drop.DropMetaObject;
@@ -857,7 +857,7 @@ public class Server extends BaseServer implements ShowStreamExecutor, LiveObject
         final Integer maxId = md.getMaxClassId();
         assert maxId != null;
         if (maxId > -1) {
-            final WALoader waLoader = WALoader.get();
+            final HDLoader waLoader = HDLoader.get();
             waLoader.setMaxClassId(maxId);
         }
         final Set<MetaInfo.Namespace> namespaces = (Set<MetaInfo.Namespace>)md.getByEntityType(EntityType.NAMESPACE, this.sessionID);
@@ -2459,7 +2459,7 @@ public class Server extends BaseServer implements ShowStreamExecutor, LiveObject
             if (System.getProperty("com.datasphere.config.odbcenabled", "false").equalsIgnoreCase("true")) {
                 try {
                     System.loadLibrary("HDODBCJNI");
-                    Server.server.setClassLoader(WALoader.get());
+                    Server.server.setClassLoader(HDLoader.get());
                     Server.server.initSimbaServer(HazelcastSingleton.getBindingInterface());
                 }
                 catch (UnsatisfiedLinkError e2) {

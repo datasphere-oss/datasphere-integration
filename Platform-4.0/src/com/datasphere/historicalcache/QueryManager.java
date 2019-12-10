@@ -29,7 +29,7 @@ import org.joda.time.LocalTime;
 
 import com.datasphere.cache.CacheAccessor;
 import com.datasphere.cache.ICache;
-import com.datasphere.classloading.WALoader;
+import com.datasphere.classloading.HDLoader;
 import com.datasphere.common.errors.CacheError;
 import com.datasphere.common.errors.IError;
 import com.datasphere.common.exc.RecordException;
@@ -200,7 +200,7 @@ public class QueryManager
     public void close() throws DatallException {
         final MetaInfo.Cache cacheObject = (MetaInfo.Cache)this.cacheObj.getMetaInfo();
         final Class clazz = this.getModalName();
-        final WALoader loader = WALoader.get();
+        final HDLoader loader = HDLoader.get();
         Field field = null;
         final Field[] fields = this.getModalName().getFields();
         for (int i = 0; i < fields.length; ++i) {
@@ -456,7 +456,7 @@ public class QueryManager
         }
         final MetaInfo.Cache cacheObject = (MetaInfo.Cache)this.cacheObj.getMetaInfo();
         final Class clazz = this.getModalName();
-        final WALoader loader = WALoader.get();
+        final HDLoader loader = HDLoader.get();
         Field field = null;
         final Field[] fields = this.getModalName().getFields();
         for (int i = 0; i < fields.length; ++i) {

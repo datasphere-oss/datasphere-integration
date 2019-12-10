@@ -8,7 +8,7 @@ public class TestLoadClass
 {
     private static Logger logger;
     
-    public static void testLoadCreateClass(final WALoader bl) {
+    public static void testLoadCreateClass(final HDLoader bl) {
         try {
             System.out.println("Get javassist class com.x.test.ObjectFactory");
             final CtClass poolClass = bl.pool.get("com.x.test.ObjectFactory");
@@ -45,7 +45,7 @@ public class TestLoadClass
     }
     
     public static final void main(final String[] args) {
-        final WALoader bl = WALoader.get(true);
+        final HDLoader bl = HDLoader.get(true);
         testLoadCreateClass(bl);
         testLoadCreateClass(bl);
         testLoadCreateClass(bl);

@@ -143,7 +143,7 @@ public class ClickhouseWriter extends BaseProcess {
 				HDSecurityManager.TOKEN));
 		this.appName =  stream.getCurrentApp().getName();
 		this.totalReciveDataCount = 0;
-		Class<?> typeClass = WALoader.get().loadClass(this.dataType.className);
+		Class<?> typeClass = HDLoader.get().loadClass(this.dataType.className);
 		if (typeClass.getSimpleName().equals("HDEvent")) {
 			this.isHDEvent = true;
 		}

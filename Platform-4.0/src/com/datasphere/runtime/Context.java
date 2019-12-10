@@ -35,7 +35,7 @@ import org.joda.time.DateTimeZone;
 import com.datasphere.appmanager.AppManagerRequestClient;
 import com.datasphere.appmanager.ChangeApplicationStateResponse;
 import com.datasphere.appmanager.FlowUtil;
-import com.datasphere.classloading.WALoader;
+import com.datasphere.classloading.HDLoader;
 import com.datasphere.distribution.HQueue;
 import com.datasphere.drop.DropMetaObject;
 import com.datasphere.event.ObjectMapperFactory;
@@ -868,7 +868,7 @@ public class Context
     }
     
     public Class<?> loadClass(final String name) throws ClassNotFoundException {
-        final ClassLoader classLoader = WALoader.get();
+        final ClassLoader classLoader = HDLoader.get();
         return classLoader.loadClass(name);
     }
     
@@ -1028,7 +1028,7 @@ public class Context
                 DropMetaObject.DropType.drop(this, type, DropMetaObject.DropRule.NONE, this.sessionID);
             }
         }
-        final WALoader loader = WALoader.get();
+        final HDLoader loader = HDLoader.get();
         final String className = "wa." + name + "_1_0";
         if (loader.isExistingClass(className)) {
             if (type == null && loader.isGeneratedClass(className)) {

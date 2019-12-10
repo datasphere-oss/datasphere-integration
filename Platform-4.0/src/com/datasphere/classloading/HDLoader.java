@@ -20,55 +20,55 @@ import javassist.*;
 import com.datasphere.hd.*;
 import com.hazelcast.core.*;
 
-public class WALoader extends DistributedClassLoader
+public class HDLoader extends DistributedClassLoader
 {
     public static final String ALL_IDS = "#allIds";
     public static final String CLASS_IDS = "#classIds";
     static Logger logger;
-    private static volatile WALoader instance;
+    private static volatile HDLoader instance;
     private final Map<String, BundleLoader> bundleLoaders;
     private Map<String, Class<?>> primitiveLookup;
     final Object primitiveLookupLock;
     
-    public static WALoader get(final ClassLoader parent, final boolean isClient) {
-        if (WALoader.instance == null) {
-            synchronized (WALoader.class) {
-                if (WALoader.instance == null) {
-                    WALoader.instance = new WALoader((parent == null) ? DistributedClassLoader.class.getClassLoader() : parent, isClient);
+    public static HDLoader get(final ClassLoader parent, final boolean isClient) {
+        if (HDLoader.instance == null) {
+            synchronized (HDLoader.class) {
+                if (HDLoader.instance == null) {
+                    HDLoader.instance = new HDLoader((parent == null) ? DistributedClassLoader.class.getClassLoader() : parent, isClient);
                 }
             }
         }
-        return WALoader.instance;
+        return HDLoader.instance;
     }
     
     public static void shutdown() {
-        WALoader.instance = null;
+        HDLoader.instance = null;
     }
     
-    public static WALoader get(final ClassLoader parent) {
+    public static HDLoader get(final ClassLoader parent) {
         return get(parent, false);
     }
     
-    public static WALoader get(final boolean isClient) {
+    public static HDLoader get(final boolean isClient) {
         return get(DistributedClassLoader.class.getClassLoader(), isClient);
     }
     
-    public static WALoader get() {
+    public static HDLoader get() {
         return get(null, false);
     }
     
-    public static WALoaderDelegate getDelegate() {
-        return new WALoaderDelegate();
+    public static HDLoaderDelegate getDelegate() {
+        return new HDLoaderDelegate();
     }
     
-    private WALoader(final ClassLoader parent, final boolean isClient) {
+    private HDLoader(final ClassLoader parent, final boolean isClient) {
         super(parent, isClient);
         this.bundleLoaders = new HashMap<String, BundleLoader>();
         this.primitiveLookup = null;
         this.primitiveLookupLock = new Object();
         this.pool = new BridgePool(this);
         this.pool.childFirstLookup = true;
-        this.setName("WALoader");
+        this.setName("HDLoader");
     }
     
     public void init() {
@@ -128,8 +128,8 @@ public class WALoader extends DistributedClassLoader
     
     @Override
     protected Class<?> loadClass(String name, final boolean resolve) throws ClassNotFoundException {
-        if (WALoader.logger.isTraceEnabled()) {
-            WALoader.logger.trace((this.getName() + ": load class " + name));
+        if (HDLoader.logger.isTraceEnabled()) {
+            HDLoader.logger.trace((this.getName() + ": load class " + name));
         }
         boolean isArray = false;
         int arrayDimensions = 0;
@@ -182,26 +182,26 @@ public class WALoader extends DistributedClassLoader
     
     @Override
     public InputStream getResourceAsStream(final String name) {
-        if (WALoader.logger.isTraceEnabled()) {
-            WALoader.logger.trace((this.getName() + ": get resource " + name));
+        if (HDLoader.logger.isTraceEnabled()) {
+            HDLoader.logger.trace((this.getName() + ": get resource " + name));
         }
         String className = name.replaceAll("[/]", ".");
         if (className.endsWith(".class")) {
             className = className.substring(0, className.lastIndexOf(46));
         }
-        if (WALoader.logger.isTraceEnabled()) {
-            WALoader.logger.trace((this.getName() + ": get resource checking for class " + className));
+        if (HDLoader.logger.isTraceEnabled()) {
+            HDLoader.logger.trace((this.getName() + ": get resource checking for class " + className));
         }
         final byte[] bytecode = this.getClassBytes(className);
         if (bytecode != null) {
-            if (WALoader.logger.isTraceEnabled()) {
-                WALoader.logger.trace((this.getName() + ": get resource returning bytes for " + name));
+            if (HDLoader.logger.isTraceEnabled()) {
+                HDLoader.logger.trace((this.getName() + ": get resource returning bytes for " + name));
             }
             final ByteArrayInputStream bais = new ByteArrayInputStream(bytecode);
             return bais;
         }
-        if (WALoader.logger.isTraceEnabled()) {
-            WALoader.logger.trace((this.getName() + ": get resource delegating to parent for for " + name));
+        if (HDLoader.logger.isTraceEnabled()) {
+            HDLoader.logger.trace((this.getName() + ": get resource delegating to parent for for " + name));
         }
         return this.getParent().getResourceAsStream(name);
     }
@@ -234,33 +234,33 @@ public class WALoader extends DistributedClassLoader
     public boolean isExistingClass(final String name) {
         try {
             final Class<?> clazz = this.loadClass(name);
-            if (WALoader.logger.isTraceEnabled()) {
-                WALoader.logger.trace(("Loaded class " + clazz + " from name " + name + " using loader " + clazz.getClassLoader()));
+            if (HDLoader.logger.isTraceEnabled()) {
+                HDLoader.logger.trace(("Loaded class " + clazz + " from name " + name + " using loader " + clazz.getClassLoader()));
             }
             return true;
         }
         catch (ClassNotFoundException e) {
-            if (WALoader.logger.isTraceEnabled()) {
-                WALoader.logger.trace(("Could not load class " + name + " using loader " + this));
+            if (HDLoader.logger.isTraceEnabled()) {
+                HDLoader.logger.trace(("Could not load class " + name + " using loader " + this));
             }
             return false;
         }
     }
     
     public byte[] getClassBytes(final String name) {
-        if (WALoader.logger.isTraceEnabled()) {
-            WALoader.logger.trace((this.getName() + ": get class bytes " + name));
+        if (HDLoader.logger.isTraceEnabled()) {
+            HDLoader.logger.trace((this.getName() + ": get class bytes " + name));
         }
         final IMap<String, ClassDefinition> classes = DistributedClassLoader.getClasses();
         final ClassDefinition def = (ClassDefinition)classes.get(name);
         if (def != null) {
-            if (WALoader.logger.isTraceEnabled()) {
-                WALoader.logger.trace((this.getName() + ": get class bytes returning bytes for " + name));
+            if (HDLoader.logger.isTraceEnabled()) {
+                HDLoader.logger.trace((this.getName() + ": get class bytes returning bytes for " + name));
             }
             return def.getByteCode();
         }
-        if (WALoader.logger.isTraceEnabled()) {
-            WALoader.logger.trace((this.getName() + ": get class bytes not found for " + name));
+        if (HDLoader.logger.isTraceEnabled()) {
+            HDLoader.logger.trace((this.getName() + ": get class bytes not found for " + name));
         }
         return null;
     }
@@ -306,8 +306,8 @@ public class WALoader extends DistributedClassLoader
             return strings[classArray[(dis.readShort() & 0xFFFF) - 1] - 1].replace('/', '.');
         }
         catch (Exception e) {
-            if (WALoader.logger.isDebugEnabled()) {
-                WALoader.logger.debug(("Problem reading classname from: " + path));
+            if (HDLoader.logger.isDebugEnabled()) {
+                HDLoader.logger.debug(("Problem reading classname from: " + path));
             }
             return null;
         }
@@ -363,7 +363,7 @@ public class WALoader extends DistributedClassLoader
             idMap.put("#allIds", maxId);
         }
         else {
-            WALoader.logger.warn(("Unexpected warn statement while setting max class id, current max id: " + currentMaxId + ", max id: " + maxId));
+            HDLoader.logger.warn(("Unexpected warn statement while setting max class id, current max id: " + currentMaxId + ", max id: " + maxId));
         }
         idMap.unlock("#allIds");
     }
@@ -434,8 +434,8 @@ public class WALoader extends DistributedClassLoader
         }
         def = new BundleDefinition(type, appName, name);
         bundles.put(uri, def);
-        if (WALoader.logger.isTraceEnabled()) {
-            WALoader.logger.trace(("Bundle created: " + uri));
+        if (HDLoader.logger.isTraceEnabled()) {
+            HDLoader.logger.trace(("Bundle created: " + uri));
         }
         return def.getUri();
     }
@@ -456,8 +456,8 @@ public class WALoader extends DistributedClassLoader
         classes.put(className, classDef);
         classToBundleResolver.put(className, bundleUri);
         def.addClassName(className);
-        if (WALoader.logger.isTraceEnabled()) {
-            WALoader.logger.trace(("Bundle " + bundleUri + " class added: " + className));
+        if (HDLoader.logger.isTraceEnabled()) {
+            HDLoader.logger.trace(("Bundle " + bundleUri + " class added: " + className));
         }
         bundles.put(bundleUri, def);
     }
@@ -514,8 +514,8 @@ public class WALoader extends DistributedClassLoader
                     for (final String className : def.getClassNames()) {
                         classes.remove(className);
                         classToBundleResolver.remove(className);
-                        if (WALoader.logger.isTraceEnabled()) {
-                            WALoader.logger.trace(("Removed class " + className));
+                        if (HDLoader.logger.isTraceEnabled()) {
+                            HDLoader.logger.trace(("Removed class " + className));
                         }
                     }
                 }
@@ -769,8 +769,8 @@ public class WALoader extends DistributedClassLoader
             bclass.setSuperclass(sclass);
             bclass.setInterfaces(interfaceList);
             final String eventConstructorSource = "public " + bclass.getSimpleName() + "(long timestamp) {\n  super(timestamp);\n  fieldIsSet = new byte[" + (fields.size() / 7 + 1) + "];\n}\n";
-            if (WALoader.logger.isTraceEnabled()) {
-                WALoader.logger.trace(("Event constructor is " + eventConstructorSource));
+            if (HDLoader.logger.isTraceEnabled()) {
+                HDLoader.logger.trace(("Event constructor is " + eventConstructorSource));
             }
             final CtConstructor eventConstructor = CtNewConstructor.make(eventConstructorSource, bclass);
             bclass.addConstructor(eventConstructor);
@@ -809,34 +809,34 @@ public class WALoader extends DistributedClassLoader
             kserWriteMethod += "}\n";
             kserReadMethod += "}\n";
             setFromContextMapMethod += "  return true;\n}\n";
-            if (WALoader.logger.isTraceEnabled()) {
-                WALoader.logger.trace(("getPayloadMethod: " + getPayloadMethod));
+            if (HDLoader.logger.isTraceEnabled()) {
+                HDLoader.logger.trace(("getPayloadMethod: " + getPayloadMethod));
             }
             final CtMethod m = CtMethod.make(getPayloadMethod, bclass);
             bclass.addMethod(m);
-            if (WALoader.logger.isTraceEnabled()) {
-                WALoader.logger.trace(setPayloadMethod);
+            if (HDLoader.logger.isTraceEnabled()) {
+                HDLoader.logger.trace(setPayloadMethod);
             }
             final CtMethod m2 = CtMethod.make(setPayloadMethod, bclass);
             bclass.addMethod(m2);
-            if (WALoader.logger.isTraceEnabled()) {
-                WALoader.logger.trace(kserWriteMethod);
+            if (HDLoader.logger.isTraceEnabled()) {
+                HDLoader.logger.trace(kserWriteMethod);
             }
             final CtMethod m3 = CtMethod.make(kserWriteMethod, bclass);
             bclass.addMethod(m3);
-            if (WALoader.logger.isTraceEnabled()) {
-                WALoader.logger.trace(kserReadMethod);
+            if (HDLoader.logger.isTraceEnabled()) {
+                HDLoader.logger.trace(kserReadMethod);
             }
             final CtMethod m4 = CtMethod.make(kserReadMethod, bclass);
             bclass.addMethod(m4);
-            if (WALoader.logger.isTraceEnabled()) {
-                WALoader.logger.trace(setFromContextMapMethod);
+            if (HDLoader.logger.isTraceEnabled()) {
+                HDLoader.logger.trace(setFromContextMapMethod);
             }
             final CtMethod m5 = CtMethod.make(setFromContextMapMethod, bclass);
             bclass.addMethod(m5);
             final String setFromHDMethod = this.makeSetFromHDMethod(fields, pool);
-            if (WALoader.logger.isTraceEnabled()) {
-                WALoader.logger.trace(setFromHDMethod);
+            if (HDLoader.logger.isTraceEnabled()) {
+                HDLoader.logger.trace(setFromHDMethod);
             }
             final CtMethod m6 = CtMethod.make(setFromHDMethod, bclass);
             bclass.addMethod(m6);
@@ -851,8 +851,8 @@ public class WALoader extends DistributedClassLoader
             final String toStringsource = "public String toString() {  return toJSON();}";
             final CtMethod toString = CtMethod.make(toStringsource, bclass);
             bclass.addMethod(toString);
-            if (WALoader.logger.isDebugEnabled()) {
-                WALoader.logger.debug(("bean class generated. name = " + bclass.getName() + ", toString = " + bclass));
+            if (HDLoader.logger.isDebugEnabled()) {
+                HDLoader.logger.debug(("bean class generated. name = " + bclass.getName() + ", toString = " + bclass));
             }
             final byte[] bytecode = bclass.toBytecode();
             final String report = CompilerUtils.verifyBytecode(bytecode, this);
@@ -860,13 +860,13 @@ public class WALoader extends DistributedClassLoader
                 throw new Error("Internal error: invalid bytecode\n" + report);
             }
             this.addBundleClass(bundleUri, className, bytecode, true);
-            if (WALoader.logger.isDebugEnabled()) {
-                WALoader.logger.debug(("Added to bundle className :" + className));
+            if (HDLoader.logger.isDebugEnabled()) {
+                HDLoader.logger.debug(("Added to bundle className :" + className));
             }
         }
         catch (Exception e) {
-            if (WALoader.logger.isDebugEnabled()) {
-                WALoader.logger.debug(("Problem creating class for type " + className), (Throwable)e);
+            if (HDLoader.logger.isDebugEnabled()) {
+                HDLoader.logger.debug(("Problem creating class for type " + className), (Throwable)e);
             }
             throw new Exception("Could not instantiate class for type " + className + ": " + e, e);
         }
@@ -877,8 +877,8 @@ public class WALoader extends DistributedClassLoader
         if (metaInfo == null) {
             throw new ClassNotFoundException("metaInfo is null");
         }
-        if (WALoader.logger.isTraceEnabled()) {
-            WALoader.logger.trace(("trying to create a run time HD sub class : " + metaInfo.className));
+        if (HDLoader.logger.isTraceEnabled()) {
+            HDLoader.logger.trace(("trying to create a run time HD sub class : " + metaInfo.className));
         }
         final String appName = metaInfo.nsName;
         String bundleUri = this.getBundleUri(appName, BundleDefinition.Type.hd, className);
@@ -896,7 +896,7 @@ public class WALoader extends DistributedClassLoader
         final int noOfFields = metaInfo.fields.size();
         final CtClass[] fclasses = new CtClass[noOfFields];
         String setContextSrc = "public void setContext(java.util.Map ctx) {\n";
-        if (WALoader.logger.isTraceEnabled()) {
+        if (HDLoader.logger.isTraceEnabled()) {
             setContextSrc += "\tSystem.out.println(\"setcontext of runtime is called.\" + ctx.toString() );\n";
         }
         setContextSrc += "\tObject val = null;\n";
@@ -909,20 +909,20 @@ public class WALoader extends DistributedClassLoader
             final CtField bfield = new CtField(fclasses[i], fieldName, bclass);
             bfield.setModifiers(1);
             bclass.addField(bfield);
-            if (WALoader.logger.isTraceEnabled()) {
-                WALoader.logger.trace(("field name : " + fieldName + ", field.type : " + fieldType));
+            if (HDLoader.logger.isTraceEnabled()) {
+                HDLoader.logger.trace(("field name : " + fieldName + ", field.type : " + fieldType));
             }
             bclass.addMethod(CtNewMethod.getter("get" + fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1), bfield));
             String setterMethodSrc = "public void set" + fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1) + "(" + fieldType + " " + fieldName + ") {\n";
             setterMethodSrc = setterMethodSrc + "\tthis." + fieldName + " = " + fieldName + ";\n";
             setterMethodSrc = setterMethodSrc + "\tObject val = getWrappedValue(" + fieldName + ");\n";
             setterMethodSrc = setterMethodSrc + "\tcontext.map.put(\"" + fieldName + "\", val);\n";
-            if (WALoader.logger.isTraceEnabled()) {
+            if (HDLoader.logger.isTraceEnabled()) {
                 setterMethodSrc = setterMethodSrc + "\tSystem.out.println(\"added field '" + fieldName + "' with value = \" + val  );\n";
             }
             setterMethodSrc += "}\n";
-            if (WALoader.logger.isDebugEnabled()) {
-                WALoader.logger.debug(("setterMethodSrc for field : " + fieldName + " \n" + setterMethodSrc));
+            if (HDLoader.logger.isDebugEnabled()) {
+                HDLoader.logger.debug(("setterMethodSrc for field : " + fieldName + " \n" + setterMethodSrc));
             }
             final CtMethod m = CtMethod.make(setterMethodSrc, bclass);
             bclass.addMethod(m);
@@ -949,8 +949,8 @@ public class WALoader extends DistributedClassLoader
         setContextSrc += "}";
         final CtMethod setCntxMeth = CtMethod.make(setContextSrc, bclass);
         bclass.addMethod(setCntxMeth);
-        if (WALoader.logger.isDebugEnabled()) {
-            WALoader.logger.debug(("bean class generated. name = " + bclass.getName() + ", toString = " + bclass));
+        if (HDLoader.logger.isDebugEnabled()) {
+            HDLoader.logger.debug(("bean class generated. name = " + bclass.getName() + ", toString = " + bclass));
         }
         final byte[] bytecode = bclass.toBytecode();
         final String report = CompilerUtils.verifyBytecode(bytecode, this);
@@ -965,8 +965,8 @@ public class WALoader extends DistributedClassLoader
         if (metaInfo == null) {
             throw new ClassNotFoundException("metaInfo is null");
         }
-        if (WALoader.logger.isTraceEnabled()) {
-            WALoader.logger.trace(("inside instantiateHDContextClass : " + metaInfo.className));
+        if (HDLoader.logger.isTraceEnabled()) {
+            HDLoader.logger.trace(("inside instantiateHDContextClass : " + metaInfo.className));
         }
         final String className = metaInfo.className + "_hdContext";
         final String appName = metaInfo.nsName;
@@ -995,8 +995,8 @@ public class WALoader extends DistributedClassLoader
             final CtField bfield = new CtField(fclasses[i], fieldName, bclass);
             bfield.setModifiers(1);
             bclass.addField(bfield);
-            if (WALoader.logger.isTraceEnabled()) {
-                WALoader.logger.trace(("field name : " + fieldName + ", field.type : " + fieldType));
+            if (HDLoader.logger.isTraceEnabled()) {
+                HDLoader.logger.trace(("field name : " + fieldName + ", field.type : " + fieldType));
             }
             bclass.addMethod(CtNewMethod.getter("get" + fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1), bfield));
             String setterMethodSrc = "public void set" + fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1) + "(" + fieldType + " " + fieldName + ") {\n";
@@ -1004,8 +1004,8 @@ public class WALoader extends DistributedClassLoader
             setterMethodSrc = setterMethodSrc + "\tObject val = getWrappedValue(" + fieldName + ");\n";
             setterMethodSrc = setterMethodSrc + "\tmap.put(\"" + fieldName + "\", val);\n";
             setterMethodSrc += "}\n";
-            if (WALoader.logger.isTraceEnabled()) {
-                WALoader.logger.trace(("setterMethodSrc for field : " + fieldName + " \n" + setterMethodSrc));
+            if (HDLoader.logger.isTraceEnabled()) {
+                HDLoader.logger.trace(("setterMethodSrc for field : " + fieldName + " \n" + setterMethodSrc));
             }
             final CtMethod m = CtMethod.make(setterMethodSrc, bclass);
             bclass.addMethod(m);
@@ -1035,13 +1035,13 @@ public class WALoader extends DistributedClassLoader
         bclass.addMethod(j);
         putMethodSrc += "\treturn null;\n";
         putMethodSrc += "}\n";
-        if (WALoader.logger.isTraceEnabled()) {
-            WALoader.logger.trace(("putMethodSrc : \n" + putMethodSrc));
+        if (HDLoader.logger.isTraceEnabled()) {
+            HDLoader.logger.trace(("putMethodSrc : \n" + putMethodSrc));
         }
         final CtMethod putm = CtMethod.make(putMethodSrc, bclass);
         bclass.addMethod(putm);
-        if (WALoader.logger.isTraceEnabled()) {
-            WALoader.logger.trace(("bean class generated. name = " + bclass.getName() + ", toString = " + bclass));
+        if (HDLoader.logger.isTraceEnabled()) {
+            HDLoader.logger.trace(("bean class generated. name = " + bclass.getName() + ", toString = " + bclass));
         }
         final byte[] bytecode = bclass.toBytecode();
         this.addBundleClass(bundleUri, className, bytecode, true);
@@ -1052,8 +1052,8 @@ public class WALoader extends DistributedClassLoader
         if (metaInfo == null) {
             throw new ClassNotFoundException("metaInfo is null");
         }
-        if (WALoader.logger.isTraceEnabled()) {
-            WALoader.logger.trace(("inside instantiateHDContextClass : " + metaInfo.className));
+        if (HDLoader.logger.isTraceEnabled()) {
+            HDLoader.logger.trace(("inside instantiateHDContextClass : " + metaInfo.className));
         }
         final String className = metaInfo.className + "_hdContext";
         final String appName = metaInfo.nsName;
@@ -1082,8 +1082,8 @@ public class WALoader extends DistributedClassLoader
             final CtField bfield = new CtField(fclasses[i], fieldName, bclass);
             bfield.setModifiers(1);
             bclass.addField(bfield);
-            if (WALoader.logger.isTraceEnabled()) {
-                WALoader.logger.trace(("field name : " + fieldName + ", field.type : " + fieldType));
+            if (HDLoader.logger.isTraceEnabled()) {
+                HDLoader.logger.trace(("field name : " + fieldName + ", field.type : " + fieldType));
             }
             bclass.addMethod(CtNewMethod.getter("get" + fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1), bfield));
             String setterMethodSrc = "public void set" + fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1) + "(" + fieldType + " " + fieldName + ") {\n";
@@ -1091,8 +1091,8 @@ public class WALoader extends DistributedClassLoader
             setterMethodSrc = setterMethodSrc + "\tObject val = getWrappedValue(" + fieldName + ");\n";
             setterMethodSrc = setterMethodSrc + "\tmap.put(\"" + fieldName + "\", val);\n";
             setterMethodSrc += "}\n";
-            if (WALoader.logger.isTraceEnabled()) {
-                WALoader.logger.trace(("setterMethodSrc for field : " + fieldName + " \n" + setterMethodSrc));
+            if (HDLoader.logger.isTraceEnabled()) {
+                HDLoader.logger.trace(("setterMethodSrc for field : " + fieldName + " \n" + setterMethodSrc));
             }
             final CtMethod m = CtMethod.make(setterMethodSrc, bclass);
             bclass.addMethod(m);
@@ -1104,13 +1104,13 @@ public class WALoader extends DistributedClassLoader
         }
         putMethodSrc += "\treturn null;\n";
         putMethodSrc += "}\n";
-        if (WALoader.logger.isTraceEnabled()) {
-            WALoader.logger.trace(("putMethodSrc : \n" + putMethodSrc));
+        if (HDLoader.logger.isTraceEnabled()) {
+            HDLoader.logger.trace(("putMethodSrc : \n" + putMethodSrc));
         }
         final CtMethod putm = CtMethod.make(putMethodSrc, bclass);
         bclass.addMethod(putm);
-        if (WALoader.logger.isTraceEnabled()) {
-            WALoader.logger.trace(("bean class generated. name = " + bclass.getName() + ", toString = " + bclass));
+        if (HDLoader.logger.isTraceEnabled()) {
+            HDLoader.logger.trace(("bean class generated. name = " + bclass.getName() + ", toString = " + bclass));
         }
         final byte[] bytecode = bclass.toBytecode();
         this.addBundleClass(bundleUri, className, bytecode, true);
@@ -1171,30 +1171,30 @@ public class WALoader extends DistributedClassLoader
     }
     
     static {
-        WALoader.logger = Logger.getLogger((Class)WALoader.class);
+        HDLoader.logger = Logger.getLogger((Class)HDLoader.class);
     }
     
-    protected static class WALoaderDelegate extends ClassLoader
+    protected static class HDLoaderDelegate extends ClassLoader
     {
         @Override
         protected Class<?> loadClass(final String name, final boolean resolve) throws ClassNotFoundException {
-            return WALoader.instance.loadClass(name, resolve);
+            return HDLoader.instance.loadClass(name, resolve);
         }
         
         @Override
         public Class<?> loadClass(final String name) throws ClassNotFoundException {
-            if (WALoader.logger.isTraceEnabled()) {
-                WALoader.logger.trace(("loading class " + name));
+            if (HDLoader.logger.isTraceEnabled()) {
+                HDLoader.logger.trace(("loading class " + name));
             }
-            return WALoader.instance.loadClass(name, false);
+            return HDLoader.instance.loadClass(name, false);
         }
         
         @Override
         public InputStream getResourceAsStream(final String name) {
-            if (WALoader.logger.isTraceEnabled()) {
-                WALoader.logger.trace(("getting resource " + name + " as stream."));
+            if (HDLoader.logger.isTraceEnabled()) {
+                HDLoader.logger.trace(("getting resource " + name + " as stream."));
             }
-            return WALoader.instance.getResourceAsStream(name);
+            return HDLoader.instance.getResourceAsStream(name);
         }
     }
     
@@ -1206,20 +1206,20 @@ public class WALoader extends DistributedClassLoader
         public void entryRemoved(final EntryEvent<String, BundleDefinition> event) {
             final String uri = (String)event.getKey();
             final BundleDefinition def = (BundleDefinition)event.getOldValue();
-            synchronized (WALoader.this.bundleLoaders) {
+            synchronized (HDLoader.this.bundleLoaders) {
                 for (final String className : def.getClassNames()) {
-                    ((BridgePool)WALoader.this.pool).removeCachedClass(className);
-                    if (WALoader.logger.isTraceEnabled()) {
-                        WALoader.logger.trace(("Removed class " + className));
+                    ((BridgePool)HDLoader.this.pool).removeCachedClass(className);
+                    if (HDLoader.logger.isTraceEnabled()) {
+                        HDLoader.logger.trace(("Removed class " + className));
                     }
                 }
-                final BundleLoader loader = WALoader.this.bundleLoaders.get(uri);
+                final BundleLoader loader = HDLoader.this.bundleLoaders.get(uri);
                 if (loader != null) {
                     loader.removeClasses();
-                    WALoader.this.bundleLoaders.remove(uri);
+                    HDLoader.this.bundleLoaders.remove(uri);
                 }
-                if (WALoader.logger.isTraceEnabled()) {
-                    WALoader.logger.trace(("Removed bundle " + (String)event.getKey()));
+                if (HDLoader.logger.isTraceEnabled()) {
+                    HDLoader.logger.trace(("Removed bundle " + (String)event.getKey()));
                 }
             }
         }
@@ -1239,26 +1239,26 @@ public class WALoader extends DistributedClassLoader
     
     class BridgePool extends ClassPool
     {
-        WALoader peerLoader;
+        HDLoader peerLoader;
         
-        public BridgePool(final WALoader bLoader) {
+        public BridgePool(final HDLoader bLoader) {
             super(true);
             this.peerLoader = bLoader;
         }
         
         public CtClass get(final String name) throws NotFoundException {
-            if (WALoader.logger.isTraceEnabled()) {
-                WALoader.logger.trace((this.peerLoader.getName() + " get CtClass " + name));
+            if (HDLoader.logger.isTraceEnabled()) {
+                HDLoader.logger.trace((this.peerLoader.getName() + " get CtClass " + name));
             }
             final BundleLoader bl = this.peerLoader.getBundleLoaderForClass(name);
             if (bl != null) {
-                if (WALoader.logger.isTraceEnabled()) {
-                    WALoader.logger.trace((this.peerLoader.getName() + " using BundleLoader " + bl.getName() + " for " + name));
+                if (HDLoader.logger.isTraceEnabled()) {
+                    HDLoader.logger.trace((this.peerLoader.getName() + " using BundleLoader " + bl.getName() + " for " + name));
                 }
                 return bl.getPool().get(name);
             }
-            if (WALoader.logger.isTraceEnabled()) {
-                WALoader.logger.trace((this.peerLoader.getName() + " using default pool for " + name));
+            if (HDLoader.logger.isTraceEnabled()) {
+                HDLoader.logger.trace((this.peerLoader.getName() + " using default pool for " + name));
             }
             return super.get(name);
         }

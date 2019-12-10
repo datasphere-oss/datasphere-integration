@@ -22,7 +22,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 
-import com.datasphere.classloading.WALoader;
+import com.datasphere.classloading.HDLoader;
 import com.datasphere.discovery.UdpDiscoveryClient;
 import com.datasphere.event.SimpleEvent;
 import com.hazelcast.azure.AzureProperties;
@@ -282,7 +282,7 @@ public class HazelcastSingleton
         return HazelcastSingleton.InterfaceToBind;
     }
     
-    private static void setInstance(final HazelcastInstance newInstance, final WALoader loader) {
+    private static void setInstance(final HazelcastInstance newInstance, final HDLoader loader) {
         synchronized (HazelcastSingleton.class) {
             HazelcastSingleton.instance = newInstance;
             HazelcastSingleton.activeClusterMembers = createActiveMembersMap(newInstance.getCluster());
@@ -328,7 +328,7 @@ public class HazelcastSingleton
             jn.getAwsConfig().setEnabled(false);
             jn.getTcpIpConfig().setEnabled(false);
         }
-        final WALoader loader = WALoader.get(false);
+        final HDLoader loader = HDLoader.get(false);
         cfg.setClassLoader((ClassLoader)loader);
         cfg.setProperty("hazelcast.shutdownhook.enabled", "false");
         cfg.setProperty("hazelcast.wait.seconds.before.join", "1");
@@ -362,7 +362,7 @@ public class HazelcastSingleton
     }
     
     public static HazelcastInstance initIfPopulated(final String clusterName, final String passedInterfaces) {
-        final WALoader loader = WALoader.get(false);
+        final HDLoader loader = HDLoader.get(false);
         final HazelcastInstance instanceCandidate = createHazelcastInstance(clusterName, passedInterfaces, loader);
         final Set<Member> members = (Set<Member>)instanceCandidate.getCluster().getMembers();
         for (final Member member : members) {
@@ -374,7 +374,7 @@ public class HazelcastSingleton
         return null;
     }
     
-    private static HazelcastInstance createHazelcastInstance(final String clusterName, final String passedInterfaces, final WALoader loader) {
+    private static HazelcastInstance createHazelcastInstance(final String clusterName, final String passedInterfaces, final HDLoader loader) {
         if (HazelcastSingleton.logger.isInfoEnabled()) {
             HazelcastSingleton.logger.info((Object)"re-creating new hazelcast instance");
         }

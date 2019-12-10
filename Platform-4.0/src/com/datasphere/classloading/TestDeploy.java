@@ -7,7 +7,7 @@ public class TestDeploy
 {
     private static Logger logger;
     
-    public static void outputBundles(final WALoader bl) {
+    public static void outputBundles(final HDLoader bl) {
         for (final String bundleName : DistributedClassLoader.getBundles().keySet()) {
             if (TestDeploy.logger.isDebugEnabled()) {
                 TestDeploy.logger.debug((Object)("Bundle: " + bundleName));
@@ -25,7 +25,7 @@ public class TestDeploy
         }
     }
     
-    public static void testDeploy(final WALoader bl, final String path, final String name) {
+    public static void testDeploy(final HDLoader bl, final String path, final String name) {
         try {
             bl.addJar("Global", path, name);
         }
@@ -35,7 +35,7 @@ public class TestDeploy
         outputBundles(bl);
     }
     
-    public static void testUndeploy(final WALoader bl, final String name) {
+    public static void testUndeploy(final HDLoader bl, final String name) {
         try {
             bl.removeJar("Global", name);
         }
@@ -45,7 +45,7 @@ public class TestDeploy
         outputBundles(bl);
     }
     
-    public static void testAddType(final WALoader bl) {
+    public static void testAddType(final HDLoader bl) {
         final Map<String, String> fields = new LinkedHashMap<String, String>();
         fields.put("merchantId", "java.lang.String");
         fields.put("count", "int");
@@ -60,7 +60,7 @@ public class TestDeploy
         outputBundles(bl);
     }
     
-    public static void testAddType2(final WALoader bl) {
+    public static void testAddType2(final HDLoader bl) {
         final Map<String, String> fields = new LinkedHashMap<String, String>();
         fields.put("event", "com.datasphere.event.Event");
         fields.put("myClass", "myapp.MyClass");
@@ -73,7 +73,7 @@ public class TestDeploy
         outputBundles(bl);
     }
     
-    public static void testRemoveType(final WALoader bl) {
+    public static void testRemoveType(final HDLoader bl) {
         try {
             bl.removeTypeClass("MyApp", "myapp.MyClass");
         }
@@ -84,7 +84,7 @@ public class TestDeploy
     }
     
     public static final void main(final String[] args) {
-        final WALoader bl = WALoader.get(true);
+        final HDLoader bl = HDLoader.get(true);
         testDeploy(bl, "/Users/steve/Code/HD/LoadTestSample1/loadTestSample1.jar", "loadTestSample");
         testAddType(bl);
         testAddType2(bl);

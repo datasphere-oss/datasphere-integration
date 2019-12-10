@@ -4,7 +4,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
 
-import com.datasphere.classloading.WALoader;
+import com.datasphere.classloading.HDLoader;
 import com.datasphere.metaRepository.MetaDataRepositoryException;
 import com.datasphere.runtime.BuiltInFunc;
 import com.datasphere.runtime.Context;
@@ -54,7 +54,7 @@ public class DataSourceStreamFunction extends DataSourcePrimary
             int i = 1;
             final Object[] params = new Object[this.args.size() + 1];
             final Class<?>[] ptypes = (Class<?>[])new Class[this.args.size() + 1];
-            params[0] = WALoader.get();
+            params[0] = HDLoader.get();
             ptypes[0] = ClassLoader.class;
             for (final ValueExpr expr : this.args) {
                 if (!(expr instanceof Constant)) {

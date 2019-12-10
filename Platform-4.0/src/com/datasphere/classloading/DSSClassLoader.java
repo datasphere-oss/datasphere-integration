@@ -10,7 +10,7 @@ public class DSSClassLoader extends URLClassLoader
 {
     private static final boolean DEBUG = false;
     private Map<String, ModuleClassLoader> moduleClassLoaderMap;
-    private WALoader dynamicClassLoader;
+    private HDLoader dynamicClassLoader;
     
     public DSSClassLoader(final ClassLoader parent) {
         super(((URLClassLoader)parent).getURLs(), parent);
@@ -40,7 +40,7 @@ public class DSSClassLoader extends URLClassLoader
                 this.addModulesFromDir(tokenizer.nextToken());
             }
         }
-        this.dynamicClassLoader = WALoader.get();
+        this.dynamicClassLoader = HDLoader.get();
     }
     
     @Override

@@ -272,7 +272,7 @@ public class KryoSingleton
             (this.kryo = new ThreadSafeKryo((ClassResolver)resolver, null)).setReferences(false);
             this.kryo.setRegistrationRequired(false);
             this.kryo.setInstantiatorStrategy((InstantiatorStrategy)new StdInstantiatorStrategy());
-            this.kryo.setClassLoader((ClassLoader)WALoader.get());
+            this.kryo.setClassLoader((ClassLoader)HDLoader.get());
             this.output = new Output(8192, -1);
             this.input = new Input();
         }

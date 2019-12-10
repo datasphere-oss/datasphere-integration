@@ -69,7 +69,7 @@ public class Sorter extends FlowComponent implements PubSub, Restartable, Compou
             c.output.close();
         }
         for (final Pair<String, String> stream : this.streamInfos) {
-            final WALoader wal = WALoader.get();
+            final HDLoader wal = HDLoader.get();
             wal.removeBundle(stream.first, BundleDefinition.Type.keyFactory, stream.second);
         }
     }

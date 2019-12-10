@@ -28,7 +28,7 @@ import org.json.JSONObject;
 
 import com.datasphere.anno.AdapterType;
 import com.datasphere.anno.PropertyTemplate;
-import com.datasphere.classloading.WALoader;
+import com.datasphere.classloading.HDLoader;
 import com.datasphere.common.exc.AdapterException;
 import com.datasphere.event.Event;
 import com.datasphere.metaRepository.HazelcastSingleton;
@@ -107,7 +107,7 @@ public class HiveWriter extends BaseProcess{
 				e.printStackTrace();
 			}
 			
-			Class<?> typeClass = WALoader.get().loadClass(this.dataType.className);
+			Class<?> typeClass = HDLoader.get().loadClass(this.dataType.className);
 			if (typeClass.getSimpleName().equals("HDEvent")) {
 				this.isHDEvent = true;
 			}

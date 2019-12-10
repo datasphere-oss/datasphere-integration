@@ -23,7 +23,7 @@ class XJavaFileManager extends ForwardingJavaFileManager<JavaFileManager>
     
     @Override
     public ClassLoader getClassLoader(final JavaFileManager.Location location) {
-        return WALoader.get();
+        return HDLoader.get();
     }
     
     @Override

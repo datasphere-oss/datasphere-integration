@@ -7,7 +7,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 
 import com.datasphere.classloading.BundleDefinition;
-import com.datasphere.classloading.WALoader;
+import com.datasphere.classloading.HDLoader;
 import com.datasphere.metaRepository.MetadataRepository;
 import com.datasphere.runtime.meta.MetaInfo;
 import com.datasphere.runtime.utils.FieldToObject;
@@ -26,7 +26,7 @@ public abstract class KeyFactory
     
     public abstract RecordKey makeKey(final Object p0);
     
-    public static KeyFactory genKeyFactory(final String bundleUri, final WALoader wal, final String eventTypeClassName, final List<String> fieldNames) throws Exception {
+    public static KeyFactory genKeyFactory(final String bundleUri, final HDLoader wal, final String eventTypeClassName, final List<String> fieldNames) throws Exception {
         final Class<?> eventType = wal.loadClass(eventTypeClassName);
         final ClassPool pool = wal.getBundlePool(bundleUri);
         final String className = "KeyFactory" + System.nanoTime();
@@ -68,7 +68,7 @@ public abstract class KeyFactory
     
     public static KeyFactory createKeyFactory(final MetaInfo.MetaObject obj, final List<String> fields, final UUID dataType, final BaseServer srv) throws Exception {
         if (!fields.isEmpty()) {
-            final WALoader wal = WALoader.get();
+            final HDLoader wal = HDLoader.get();
             final String bundleUri = wal.createIfNotExistsBundleDefinition(obj.nsName, BundleDefinition.Type.keyFactory, obj.name);
             final MetaInfo.Type t = srv.getTypeInfo(dataType);
             return genKeyFactory(bundleUri, wal, t.className, fields);
@@ -78,7 +78,7 @@ public abstract class KeyFactory
     
     public static KeyFactory createKeyFactory(final String nsName, final String name, final List<String> fields, final UUID dataType, final BaseServer srv) throws Exception {
         if (!fields.isEmpty()) {
-            final WALoader wal = WALoader.get();
+            final HDLoader wal = HDLoader.get();
             final String bundleUri = wal.createIfNotExistsBundleDefinition(nsName, BundleDefinition.Type.keyFactory, name);
             final MetaInfo.Type t = srv.getTypeInfo(dataType);
             return genKeyFactory(bundleUri, wal, t.className, fields);
@@ -88,7 +88,7 @@ public abstract class KeyFactory
     
     public static KeyFactory createKeyFactory(final MetaInfo.MetaObject obj, final List<String> fields, final UUID dataType) throws Exception {
         if (!fields.isEmpty()) {
-            final WALoader wal = WALoader.get();
+            final HDLoader wal = HDLoader.get();
             final String bundleUri = wal.createIfNotExistsBundleDefinition(obj.nsName, BundleDefinition.Type.keyFactory, obj.name);
             final MetaInfo.Type t = (MetaInfo.Type)MetadataRepository.getINSTANCE().getMetaObjectByUUID(dataType, HSecurityManager.TOKEN);
             return genKeyFactory(bundleUri, wal, t.className, fields);
@@ -98,7 +98,7 @@ public abstract class KeyFactory
     
     public static void removeKeyFactory(final MetaInfo.MetaObject obj, final List<String> fields, final UUID dataType, final BaseServer srv) throws Exception {
         if (!fields.isEmpty()) {
-            final WALoader wal = WALoader.get();
+            final HDLoader wal = HDLoader.get();
             wal.removeBundle(obj.nsName, BundleDefinition.Type.keyFactory, obj.name);
         }
     }

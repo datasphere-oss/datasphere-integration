@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.datasphere.classloading.BundleDefinition;
-import com.datasphere.classloading.WALoader;
+import com.datasphere.classloading.HDLoader;
 import com.datasphere.event.QueryResultEvent;
 import com.datasphere.proc.events.DynamicEvent;
 import com.datasphere.runtime.Pair;
@@ -185,7 +185,7 @@ public class SelectGenerator extends Generator
     
     private List<byte[]> generateExecutionPlan(final List<String> srcCodeList) throws NotFoundException, CannotCompileException, IOException {
         final String ns = this.cqNamespace;
-        final WALoader wal = WALoader.get();
+        final HDLoader wal = HDLoader.get();
         final String uri = wal.getBundleUri(ns, BundleDefinition.Type.query, this.cqName);
         try {
             wal.lockBundle(uri);
@@ -219,7 +219,7 @@ public class SelectGenerator extends Generator
         return classes;
     }
     
-    private byte[] genSubTaskClass(final WALoader wal, final String bundleUri, final DataSet ds, final Class<?> superClass, final List<String> srcCodeList) throws NotFoundException, CannotCompileException, IOException {
+    private byte[] genSubTaskClass(final HDLoader wal, final String bundleUri, final DataSet ds, final Class<?> superClass, final List<String> srcCodeList) throws NotFoundException, CannotCompileException, IOException {
         final List<String> methodsCode = this.genMethods(ds, superClass);
         final ClassPool pool = wal.getBundlePool(bundleUri);
         final StringBuilder src = new StringBuilder();

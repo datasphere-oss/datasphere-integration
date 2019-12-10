@@ -209,7 +209,7 @@ public class ONDBPersistenceLayerImpl implements PersistenceLayer
     }
     
     private static Object deSerizlizeObj(final byte[] bytes) {
-        Thread.currentThread().setContextClassLoader(WALoader.get());
+        Thread.currentThread().setContextClassLoader(HDLoader.get());
         final ByteArrayInputStream bis = new ByteArrayInputStream(bytes);
         ObjectInput in = null;
         Object object = null;

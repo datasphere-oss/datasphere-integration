@@ -17,7 +17,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.datasphere.classloading.WALoader;
+import com.datasphere.classloading.HDLoader;
 import com.datasphere.common.exc.AdapterException;
 import com.datasphere.event.Event;
 import com.datasphere.metaRepository.MetaDataRepositoryException;
@@ -221,7 +221,7 @@ public abstract class BaseDataStoreWriter extends BaseProcess implements Acknowl
                     if (keys.isEmpty()) {
                         throw new AdapterException("Failure in retrieving the Key field name for Table :" + dataType.getName() + ". At least one field should be assigned as primary key");
                     }
-                    final Class<?> typeClass = (Class<?>)WALoader.get().loadClass(dataType.className);
+                    final Class<?> typeClass = (Class<?>)HDLoader.get().loadClass(dataType.className);
                     fieldsOfThisTable = typeClass.getDeclaredFields();
                     this.typeUUIDCache.put(event.typeUUID, fieldsOfThisTable);
                 }
