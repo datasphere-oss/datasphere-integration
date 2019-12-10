@@ -10,7 +10,7 @@ import com.datasphere.common.exc.AdapterException;
 import com.datasphere.metaRepository.MetaDataRepositoryException;
 import com.datasphere.metaRepository.MetadataRepository;
 import com.datasphere.runtime.meta.MetaInfo;
-import com.datasphere.security.WASecurityManager;
+import com.datasphere.security.HDSecurityManager;
 import com.datasphere.uuid.UUID;
 import com.datasphere.source.lib.meta.DatabaseColumn;
 
@@ -22,7 +22,7 @@ public class UUIDTable extends Table
     
     private void init(final UUID typeUUID, final String alias) throws AdapterException {
         try {
-            final MetaInfo.Type type = (MetaInfo.Type)MetadataRepository.getINSTANCE().getMetaObjectByUUID(typeUUID, WASecurityManager.TOKEN);
+            final MetaInfo.Type type = (MetaInfo.Type)MetadataRepository.getINSTANCE().getMetaObjectByUUID(typeUUID, HDSecurityManager.TOKEN);
             final List<String> keyFields = (List<String>)type.keyFields;
             final Map<String, String> colMap = (Map<String, String>)type.fields;
             final Map<String, Boolean> keyMap = new HashMap<String, Boolean>();

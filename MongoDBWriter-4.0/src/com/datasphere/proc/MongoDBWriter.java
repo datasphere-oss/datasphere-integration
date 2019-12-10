@@ -63,7 +63,7 @@ public class MongoDBWriter extends BaseProcess {
 	public static String COLLECTION_NAME = "collections";
 	public static String DATABASE_NAME = "authDB";
 	public static String CONNECTION = "connectionUrl";
-	boolean isWAEvent = false;
+	boolean isHDEvent = false;
 	private Type dataType = null;
 	private MongoClient client;
 	private MongoDatabase mongoDB;
@@ -76,13 +76,13 @@ public class MongoDBWriter extends BaseProcess {
 		super.init(properties, properties2, sourceUUID, distributionID);
 		try {
 			Stream stream = (Stream) MetadataRepository.getINSTANCE().getMetaObjectByUUID(sourceUUID,
-					WASecurityManager.TOKEN);
+					HDSecurityManager.TOKEN);
 			this.dataType = ((Type) MetadataRepository.getINSTANCE().getMetaObjectByUUID(stream.dataType,
-					WASecurityManager.TOKEN));
+					HDSecurityManager.TOKEN));
 
 			Class<?> typeClass = WALoader.get().loadClass(this.dataType.className);
-			if (typeClass.getSimpleName().equals("WAEvent")) {
-				this.isWAEvent = true;
+			if (typeClass.getSimpleName().equals("HDEvent")) {
+				this.isHDEvent = true;
 			}
 			validateProperties(properties);
 		} catch (Exception ex) {
@@ -206,15 +206,15 @@ public class MongoDBWriter extends BaseProcess {
 
 	public void receiveImpl(int channel, Event event) throws Exception {
 		try {
-			WAEvent we = (WAEvent) event;
-			if(((WAEvent) event).metadata.get("OperationName") != null && (((WAEvent) event).metadata.get("OperationName").toString().equalsIgnoreCase("HBASE_READER"))) {
-				String rowkey = ((WAEvent) event).metadata.get("rowkey").toString();
-				String qualifier = ((WAEvent) event).metadata.get("qualifier").toString();
-				String data = ((WAEvent) event).metadata.get("data").toString();
+			HDEvent we = (HDEvent) event;
+			if(((HDEvent) event).metadata.get("OperationName") != null && (((HDEvent) event).metadata.get("OperationName").toString().equalsIgnoreCase("HBASE_READER"))) {
+				String rowkey = ((HDEvent) event).metadata.get("rowkey").toString();
+				String qualifier = ((HDEvent) event).metadata.get("qualifier").toString();
+				String data = ((HDEvent) event).metadata.get("data").toString();
 				Document doc = new Document();
 				doc.append(qualifier, data);
 				insertToDatabase(doc);
-			}else if (this.isWAEvent) {
+			}else if (this.isHDEvent) {
 				if (we.typeUUID == null) {
 					Object[] data = we.data;
 					Document document = new Document();
@@ -223,13 +223,13 @@ public class MongoDBWriter extends BaseProcess {
 					}
 					insertToDatabase(document);
 					return;
-				}else if ((((WAEvent) event).metadata.get("OperationName").toString().equalsIgnoreCase("INSERT"))) {
+				}else if ((((HDEvent) event).metadata.get("OperationName").toString().equalsIgnoreCase("INSERT"))) {
 					handleInsertEvent(we);
 
-				} else if ((((WAEvent) event).metadata.get("OperationName").toString().equalsIgnoreCase("UPDATE"))) {
+				} else if ((((HDEvent) event).metadata.get("OperationName").toString().equalsIgnoreCase("UPDATE"))) {
 					handleUpdateEvent(we);
 
-				} else if ((((WAEvent) event).metadata.get("OperationName").toString().equalsIgnoreCase("DELETE"))) {
+				} else if ((((HDEvent) event).metadata.get("OperationName").toString().equalsIgnoreCase("DELETE"))) {
 					handleDeleteEvent(we);
 
 				}
@@ -237,7 +237,7 @@ public class MongoDBWriter extends BaseProcess {
 				Map<String, Object> data = getSimpleData((SimpleEvent) event);
 				handleDataEvent(data);
 			}
-			// handleWAEvent(we);
+			// handleHDEvent(we);
 		} catch (Exception ex) {
 			throw new AdapterException("Error writing to db " + this.dbName + " with collectionName "
 					+ this.collectionName + ": " + ex.getMessage());
@@ -292,7 +292,7 @@ public class MongoDBWriter extends BaseProcess {
 		insertToDatabase(document);
 	}
 
-	private void handleInsertEvent(WAEvent we) throws Exception {
+	private void handleInsertEvent(HDEvent we) throws Exception {
 		Record evt = BuiltInFunc.convertAvroEventToRecord(we);
 		Map<String, Object> event = BuiltInFunc.DATA(evt);
 
@@ -310,7 +310,7 @@ public class MongoDBWriter extends BaseProcess {
 
 	}
 
-	private void handleUpdateEvent(WAEvent we) throws Exception {
+	private void handleUpdateEvent(HDEvent we) throws Exception {
 		Record evt = BuiltInFunc.convertAvroEventToRecord(we);
 		Map<String, Object> dataAfter = BuiltInFunc.DATA(evt);
 		Map<String, Object> dataBefore = BuiltInFunc.BEFORE(evt);
@@ -338,7 +338,7 @@ public class MongoDBWriter extends BaseProcess {
 
 	}
 
-	private void handleDeleteEvent(WAEvent we) throws Exception {
+	private void handleDeleteEvent(HDEvent we) throws Exception {
 		Record evt = BuiltInFunc.convertAvroEventToRecord(we);
 		Map<String, Object> event = BuiltInFunc.DATA(evt);
 

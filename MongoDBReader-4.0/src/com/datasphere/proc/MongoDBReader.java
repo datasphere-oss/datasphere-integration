@@ -95,7 +95,7 @@ public class MongoDBReader extends SourceProcess {
 		this.flow = flow;
 		if (this.sourceUUID != null) {
 			this.componentName = MetadataRepository.getINSTANCE()
-					.getMetaObjectByUUID(this.sourceUUID, WASecurityManager.TOKEN).getFullName();
+					.getMetaObjectByUUID(this.sourceUUID, HDSecurityManager.TOKEN).getFullName();
 		}
 		this.readProperties(properties);
 		this.client = Utilities.connectClient(this.connectionUrl, this.credential, this.readPreference.toString(),
@@ -255,11 +255,11 @@ public class MongoDBReader extends SourceProcess {
 	}
 
 	private Consumer<JsonNodeEvent> sendCallback() {
-		final Consumer<JsonNodeEvent> sendWAEvent = jne -> this.sendWAEvent(jne);
-		return sendWAEvent;
+		final Consumer<JsonNodeEvent> sendHDEvent = jne -> this.sendHDEvent(jne);
+		return sendHDEvent;
 	}
 
-	private void sendWAEvent(final JsonNodeEvent jne) {
+	private void sendHDEvent(final JsonNodeEvent jne) {
 		if (jne != null) {
 			try {
 				if (this.sourcePosition != null) {

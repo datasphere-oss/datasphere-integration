@@ -124,7 +124,7 @@ public class Utils
         String targetId = null;
         final MetadataRepository metadataRepository = MetadataRepository.getINSTANCE();
         try {
-            final MetaInfo.MetaObject object = metadataRepository.getMetaObjectByUUID(uuid, WASecurityManager.TOKEN);
+            final MetaInfo.MetaObject object = metadataRepository.getMetaObjectByUUID(uuid, HDSecurityManager.TOKEN);
             targetId = object.getFullName();
         }
         catch (MetaDataRepositoryException e) {
