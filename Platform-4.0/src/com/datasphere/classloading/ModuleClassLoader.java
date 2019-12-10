@@ -7,8 +7,8 @@ import org.apache.log4j.*;
 
 public class ModuleClassLoader extends URLClassLoader
 {
-    public static final String STRIIM_MODULE_NAME_MANIFEST_KEY = "Striim-Module-Name";
-    public static final String STRIIM_SERVICE_IMPL_MANIFEST_KEY = "Striim-Service-Implementation";
+    public static final String DSS_MODULE_NAME_MANIFEST_KEY = "DSS-Module-Name";
+    public static final String DSS_SERVICE_IMPL_MANIFEST_KEY = "DSS-Service-Implementation";
     private String moduleName;
     private String moduleServiceImplClass;
     
@@ -17,16 +17,16 @@ public class ModuleClassLoader extends URLClassLoader
         final JarFile scmFile = new JarFile(scm);
         final Manifest mf = scmFile.getManifest();
         if (mf == null) {
-            throw new IOException("Invalid Striim module file with no manifest : " + scm.getPath());
+            throw new IOException("Invalid DSS module file with no manifest : " + scm.getPath());
         }
         final Attributes attributes = mf.getMainAttributes();
-        this.moduleName = attributes.getValue("Striim-Module-Name");
+        this.moduleName = attributes.getValue("DSS-Module-Name");
         if (this.moduleName == null) {
-            throw new IOException("Invalid Striim module file with no module name in manifest file :" + scm.getPath());
+            throw new IOException("Invalid DSS module file with no module name in manifest file :" + scm.getPath());
         }
-        this.moduleServiceImplClass = attributes.getValue("Striim-Service-Implementation");
+        this.moduleServiceImplClass = attributes.getValue("DSS-Service-Implementation");
         if (this.moduleServiceImplClass == null) {
-            throw new IOException("Invalid Striim module file with no service class in manifest file :" + scm.getPath());
+            throw new IOException("Invalid DSS module file with no service class in manifest file :" + scm.getPath());
         }
     }
     

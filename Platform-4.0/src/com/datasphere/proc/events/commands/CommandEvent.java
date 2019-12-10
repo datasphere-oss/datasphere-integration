@@ -20,7 +20,7 @@ import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
 
-@EventType(schema = "Internal", classification = "All", uri = "com.datasphere.proc.events:StriimCommandEvent:1.0")
+@EventType(schema = "Internal", classification = "All", uri = "com.datasphere.proc.events:DSSCommandEvent:1.0")
 public abstract class CommandEvent extends DefaultTaskEvent
 {
     private static Logger logger;

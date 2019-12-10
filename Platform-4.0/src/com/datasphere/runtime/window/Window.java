@@ -37,7 +37,7 @@ public class Window extends IWindow implements BufWindowSub
         this.lagMarkerQueue = new ConcurrentLinkedQueue<LagMarker>();
         this.windowInfo = windowInfo;
         (this.output = srv.createChannel(this)).addCallback(this);
-        final String val = System.getProperty("com.striim.window.inlinecleanup");
+        final String val = System.getProperty("com.dss.window.inlinecleanup");
         if (val != null && !val.isEmpty()) {
             if (val.equalsIgnoreCase("false")) {
                 this.inlineCleanup = false;

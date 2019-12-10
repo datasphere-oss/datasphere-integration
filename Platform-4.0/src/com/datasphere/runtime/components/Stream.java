@@ -78,7 +78,7 @@ public class Stream extends FlowComponent implements PubSub, Runnable
         this.nextGen = new AtomicLong(1L);
         this.activeShows = new HashMap<String, ActiveShowStream>();
         this.isRecoveryEnabled = false;
-        this.lagReportEnabled = Boolean.parseBoolean(System.getProperty("com.striim.lagReportEnabled", "false"));
+        this.lagReportEnabled = Boolean.parseBoolean(System.getProperty("com.dss.lagReportEnabled", "false"));
         this.prevInputTotal = null;
         this.prevInputRate = null;
         this.prevFull = null;

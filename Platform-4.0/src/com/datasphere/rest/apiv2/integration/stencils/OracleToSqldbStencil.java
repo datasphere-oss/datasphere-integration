@@ -43,7 +43,7 @@ public class OracleToSqldbStencil extends BaseStencil
     public static void createApplication(final AuthToken token, final QueryValidator qv, final String namespace, final Map<String, String> sourceProperties, final Map<String, String> targetProperties, final String appname, final String streamName, final String sourceName, final String sourceFlowName, final String targetName, final String targetFlowName, final String sourceAdapterName) throws MetaDataRepositoryException {
         qv.CreateAppStatement(token, appname, true, null, false, null, null, null, null);
         qv.setCurrentApp(namespace + "." + appname, token);
-        qv.CreateStreamStatement(token, streamName, true, new String[0], "Global.WAEvent", new StreamPersistencePolicy(null));
+        qv.CreateStreamStatement(token, streamName, true, new String[0], "Global.HDEvent", new StreamPersistencePolicy(null));
         qv.CreateFlowStatement(token, sourceFlowName, true, null);
         qv.setCurrentFlow(namespace + "." + sourceFlowName, token);
         final List<Property> sourcePropList = new ArrayList<Property>();

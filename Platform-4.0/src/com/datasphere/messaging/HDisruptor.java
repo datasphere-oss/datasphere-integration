@@ -41,9 +41,9 @@ public class HDisruptor<T> implements InterThreadComm
     }
     
     @Override
-    public void put(final Object waEvent, final DistSub s, final int partitionId, final ChannelEventHandler channelEventHandler) {
+    public void put(final Object hdEvent, final DistSub s, final int partitionId, final ChannelEventHandler channelEventHandler) {
         if (this.status == Status.RUNNING) {
-            this.eventPublisher.onData(waEvent, s, partitionId, channelEventHandler);
+            this.eventPublisher.onData(hdEvent, s, partitionId, channelEventHandler);
         }
     }
     

@@ -480,8 +480,8 @@ public class HazelcastSingleton
             join.getTcpIpConfig().setEnabled(false);
             join.getAwsConfig().setEnabled(true);
             if (System.getProperty("com.datasphere.config.enable-ec2AccessKey") != null && System.getProperty("com.datasphere.config.enable-ec2SecretKey") != null) {
-                join.getAwsConfig().setAccessKey(System.getProperty("com.datasphere.config.enable-ec2AccessKey", System.getenv("STRIIM_EC2_ACCESS_KEY")));
-                join.getAwsConfig().setSecretKey(System.getProperty("com.datasphere.config.enable-ec2SecretKey", System.getenv("STRIIM_EC2_SECRET_KEY")));
+                join.getAwsConfig().setAccessKey(System.getProperty("com.datasphere.config.enable-ec2AccessKey", System.getenv("DSS_EC2_ACCESS_KEY")));
+                join.getAwsConfig().setSecretKey(System.getProperty("com.datasphere.config.enable-ec2SecretKey", System.getenv("DSS_EC2_SECRET_KEY")));
             }
             if (System.getProperty("com.datasphere.config.ec2IamRole") != null) {
                 join.getAwsConfig().setIamRole(System.getProperty("com.datasphere.config.ec2IamRole"));
@@ -558,7 +558,7 @@ public class HazelcastSingleton
             final MulticastConfig multicast = join.getMulticastConfig();
             multicast.setMulticastGroup(multicastGroup);
             multicast.setMulticastPort(54327);
-            final String boolString = System.getProperty("com.striim.nohzoutput", "false");
+            final String boolString = System.getProperty("com.dss.nohzoutput", "false");
             boolean boolVal;
             if (boolString == null) {
                 boolVal = false;
@@ -637,7 +637,7 @@ public class HazelcastSingleton
             HazelcastSingleton.passedInterfacesDidNotMatchAvailableInterfaces = true;
             chooseInterface(ListOfAvailableInterfaces);
         }
-        final String boolString2 = System.getProperty("com.striim.nohzoutput", "false");
+        final String boolString2 = System.getProperty("com.dss.nohzoutput", "false");
         boolean boolVal2;
         if (boolString2 == null) {
             boolVal2 = false;
@@ -686,8 +686,8 @@ public class HazelcastSingleton
             final ClientAwsConfig clientAwsConfig = new ClientAwsConfig();
             clientAwsConfig.setInsideAws(false);
             if (System.getProperty("com.datasphere.config.enable-ec2AccessKey") != null && System.getProperty("com.datasphere.config.enable-ec2SecretKey") != null && !System.getProperty("com.datasphere.config.enable-ec2AccessKey").isEmpty() && !System.getProperty("com.datasphere.config.enable-ec2SecretKey").isEmpty()) {
-                clientAwsConfig.setAccessKey(System.getProperty("com.datasphere.config.enable-ec2AccessKey", System.getenv("STRIIM_EC2_ACCESS_KEY")));
-                clientAwsConfig.setSecretKey(System.getProperty("com.datasphere.config.enable-ec2SecretKey", System.getenv("STRIIM_EC2_SECRET_KEY")));
+                clientAwsConfig.setAccessKey(System.getProperty("com.datasphere.config.enable-ec2AccessKey", System.getenv("DSS_EC2_ACCESS_KEY")));
+                clientAwsConfig.setSecretKey(System.getProperty("com.datasphere.config.enable-ec2SecretKey", System.getenv("DSS_EC2_SECRET_KEY")));
             }
             if (System.getProperty("com.datasphere.config.ec2IamRole") != null && !System.getProperty("com.datasphere.config.ec2IamRole").isEmpty()) {
                 clientAwsConfig.setIamRole(System.getProperty("com.datasphere.config.ec2IamRole"));

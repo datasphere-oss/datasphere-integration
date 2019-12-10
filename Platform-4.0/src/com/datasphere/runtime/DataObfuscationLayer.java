@@ -224,7 +224,7 @@ public class DataObfuscationLayer
         ObjectNode obj = ObjectMapperFactory.getInstance().createObjectNode();
         obj.put("id", "maskEmailAddress_partially");
         obj.put("text", "Partially");
-        obj.put("description", "axxxx@striim.com");
+        obj.put("description", "axxxx@dss.com");
         obj.put("maskingFunction", "maskEmailAddress");
         obj.put("params", "ANONYMIZE_PARTIALLY");
         arrayNode.add((JsonNode)obj);

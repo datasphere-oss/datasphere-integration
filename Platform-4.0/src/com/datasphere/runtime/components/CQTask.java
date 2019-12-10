@@ -101,7 +101,7 @@ public class CQTask extends FlowComponent implements PubSub, Compound
         this.running = false;
         this.outQueue = null;
         this.waitPosition = null;
-        this.lagReportEnabled = Boolean.parseBoolean(System.getProperty("com.striim.lagReportEnabled", "false"));
+        this.lagReportEnabled = Boolean.parseBoolean(System.getProperty("com.dss.lagReportEnabled", "false"));
         this.lagRecordCache = new ThreadLocal();
         this.lagMarkerQueue = new ConcurrentLinkedQueue<LagMarker>();
         this.prevIt = null;

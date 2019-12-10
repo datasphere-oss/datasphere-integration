@@ -2,8 +2,8 @@ package com.datasphere.event;
 
 import org.apache.log4j.Logger;
 
-import com.datalliance.event.ObjectMapperFactory;
-import com.datalliance.event.SimpleEvent;
+import com.datasphere.event.ObjectMapperFactory;
+import com.datasphere.event.SimpleEvent;
 import com.datasphere.uuid.UUID;
 import com.datasphere.hd.HD;
 import com.fasterxml.jackson.databind.ObjectMapper;

@@ -36,7 +36,7 @@ import com.datasphere.runtime.BaseServer;
 import com.datasphere.runtime.ExceptionEvent;
 import com.datasphere.runtime.components.EntityType;
 import com.datasphere.runtime.meta.MetaInfo;
-import com.datasphere.security.WASecurityManager;
+import com.datasphere.security.HDSecurityManager;
 import com.datasphere.utility.DeployUtility;
 import com.datasphere.uuid.UUID;
 
@@ -351,7 +351,7 @@ class AppManagerWorker extends Thread implements NodeEventCallback
         if (md == null) {
             return;
         }
-        final Set<MetaInfo.Namespace> namespaces = (Set<MetaInfo.Namespace>)MetadataRepository.getINSTANCE().getByEntityType(EntityType.NAMESPACE, WASecurityManager.TOKEN);
+        final Set<MetaInfo.Namespace> namespaces = (Set<MetaInfo.Namespace>)MetadataRepository.getINSTANCE().getByEntityType(EntityType.NAMESPACE, HDSecurityManager.TOKEN);
         for (final MetaInfo.Namespace app : namespaces) {
             if (app.name.equalsIgnoreCase("Global")) {
                 this.loadApplicationForNamespace(app);
@@ -368,7 +368,7 @@ class AppManagerWorker extends Thread implements NodeEventCallback
         if (AppManagerWorker.logger.isInfoEnabled()) {
             AppManagerWorker.logger.info(("Loading objects for namespace: " + app.name));
         }
-        final Set<MetaInfo.MetaObject> objs = MetadataRepository.getINSTANCE().getByNameSpace(app.name, WASecurityManager.TOKEN);
+        final Set<MetaInfo.MetaObject> objs = MetadataRepository.getINSTANCE().getByNameSpace(app.name, HDSecurityManager.TOKEN);
         if (objs != null) {
             for (final MetaInfo.MetaObject obj : objs) {
                 if (obj.type == EntityType.APPLICATION) {

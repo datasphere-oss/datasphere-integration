@@ -250,7 +250,7 @@ public class Cache extends FlowComponent implements PubSub, Channel.NewSubscribe
         }
         catch (Exception ex) {
             this.notifyAppMgr(EntityType.CACHE, this.getCacheName(), this.getMetaID(), ex, "cache receive", linkID, event);
-            throw new StriimException((IError)CacheError.UPSERT_FAIL, (Throwable)ex, this.getMetaFullName(), (String[])null);
+            throw new DSSException((IError)CacheError.UPSERT_FAIL, (Throwable)ex, this.getMetaFullName(), (String[])null);
         }
     }
     

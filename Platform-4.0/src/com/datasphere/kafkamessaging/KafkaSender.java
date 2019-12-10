@@ -119,7 +119,7 @@ public class KafkaSender implements KafkaSenderIntf
             if (this.format != null && this.format.equalsIgnoreCase("avro")) {
                 this.formatter = this.getFormatterInstance(this.format);
                 if (this.formatter == null) {
-                    throw new Exception("Allowed dataformat is only avro or leave it blank to default to Striim format. Format passed in : " + this.format);
+                    throw new Exception("Allowed dataformat is only avro or leave it blank to default to DSS format. Format passed in : " + this.format);
                 }
                 this.isAvro = true;
             }

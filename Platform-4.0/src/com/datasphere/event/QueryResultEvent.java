@@ -1,6 +1,6 @@
 package com.datasphere.event;
 
-import com.datalliance.event.SimpleEvent;
+import com.datasphere.event.SimpleEvent;
 import com.esotericsoftware.kryo.*;
 import com.esotericsoftware.kryo.io.*;
 

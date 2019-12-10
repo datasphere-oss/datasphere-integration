@@ -78,8 +78,8 @@ public class Source extends FlowComponent implements Publisher, Runnable, EventS
         this.sourceInfo = sourceInfo;
         this.output = srv.createSimpleChannel();
         adapter.addEventSink(this);
-        final String lagReportEnabledString = System.getProperty("com.striim.lagReportEnabled", "false");
-        final String lagReportRateString = System.getProperty("com.striim.lagReportRate", "10");
+        final String lagReportEnabledString = System.getProperty("com.dss.lagReportEnabled", "false");
+        final String lagReportRateString = System.getProperty("com.dss.lagReportRate", "10");
         if (!lagReportEnabledString.isEmpty()) {
             this.lagReportEnabled = Boolean.parseBoolean(lagReportEnabledString);
         }

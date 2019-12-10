@@ -841,10 +841,10 @@ public class MonitorModel extends BaseProcess implements Subscriber, Runnable
             monEventBatch.events.removeAll(removethese);
             List<MonitorEvent> events = monEventBatch.events;
             events = augmentWithRollupEvents(events);
-            final String jmxConfig = System.getProperty("com.striim.jmx.enabled", "false");
+            final String jmxConfig = System.getProperty("com.dss.jmx.enabled", "false");
             final Boolean isJmxEnabled = Boolean.valueOf(jmxConfig);
             if (isJmxEnabled) {
-                updateStriimMBeansMetric(events);
+                updateDSSMBeansMetric(events);
             }
             monEventBatch.events.remove(removeAdapterDetailEvents);
             final MonitorBatchEvent batchEvent = new MonitorBatchEvent(System.currentTimeMillis(), events);
@@ -878,7 +878,7 @@ public class MonitorModel extends BaseProcess implements Subscriber, Runnable
         }
     }
     
-    private static void updateStriimMBeansMetric(final List<MonitorEvent> events) throws MetaDataRepositoryException, DatallException {
+    private static void updateDSSMBeansMetric(final List<MonitorEvent> events) throws MetaDataRepositoryException, DatallException {
         final MetadataRepository metadataRepository = MetadataRepository.getINSTANCE();
         final AuthToken sessionID = HSecurityManager.TOKEN;
         final Map<UUID, MetaInfo.Server> serverMap = MonitorModel.mdLocalCache.getServerMap();
@@ -895,7 +895,7 @@ public class MonitorModel extends BaseProcess implements Subscriber, Runnable
                 entityName = metaObject.getName();
             }
             final String metricName = serverName + "." + entityName;
-            final MainMBean bean = getStriimMBeanForMetricName(metricName);
+            final MainMBean bean = getDSSMBeanForMetricName(metricName);
             bean.updateMetric(event.type.toString(), (event.valueLong == null) ? event.valueString : event.valueLong);
         }
     }
@@ -1045,19 +1045,19 @@ public class MonitorModel extends BaseProcess implements Subscriber, Runnable
     
     private static void registerMBean(final Object bean, final String type, final String beanName) throws DatallException {
         try {
-            MonitorModel.mbs.registerMBean(bean, new ObjectName("com.striim.metrics:type=" + type + ",name=" + beanName));
+            MonitorModel.mbs.registerMBean(bean, new ObjectName("com.dss.metrics:type=" + type + ",name=" + beanName));
         }
         catch (InstanceAlreadyExistsException | MBeanRegistrationException | NotCompliantMBeanException | MalformedObjectNameException ex2) {
             throw new DatallException((IError)CommonError.JMX_ERROR, (Throwable)ex2, "JMX", new String[0]);
         }
     }
     
-    private static MainMBean getStriimMBeanForMetricName(final String metricName) throws DatallException {
+    private static MainMBean getDSSMBeanForMetricName(final String metricName) throws DatallException {
         MainMBean bean = (MainMBean)MonitorModel.beanMap.get(metricName);
         if (bean == null) {
             bean = new MainMBean();
             MonitorModel.beanMap.put(metricName, bean);
-            registerMBean(bean, "StriimMBean", metricName);
+            registerMBean(bean, "DSSMBean", metricName);
         }
         return bean;
     }
@@ -1531,8 +1531,8 @@ public class MonitorModel extends BaseProcess implements Subscriber, Runnable
                 newEntResults.put("is-valid", app.getMetaInfoStatus().isValid());
             }
         }
-        final String striimVersion = Version.getVersionString();
-        newEntResults.put("striim-version", striimVersion);
+        final String dssVersion = Version.getVersionString();
+        newEntResults.put("dss-version", dssVersion);
         final String mdcVersion = Version.getMetaDataVersion();
         if (mdcVersion != null) {
             newEntResults.put("mdc-version", mdcVersion);

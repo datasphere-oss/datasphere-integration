@@ -48,7 +48,7 @@ import com.datasphere.runtime.compiler.visitors.ConditionAnalyzer;
 import com.datasphere.runtime.compiler.visitors.ExprValidationVisitor;
 import com.datasphere.runtime.compiler.visitors.FindCommonSubexpression;
 import com.datasphere.runtime.containers.DynamicEventWrapper;
-import com.datasphere.runtime.containers.WAEvent;
+import com.datasphere.runtime.containers.HDEvent;
 import com.datasphere.runtime.exceptions.AmbiguousFieldNameException;
 import com.datasphere.runtime.meta.CQExecutionPlan;
 import com.datasphere.runtime.meta.MetaInfo;
@@ -526,11 +526,11 @@ public class SelectCompiler
         try {
             final MetaInfo.MetaObject outputTypeMetaObject = MetadataRepository.getINSTANCE().getMetaObjectByUUID(this.outputTypeId, HSecurityManager.TOKEN);
             if (outputTypeMetaObject == null || !(outputTypeMetaObject instanceof MetaInfo.Type) || !((MetaInfo.Type)outputTypeMetaObject).generated) {
-                this.error("Output stream do not use generated type and only WAEvent is supported as generated type", this.select.from);
+                this.error("Output stream do not use generated type and only HDEvent is supported as generated type", this.select.from);
             }
         }
         catch (MetaDataRepositoryException e2) {
-            this.error("Modify clause will not work except two cases: WAEvent and Generated Type streams. Please use one of the two types.", this.select);
+            this.error("Modify clause will not work except two cases: HDEvent and Generated Type streams. Please use one of the two types.", this.select);
         }
         if (this.select.modify != null) {
             final SelectTarget output = this.select.targets.get(0);
@@ -574,7 +574,7 @@ public class SelectCompiler
         if (targetSize != 1) {
             this.error("only one projection field is allowed", this.select.targets);
         }
-        if (this.targetType.equals(WAEvent.class)) {
+        if (this.targetType.equals(HDEvent.class)) {
             this.validateModifyNonGeneratedType();
         }
         else {

@@ -133,8 +133,8 @@ public class HQueue
         
         @Override
         public void receive(final Object linkID, final ITaskEvent event) throws Exception {
-            for (final DARecord waEvent : event.batch()) {
-                final HQueueEvent queueEvent = (HQueueEvent)waEvent.data;
+            for (final DARecord hdEvent : event.batch()) {
+                final HQueueEvent queueEvent = (HQueueEvent)hdEvent.data;
                 final String qKey = queueEvent.getKey();
                 final HQueue waQueue = (HQueue)getWAQueueManager().instances.get(qKey);
                 if (waQueue != null) {

@@ -61,7 +61,7 @@ public class MetaDataDBDetails
     public boolean askDBDetails() {
         final MetaDataDbProvider metaDataDbProvider = BaseServer.getMetaDataDBProviderDetails();
         try {
-            final String mdLocation = System.getProperty("com.striim.config.metadataLocation");
+            final String mdLocation = System.getProperty("com.dss.config.metadataLocation");
             if (mdLocation == null || mdLocation.isEmpty()) {
                 System.out.println("Required property \"Metadata Repository Location\" is undefined");
                 this.location = ConsoleReader.readLine(metaDataDbProvider.askMetaDataRepositoryLocation(this.default_db_location));
@@ -70,7 +70,7 @@ public class MetaDataDBDetails
                 this.location = mdLocation;
             }
             this.name = metaDataDbProvider.askDBName("hdrepos");
-            final String passedUserName = System.getProperty("com.striim.config.metadataUserName");
+            final String passedUserName = System.getProperty("com.dss.config.metadataUserName");
             if (passedUserName == null || passedUserName.isEmpty()) {
                 this.UName = metaDataDbProvider.askDBUserName("hd");
             }
@@ -82,7 +82,7 @@ public class MetaDataDBDetails
                 this.firstTime = false;
             }
             else {
-                final String passedPassword = System.getProperty("com.striim.config.metadataPassword");
+                final String passedPassword = System.getProperty("com.dss.config.metadataPassword");
                 if (passedPassword == null || passedPassword.isEmpty()) {
                     this.password = metaDataDbProvider.askDBPassword("w@ct10n");
                 }

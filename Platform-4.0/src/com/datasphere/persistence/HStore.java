@@ -320,7 +320,7 @@ public class HStore extends FlowComponent implements HDListener, PubSub
             else {
                 if (properties == null || !properties.containsKey("elasticsearch.relax_schema")) {
                     final String typeName = type.getFullName();
-                    final String message = "You might want to relax the schema by setting the elasticsearch.relax_schema to true while creating hd store. This will insert the data into elastic search, but your query through Striim client might fail";
+                    final String message = "You might want to relax the schema by setting the elasticsearch.relax_schema to true while creating hd store. This will insert the data into elastic search, but your query through DSS client might fail";
                     HStore.logger.error(String.format("Unsupported Java data type, '%s' for attribute '%s' in type '%s'. %s", fieldType, fieldName, typeName, message));
                     throw new ElasticSearchSchemaException(String.format("Unsupported Java data type, '%s' for attribute '%s' in type '%s'. %s", fieldType, fieldName, typeName, message));
                 }
@@ -614,7 +614,7 @@ public class HStore extends FlowComponent implements HDListener, PubSub
         this.prevCreatedRate = null;
         this.lastLagObserved = null;
         this.allPaths = new ConcurrentHashMap<String, LagMarker>();
-        this.lagReportEnabled = Boolean.parseBoolean(System.getProperty("com.striim.lagReportEnabled", "false"));
+        this.lagReportEnabled = Boolean.parseBoolean(System.getProperty("com.dss.lagReportEnabled", "false"));
         this.storeMetaInfo = storeMetaInfo;
         this.output = ((srv == null) ? new SimpleChannel() : srv.createChannel(this));
     }

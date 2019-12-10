@@ -7,7 +7,7 @@ import com.datasphere.event.*;
 import com.esotericsoftware.kryo.*;
 import com.esotericsoftware.kryo.io.*;
 
-@EventType(schema = "Internal", classification = "All", uri = "com.datasphere.proc.events:StriimParserEvent:1.0")
+@EventType(schema = "Internal", classification = "All", uri = "com.datasphere.proc.events:DSSParserEvent:1.0")
 public class HDParserEvent extends SimpleEvent
 {
     @EventTypeData

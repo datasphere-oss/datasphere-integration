@@ -130,7 +130,7 @@ public abstract class IntegrationAppTemplate implements ApplicationTemplate
         final String targetFlowName = applicationName + "_targetFlow";
         final String sourceName = applicationName + "_source";
         final String targetName = applicationName + "_target";
-        queryValidator.CreateStreamStatement(token, streamName, true, new String[0], "Global.WAEvent", new StreamPersistencePolicy(null));
+        queryValidator.CreateStreamStatement(token, streamName, true, new String[0], "Global.HDEvent", new StreamPersistencePolicy(null));
         queryValidator.CreateFlowStatement(token, sourceFlowName, true, null);
         queryValidator.setCurrentFlow(namespace + "." + sourceFlowName, token);
         final List<Property> sourcePropList = new ArrayList<Property>();

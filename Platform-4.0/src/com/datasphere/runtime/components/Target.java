@@ -58,7 +58,7 @@ public class Target extends FlowComponent implements Subscriber, Restartable, Co
         this.memoryCheckpoint = new PathManager();
         this.waitCheckpoint = new PathManager();
         this.lastLagObserved = null;
-        this.lagReportEnabled = Boolean.parseBoolean(System.getProperty("com.striim.lagReportEnabled", "false"));
+        this.lagReportEnabled = Boolean.parseBoolean(System.getProperty("com.dss.lagReportEnabled", "false"));
         this.allPaths = new ConcurrentHashMap<String, LagMarker>();
         this.prevIn = null;
         this.prevAck = null;

@@ -714,9 +714,9 @@ public class CluiMonitorView
         tableDivider(target);
         final String clusterName = HazelcastSingleton.get().getName();
         singleLine(target, "= %-50s%-82s=%n", humanizeData("Cluster Name", clusterName), 0);
-        final Object striimVersion = getOneValue("striim-version", values, null);
-        if (striimVersion != null) {
-            singleLine(target, "= %-50s%-82s=%n", humanizeData("Striim Version", striimVersion), 0);
+        final Object dssVersion = getOneValue("dss-version", values, null);
+        if (dssVersion != null) {
+            singleLine(target, "= %-50s%-82s=%n", humanizeData("DSS Version", dssVersion), 0);
         }
         final Object mdcVersion = getOneValue("mdc-version", values, null);
         if (mdcVersion != null) {

@@ -148,13 +148,13 @@ public abstract class SourceProcess extends BaseProcess
         if ((mode == null || !mode.equalsIgnoreCase("METADATA")) && this instanceof SourceMetadataProvider) {
             final Map<String, TypeDefOrName> metaMap = ((SourceMetadataProvider)this).getMetadata();
             if (SourceProcess.logger.isInfoEnabled()) {
-                SourceProcess.logger.info((Object)("Trying to create Striim type(s) from table definition " + ((metaMap != null) ? metaMap.toString() : null)));
+                SourceProcess.logger.info((Object)("Trying to create DSS type(s) from table definition " + ((metaMap != null) ? metaMap.toString() : null)));
             }
             final long startTime = System.currentTimeMillis();
             this.createTypesFromTableDef(metaMap);
             final long endTime = System.currentTimeMillis();
             if (SourceProcess.logger.isInfoEnabled()) {
-                SourceProcess.logger.info((Object)("Time taken for creating Striim type(s) from table definiton  is " + (endTime - startTime) / 1000L + " seconds"));
+                SourceProcess.logger.info((Object)("Time taken for creating DSS type(s) from table definiton  is " + (endTime - startTime) / 1000L + " seconds"));
             }
         }
     }

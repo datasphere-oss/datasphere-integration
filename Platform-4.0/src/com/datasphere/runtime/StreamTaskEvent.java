@@ -3,7 +3,7 @@ package com.datasphere.runtime;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
-import com.datasphere.proc.events.StriimParserEvent;
+import com.datasphere.proc.events.HDParserEvent;
 import com.datasphere.recovery.Position;
 import com.datasphere.runtime.containers.Batch;
 import com.datasphere.runtime.containers.TaskEvent;
@@ -18,8 +18,8 @@ public class StreamTaskEvent extends TaskEvent
     }
     
     public StreamTaskEvent(final Object data, final Position pos) {
-        if (data instanceof StriimParserEvent) {
-            this.xevent = new DARecord(((StriimParserEvent)data).getData(), pos);
+        if (data instanceof HDParserEvent) {
+            this.xevent = new DARecord(((HDParserEvent)data).getData(), pos);
         }
         else {
             this.xevent = new DARecord(data, pos);

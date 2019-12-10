@@ -34,7 +34,7 @@ import org.reflections.util.ClasspathHelper;
 import com.datasphere.anno.NotSet;
 import com.datasphere.anno.PropertyTemplate;
 import com.datasphere.anno.PropertyTemplateProperty;
-import com.datasphere.classloading.StriimClassLoader;
+import com.datasphere.classloading.DSSClassLoader;
 import com.datasphere.classloading.WALoader;
 import com.datasphere.event.ObjectMapperFactory;
 import com.datasphere.exception.ServerException;
@@ -968,12 +968,12 @@ public class ServerUpgradeUtility
         ServerUpgradeUtility.ctx = Context.createContext(HSecurityManager.TOKEN);
         final ServerUpgradeUtility suu = new ServerUpgradeUtility();
         suu.initialize();
-        final StriimClassLoader scl = (StriimClassLoader)Thread.currentThread().getContextClassLoader();
+        final DSSClassLoader scl = (DSSClassLoader)Thread.currentThread().getContextClassLoader();
         try {
             scl.scanModulePath();
         }
         catch (IOException ioe) {
-            ServerUpgradeUtility.logger.warn((Object)("striim.modules.path is not set correctly, reason: " + ioe.getMessage()), (Throwable)ioe);
+            ServerUpgradeUtility.logger.warn((Object)("dss.modules.path is not set correctly, reason: " + ioe.getMessage()), (Throwable)ioe);
         }
         WALoader.get();
         if (ServerUpgradeUtility.action.equals(MODE.EXPORT)) {

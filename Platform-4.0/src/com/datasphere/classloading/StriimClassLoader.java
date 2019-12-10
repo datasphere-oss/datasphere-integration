@@ -6,13 +6,13 @@ import java.net.*;
 /*
  * 动态类加载
  */
-public class StriimClassLoader extends URLClassLoader
+public class DSSClassLoader extends URLClassLoader
 {
     private static final boolean DEBUG = false;
     private Map<String, ModuleClassLoader> moduleClassLoaderMap;
     private WALoader dynamicClassLoader;
     
-    public StriimClassLoader(final ClassLoader parent) {
+    public DSSClassLoader(final ClassLoader parent) {
         super(((URLClassLoader)parent).getURLs(), parent);
         this.moduleClassLoaderMap = new WeakHashMap<String, ModuleClassLoader>();
         this.dynamicClassLoader = null;
@@ -33,7 +33,7 @@ public class StriimClassLoader extends URLClassLoader
     }
     
     public void scanModulePath() throws IOException {
-        final String module_dir_path = System.getProperty("striim.modules.path");
+        final String module_dir_path = System.getProperty("dss.modules.path");
         if (module_dir_path != null) {
             final StringTokenizer tokenizer = new StringTokenizer(module_dir_path, ":");
             while (tokenizer.hasMoreTokens()) {

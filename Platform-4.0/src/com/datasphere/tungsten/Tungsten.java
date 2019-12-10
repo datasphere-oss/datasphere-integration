@@ -47,7 +47,7 @@ import com.datasphere.cache.CacheConfiguration;
 import com.datasphere.cache.CacheManager;
 import com.datasphere.cache.CachingProvider;
 import com.datasphere.cache.ICache;
-import com.datasphere.classloading.StriimClassLoader;
+import com.datasphere.classloading.DSSClassLoader;
 import com.datasphere.classloading.WALoader;
 import com.datasphere.distribution.HQueue;
 import com.datasphere.event.QueryResultEvent;
@@ -276,7 +276,7 @@ public class Tungsten
                     }
                 }
             });
-            final StriimClassLoader scl = (StriimClassLoader)Thread.currentThread().getContextClassLoader();
+            final DSSClassLoader scl = (DSSClassLoader)Thread.currentThread().getContextClassLoader();
             try {
                 scl.scanModulePath();
             }
@@ -510,7 +510,7 @@ public class Tungsten
     }
     
     public static void main(final String[] args) throws Exception {
-        printf("Welcome to the Striim Tungsten Command Line - " + Version.getVersionString() + "\n");
+        printf("Welcome to the DSS Tungsten Command Line - " + Version.getVersionString() + "\n");
         initialize();
         final IMap<UUID, UUID> nodeIDToAuthToken = HazelcastSingleton.get().getMap("#nodeIDToAuthToken");
         nodeIDToAuthToken.put(HazelcastSingleton.getNodeId(), Tungsten.session_id);

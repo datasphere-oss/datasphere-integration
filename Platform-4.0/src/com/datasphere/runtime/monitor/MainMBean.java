@@ -74,7 +74,7 @@ public class MainMBean implements DynamicMBean
             attributes[pos++] = new MBeanAttributeInfo(entry.getKey(), entry.getValue().getClass().getName(), MonitorEvent.Type.valueOf(entry.getKey()).getDescription(), true, false, false);
         }
         if (MainMBean.logger.isDebugEnabled()) {
-            MainMBean.logger.debug((Object)("StriimMBean info - classname: " + className + " . Attributes: " + attributes));
+            MainMBean.logger.debug((Object)("DSSMBean info - classname: " + className + " . Attributes: " + attributes));
         }
         return new MBeanInfo(className, description, attributes, null, null, null);
     }

@@ -48,7 +48,7 @@ import com.datasphere.appmanager.AppManager;
 import com.datasphere.appmanager.AppManagerServerLocation;
 import com.datasphere.appmanager.EventQueueManager;
 import com.datasphere.appmanager.event.Event;
-import com.datasphere.classloading.StriimClassLoader;
+import com.datasphere.classloading.DSSClassLoader;
 import com.datasphere.classloading.WALoader;
 import com.datasphere.discovery.UdpDiscoveryServer;
 import com.datasphere.distribution.HQueue;
@@ -153,7 +153,7 @@ public class Server extends BaseServer implements ShowStreamExecutor, LiveObject
     public static final String defaultDeploymentGroupName = "default";
     public static final String SERVER_LIST_LOCK = "ServerList";
     private static Logger logger;
-    public static final String verifyPropertyTemplates = "com.striim.verifyPropertyTemplates";
+    public static final String verifyPropertyTemplates = "com.dss.verifyPropertyTemplates";
     private final ExecutorService pool;
     private final ScheduledThreadPoolExecutor servicesScheduler;
     private final Map<UUID, HashMap<UUID, Pair<Publisher, Subscriber>>> userQueryRecords;
@@ -479,7 +479,7 @@ public class Server extends BaseServer implements ShowStreamExecutor, LiveObject
             this.putObject(global);
         }
         this.loadModules();
-        final String vpt = System.getProperty("com.striim.verifyPropertyTemplates");
+        final String vpt = System.getProperty("com.dss.verifyPropertyTemplates");
         boolean shouldVerifyPT = false;
         if (vpt == null || (vpt != null && (vpt.equals("") || vpt.equalsIgnoreCase("true") || !vpt.equalsIgnoreCase("false")))) {
             shouldVerifyPT = true;
@@ -1127,7 +1127,7 @@ public class Server extends BaseServer implements ShowStreamExecutor, LiveObject
     }
     
     private void loadModules() {
-        final StriimClassLoader scl = (StriimClassLoader)Thread.currentThread().getContextClassLoader();
+        final DSSClassLoader scl = (DSSClassLoader)Thread.currentThread().getContextClassLoader();
         try {
             scl.scanModulePath();
         }
@@ -1503,7 +1503,7 @@ public class Server extends BaseServer implements ShowStreamExecutor, LiveObject
     
     @Override
     public void shutdown() {
-        Server.logger.warn("Shutting down Striim Server\n");
+        Server.logger.warn("Shutting down DSS Server\n");
         if (this.discoveryTask != null) {
             this.discoveryTask.cancel(true);
         }
@@ -1524,7 +1524,7 @@ public class Server extends BaseServer implements ShowStreamExecutor, LiveObject
         }
         super.shutdown();
         if (Server.logger.isInfoEnabled()) {
-            Server.logger.info("Striim Server shutdown finished");
+            Server.logger.info("DSS Server shutdown finished");
         }
     }
     
@@ -2310,11 +2310,11 @@ public class Server extends BaseServer implements ShowStreamExecutor, LiveObject
                 final Class<?> bqWizClass = ClassLoader.getSystemClassLoader().loadClass("com.datasphere.proc.BigQueryWriterWizard");
                 final Class<?> dbwriterWizClass = ClassLoader.getSystemClassLoader().loadClass("com.datasphere.wizard.DatabaseWriterWizard");
                 final Class<?> hdfsWriterWizardClass = ClassLoader.getSystemClassLoader().loadClass("com.datasphere.proc.HDFSWriter_1_0");
-                final Class<?> azureBlobWriterWizardClass = ClassLoader.getSystemClassLoader().loadClass("com.striim.ui.wizard.AzureBlobWriterWizard");
-                final Class<?> KafkaWriter8WizardClass = ClassLoader.getSystemClassLoader().loadClass("com.striim.ui.wizard.KafkaWriter8Wizard");
-                final Class<?> kafkaWriter9WizardClass = ClassLoader.getSystemClassLoader().loadClass("com.striim.ui.wizard.KafkaWriter9Wizard");
-                final Class<?> kafkaWriter10WizardClass = ClassLoader.getSystemClassLoader().loadClass("com.striim.ui.wizard.KafkaWriter10Wizard");
-                final Class<?> hdInsightHdfsWriterClass = ClassLoader.getSystemClassLoader().loadClass("com.striim.proc.HDInsightHDFSWriter");
+                final Class<?> azureBlobWriterWizardClass = ClassLoader.getSystemClassLoader().loadClass("com.dss.ui.wizard.AzureBlobWriterWizard");
+                final Class<?> KafkaWriter8WizardClass = ClassLoader.getSystemClassLoader().loadClass("com.dss.ui.wizard.KafkaWriter8Wizard");
+                final Class<?> kafkaWriter9WizardClass = ClassLoader.getSystemClassLoader().loadClass("com.dss.ui.wizard.KafkaWriter9Wizard");
+                final Class<?> kafkaWriter10WizardClass = ClassLoader.getSystemClassLoader().loadClass("com.dss.ui.wizard.KafkaWriter10Wizard");
+                final Class<?> hdInsightHdfsWriterClass = ClassLoader.getSystemClassLoader().loadClass("com.dss.proc.HDInsightHDFSWriter");
                 final ICDCWizard msWiz = (ICDCWizard)mssqlWizClass.newInstance();
                 final ICDCWizard OraWiz = (ICDCWizard)oracleWizClass.newInstance();
                 final ICDCWizard mysqlWiz = (ICDCWizard)mysqlWizClass.newInstance();
@@ -2357,7 +2357,7 @@ public class Server extends BaseServer implements ShowStreamExecutor, LiveObject
                 Server.webServer.addResourceHandler("/dashboard/edit", "./ui", true, new String[] { "edit-visualizations.html" });
                 Server.webServer.addResourceHandler("/monitor", "./ui", true, new String[] { "monitor_index.html" });
                 Server.webServer.addResourceHandler("/admin", "./ui/admin", true, new String[] { "index.html" });
-                Server.webServer.addResourceHandler("/docs", "./webui/onlinedocs/", true, new String[] { "Striim_documentation.html" });
+                Server.webServer.addResourceHandler("/docs", "./webui/onlinedocs/", true, new String[] { "DSS_documentation.html" });
                 Server.webServer.addResourceHandler("/flow", "./ui", true, new String[] { "flow/flow.html" });
                 Server.webServer.addResourceHandler("/flow/edit", "./ui", true, new String[] { "flow/flow.html" });
                 Server.webServer.addResourceHandler("/root", "./ui", false, null);
@@ -2426,9 +2426,9 @@ public class Server extends BaseServer implements ShowStreamExecutor, LiveObject
     }
     
     public static void main(final String[] args) throws Exception {
-        printf("Starting Striim Server - " + Version.getVersionString() + "\n");
+        printf("Starting DSS Server - " + Version.getVersionString() + "\n");
         if (Server.logger.isInfoEnabled()) {
-            Server.logger.info(("Starting Striim Server - " + Version.getVersionString() + "\n"));
+            Server.logger.info(("Starting DSS Server - " + Version.getVersionString() + "\n"));
         }
         Server.server = new Server();
         final ILock lock = HazelcastSingleton.get().getLock("#ServerStartupLock");

@@ -26,7 +26,7 @@ public final class AppManager
     }
     
     public void changeApplicationState(final ActionType what, final UUID flowId, final Map<String, Object> params, final UUID requestId) throws Exception {
-        AppManager.logger.info((Object)("Change Striim Application State: " + what + ": " + flowId));
+        AppManager.logger.info((Object)("Change DSS Application State: " + what + ": " + flowId));
         EventQueueManager.get().sendApiEvent(requestId, what, params, flowId);
     }
     
