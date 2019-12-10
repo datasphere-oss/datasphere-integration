@@ -1,6 +1,6 @@
 log4j.rootLogger=info, logfile
 log4j.appender.logfile=org.apache.log4j.RollingFileAppender
-log4j.appender.logfile.File=logs/striim.server.log
+log4j.appender.logfile.File=logs/dss.server.log
 log4j.appender.logfile.MaxFileSize=100MB
 log4j.appender.logfile.MaxBackupIndex=4
 log4j.appender.logfile.layout=org.apache.log4j.PatternLayout
@@ -9,7 +9,7 @@ log4j.appender.logfile.layout.ConversionPattern=%d @%X{ServerToken} -%p %t %C.%M
 # output user commands to log file
 log4j.logger.command_logger=debug, A1
 log4j.appender.A1=org.apache.log4j.RollingFileAppender
-log4j.appender.A1.File=logs/striim.command.log
+log4j.appender.A1.File=logs/dss.command.log
 log4j.appender.A1.MaxFileSize=10MB
 log4j.appender.A1.MaxBackupIndex=2
 log4j.appender.A1.layout=org.apache.log4j.PatternLayout
