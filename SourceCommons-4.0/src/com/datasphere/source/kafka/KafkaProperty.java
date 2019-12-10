@@ -28,7 +28,7 @@ public class KafkaProperty extends Property
     
     public KafkaProperty(final Map<String, Object> mp) {
         super(mp);
-        this.posType = positiontype.WA_POSITION_EOF;
+        this.posType = positiontype.HD_POSITION_EOF;
         this.partitionList = null;
         this.brokerAddressList = null;
         this.kafkaBrokerConfigList = null;
@@ -49,20 +49,20 @@ public class KafkaProperty extends Property
                 throw new RuntimeException("Position by startOffset (" + this.positionValue + ") and position by timestamp (" + this.propMap.get("startTimestamp") + ") can not be supported at the same time. Please specify anyone.");
             }
             if (this.positionValue == -1) {
-                this.posType = positiontype.WA_POSITION_EOF;
+                this.posType = positiontype.HD_POSITION_EOF;
             }
             else if (this.positionValue == 0) {
-                this.posType = positiontype.WA_POSITION_SOF;
+                this.posType = positiontype.HD_POSITION_SOF;
             }
             else if (this.positionValue > 0) {
-                this.posType = positiontype.WA_POSITION_OFFSET;
+                this.posType = positiontype.HD_POSITION_OFFSET;
             }
             else if (this.positionValue < -1) {
                 throw new RuntimeException("Invalid start offset value " + this.positionValue + ". Supported values are 0(beginning of all partition(s)), -1 (End of all partition(s)), Valid Kafka offset (supported only for single partition setup).");
             }
         }
         if (this.propMap.get("startTimestamp") != null) {
-            this.posType = positiontype.WA_POSITION_TIMESTAMP;
+            this.posType = positiontype.HD_POSITION_TIMESTAMP;
         }
         if (this.propMap.get("KafkaConfig") != null) {
             String properties = (String)this.propMap.get("KafkaConfig");

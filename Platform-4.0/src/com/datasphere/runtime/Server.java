@@ -682,7 +682,7 @@ public class Server extends BaseServer implements ShowStreamExecutor, LiveObject
     
     private void createAdminUserAndRoleSetup() throws Exception {
         if (this.security_manager.getUser("admin") == null) {
-            final String adminPassword = System.getProperty("com.datasphere.config.adminPassword", System.getenv("WA_ADMIN_PASSWORD"));
+            final String adminPassword = System.getProperty("com.datasphere.config.adminPassword", System.getenv("HD_ADMIN_PASSWORD"));
             boolean verified = false;
             String password;
             if (adminPassword != null && !adminPassword.isEmpty()) {

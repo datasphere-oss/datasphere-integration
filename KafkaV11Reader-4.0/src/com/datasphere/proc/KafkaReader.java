@@ -291,9 +291,9 @@ public abstract class KafkaReader extends SourceProcess
             if (KafkaReader.logger.isInfoEnabled()) {
                 KafkaReader.logger.info((Object)("Restart position " + this.kafkaSourcePositions.toString()));
             }
-            this.posType = positiontype.WA_POSITION_OFFSET;
+            this.posType = positiontype.HD_POSITION_OFFSET;
         }
-        else if (this.posType.equals((Object)positiontype.WA_POSITION_OFFSET)) {
+        else if (this.posType.equals((Object)positiontype.HD_POSITION_OFFSET)) {
             for (final TopicPartition tp : this.topicPartitionsAssignedToThisReader) {
                 final String key = this.topic + "-" + tp.partition();
                 final KafkaSourcePosition sp = new KafkaSourcePosition(this.topic, tp.partition(), 0L, (long)this.prop.positionValue);

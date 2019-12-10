@@ -2,10 +2,10 @@ package com.datasphere.source.lib.type;
 
 public enum positiontype
 {
-    WA_POSITION_EOF, 
-    WA_POSITION_TIMESTAMP, 
-    WA_POSITION_LSN, 
-    WA_POSITION_SOF, 
-    WA_POSITION_OFFSET,
-    WA_POSITION_LSN_RESTART;
+    HD_POSITION_EOF, 
+    HD_POSITION_TIMESTAMP, 
+    HD_POSITION_LSN, 
+    HD_POSITION_SOF, 
+    HD_POSITION_OFFSET,
+    HD_POSITION_LSN_RESTART;
 }

@@ -332,161 +332,161 @@ public class MySQLColumn extends DatabaseColumn
     public void setInternalColumnType(final String dataTypeName) {
         switch (dataTypeName) {
             case "BIT": {
-                this.internalType = columntype.WA_LONG;
+                this.internalType = columntype.HD_LONG;
                 break;
             }
             case "TINYINT": {
-                this.internalType = columntype.WA_SIGNED_BYTE;
+                this.internalType = columntype.HD_SIGNED_BYTE;
                 break;
             }
             case "SMALLINT": {
-                this.internalType = columntype.WA_SIGNED_SHORT;
+                this.internalType = columntype.HD_SIGNED_SHORT;
                 break;
             }
             case "MEDIUMINT": {
-                this.internalType = columntype.WA_SIGNED_INTEGER;
+                this.internalType = columntype.HD_SIGNED_INTEGER;
                 break;
             }
             case "INT":
             case "INTEGER": {
-                this.internalType = columntype.WA_SIGNED_INTEGER;
+                this.internalType = columntype.HD_SIGNED_INTEGER;
                 break;
             }
             case "BIGINT": {
-                this.internalType = columntype.WA_SIGNED_LONG;
+                this.internalType = columntype.HD_SIGNED_LONG;
                 break;
             }
             case "TINYINT UNSIGNED": {
-                this.internalType = columntype.WA_SHORT;
+                this.internalType = columntype.HD_SHORT;
                 break;
             }
             case "SMALLINT UNSIGNED": {
-                this.internalType = columntype.WA_INTEGER;
+                this.internalType = columntype.HD_INTEGER;
                 break;
             }
             case "MEDIUMINT UNSIGNED": {
-                this.internalType = columntype.WA_INTEGER;
+                this.internalType = columntype.HD_INTEGER;
                 break;
             }
             case "INT UNSIGNED":
             case "INTEGER UNSIGNED": {
-                this.internalType = columntype.WA_LONG;
+                this.internalType = columntype.HD_LONG;
                 break;
             }
             case "BIGINT UNSIGNED": {
-                this.internalType = columntype.WA_LONG;
+                this.internalType = columntype.HD_LONG;
                 break;
             }
             case "REAL":
             case "FLOAT": {
-                this.internalType = columntype.WA_FLOAT;
+                this.internalType = columntype.HD_FLOAT;
                 break;
             }
             case "DOUBLE": {
-                this.internalType = columntype.WA_DOUBLE;
+                this.internalType = columntype.HD_DOUBLE;
                 break;
             }
             case "REAL UNSIGNED":
             case "FLOAT UNSIGNED": {
-                this.internalType = columntype.WA_FLOAT;
+                this.internalType = columntype.HD_FLOAT;
                 break;
             }
             case "DOUBLE UNSIGNED": {
-                this.internalType = columntype.WA_DOUBLE;
+                this.internalType = columntype.HD_DOUBLE;
                 break;
             }
             case "DECIMAL":
             case "NUMERIC": {
-                this.internalType = columntype.WA_STRING;
+                this.internalType = columntype.HD_STRING;
                 break;
             }
             case "DECIMAL UNSIGNED":
             case "NUMERIC UNSIGNED": {
-                this.internalType = columntype.WA_STRING;
+                this.internalType = columntype.HD_STRING;
                 break;
             }
             case "DATE": {
-                this.internalType = columntype.WA_DATE;
+                this.internalType = columntype.HD_DATE;
                 break;
             }
             case "TIME": {
-                this.internalType = columntype.WA_STRING;
+                this.internalType = columntype.HD_STRING;
                 break;
             }
             case "TIMESTAMP": {
-                this.internalType = columntype.WA_DATETIME;
+                this.internalType = columntype.HD_DATETIME;
                 break;
             }
             case "DATETIME": {
-                this.internalType = columntype.WA_DATETIME;
+                this.internalType = columntype.HD_DATETIME;
                 break;
             }
             case "YEAR": {
-                this.internalType = columntype.WA_SHORT;
+                this.internalType = columntype.HD_SHORT;
                 break;
             }
             case "CHAR": {
-                this.internalType = columntype.WA_STRING;
+                this.internalType = columntype.HD_STRING;
                 break;
             }
             case "VARCHAR": {
-                this.internalType = columntype.WA_STRING;
+                this.internalType = columntype.HD_STRING;
                 break;
             }
             case "BINARY": {
-                this.internalType = columntype.WA_BINARY;
+                this.internalType = columntype.HD_BINARY;
                 break;
             }
             case "VARBINARY": {
-                this.internalType = columntype.WA_BINARY;
+                this.internalType = columntype.HD_BINARY;
                 break;
             }
             case "TINYBLOB": {
-                this.internalType = columntype.WA_BLOB;
+                this.internalType = columntype.HD_BLOB;
                 break;
             }
             case "BLOB": {
-                this.internalType = columntype.WA_BLOB;
+                this.internalType = columntype.HD_BLOB;
                 break;
             }
             case "MEDIUMBLOB": {
-                this.internalType = columntype.WA_BLOB;
+                this.internalType = columntype.HD_BLOB;
                 break;
             }
             case "LONGBLOB": {
-                this.internalType = columntype.WA_BLOB;
+                this.internalType = columntype.HD_BLOB;
                 break;
             }
             case "TINYTEXT": {
-                this.internalType = columntype.WA_CLOB;
+                this.internalType = columntype.HD_CLOB;
                 break;
             }
             case "TEXT": {
-                this.internalType = columntype.WA_CLOB;
+                this.internalType = columntype.HD_CLOB;
                 break;
             }
             case "MEDIUMTEXT": {
-                this.internalType = columntype.WA_CLOB;
+                this.internalType = columntype.HD_CLOB;
                 break;
             }
             case "LONGTEXT": {
-                this.internalType = columntype.WA_CLOB;
+                this.internalType = columntype.HD_CLOB;
                 break;
             }
             case "ENUM": {
-                this.internalType = columntype.WA_INTEGER;
+                this.internalType = columntype.HD_INTEGER;
                 break;
             }
             case "SET": {
-                this.internalType = columntype.WA_LONG;
+                this.internalType = columntype.HD_LONG;
                 break;
             }
             case "JSON": {
-                this.internalType = columntype.WA_STRING;
+                this.internalType = columntype.HD_STRING;
                 break;
             }
             default: {
-                this.internalType = columntype.WA_UNSUPPORTED;
+                this.internalType = columntype.HD_UNSUPPORTED;
                 break;
             }
         }

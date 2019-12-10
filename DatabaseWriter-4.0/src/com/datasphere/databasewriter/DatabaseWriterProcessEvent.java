@@ -663,7 +663,7 @@ public class DatabaseWriterProcessEvent extends Observable implements DBInterfac
 						this.commit();
 						this.savePoint = null;
 					} else if (operationStr.equals("begin")) {
-						this.savePoint = this.connectionObject.getConnection().setSavepoint("WA_SAVE_PONT");
+						this.savePoint = this.connectionObject.getConnection().setSavepoint("HD_SAVE_PONT");
 					} else if ("1".equals(((HDEvent) event).metadata.get("Rollback"))) {
 						if (this.savePoint != null) {
 							this.connectionObject.getConnection().rollback(this.savePoint);

@@ -200,7 +200,7 @@ public class KafkaV8Reader extends SourceProcess {
 				if (KafkaV8Reader.logger.isDebugEnabled()) {
 					KafkaV8Reader.logger.info((Object) ("Restart position " + this.kafkaSourcePositions.toString()));
 				}
-				this.posType = positiontype.WA_POSITION_OFFSET;
+				this.posType = positiontype.HD_POSITION_OFFSET;
 			} else {
 				this.posType = this.prop.posType;
 			}
@@ -252,7 +252,7 @@ public class KafkaV8Reader extends SourceProcess {
 						(Object) ("Partition with ID " + partitionId + " does not exist in the topic " + this.topic));
 				++noOfInvalidParitionId;
 			} else {
-				if (this.posType == positiontype.WA_POSITION_OFFSET) {
+				if (this.posType == positiontype.HD_POSITION_OFFSET) {
 					final String key = (this.distributionId != null && !this.distributionId.isEmpty())
 							? (this.distributionId + ":" + this.topic + "-" + partitionId)
 							: (this.topic + "-" + partitionId);
@@ -274,7 +274,7 @@ public class KafkaV8Reader extends SourceProcess {
 											+ kafkaReadOffset + " for " + this.topic + "-" + partitionId));
 						}
 					}
-				} else if (this.posType == positiontype.WA_POSITION_EOF) {
+				} else if (this.posType == positiontype.HD_POSITION_EOF) {
 					kafkaReadOffset = KafkaUtils.getPartitionOffset(this.topic, partitionId,
 							kafka.api.OffsetRequest.LatestTime(), partitionMetadata.leader().host(),
 							partitionMetadata.leader().port());
@@ -282,7 +282,7 @@ public class KafkaV8Reader extends SourceProcess {
 						KafkaV8Reader.logger.info((Object) ("Restart by EOF (End of File). Read offset is "
 								+ kafkaReadOffset + " for " + this.topic + "-" + partitionId));
 					}
-				} else if (this.posType == positiontype.WA_POSITION_SOF) {
+				} else if (this.posType == positiontype.HD_POSITION_SOF) {
 					kafkaReadOffset = KafkaUtils.getPartitionOffset(this.topic, partitionId,
 							kafka.api.OffsetRequest.EarliestTime(), partitionMetadata.leader().host(),
 							partitionMetadata.leader().port());

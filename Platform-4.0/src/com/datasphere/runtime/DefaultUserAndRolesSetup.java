@@ -31,7 +31,7 @@ public class DefaultUserAndRolesSetup
     
     private static void createAdminUserAndRoleSetup() throws Exception {
         if (DefaultUserAndRolesSetup.security_manager.getUser("admin") == null) {
-            final String adminPassword = System.getProperty("com.datasphere.config.adminPassword", System.getenv("WA_ADMIN_PASSWORD"));
+            final String adminPassword = System.getProperty("com.datasphere.config.adminPassword", System.getenv("HD_ADMIN_PASSWORD"));
             String password = null;
             boolean verified = false;
             if (adminPassword != null && !adminPassword.isEmpty()) {

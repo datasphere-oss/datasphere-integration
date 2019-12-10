@@ -2,9 +2,9 @@ package com.datasphere.source.lib.type;
 
 public enum columnsubtype
 {
-    WA_SIGNED_INTEGER(0), 
-    WA_NORMAL_CHAR(1), 
-    WA_NO_SUBTYPE(2);
+    HD_SIGNED_INTEGER(0), 
+    HD_NORMAL_CHAR(1), 
+    HD_NO_SUBTYPE(2);
     
     int type;
     

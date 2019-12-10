@@ -341,49 +341,49 @@ public class OracleColumn extends DatabaseColumn
     @Override
     public void setInternalColumnType(final String dataTypeName) {
         if (dataTypeName.equalsIgnoreCase("ROWID") || dataTypeName.equalsIgnoreCase("UROWID")) {
-            this.internalType = columntype.WA_STRING;
+            this.internalType = columntype.HD_STRING;
         }
         if (dataTypeName.equalsIgnoreCase("NUMBER")) {
-            this.internalType = columntype.WA_STRING;
+            this.internalType = columntype.HD_STRING;
         }
         else if (dataTypeName.equalsIgnoreCase("FLOAT")) {
-            this.internalType = columntype.WA_FLOAT;
+            this.internalType = columntype.HD_FLOAT;
         }
         else if (dataTypeName.equalsIgnoreCase("LONG")) {
-            this.internalType = columntype.WA_LONG;
+            this.internalType = columntype.HD_LONG;
         }
         else if (dataTypeName.startsWith("INTERVAL DAY", 0)) {
-            this.internalType = columntype.WA_STRING;
+            this.internalType = columntype.HD_STRING;
         }
         else if (dataTypeName.startsWith("INTERVAL YEAR", 0)) {
-            this.internalType = columntype.WA_STRING;
+            this.internalType = columntype.HD_STRING;
         }
         else if (dataTypeName.equalsIgnoreCase("NCHAR") || dataTypeName.equalsIgnoreCase("NVARCHAR2")) {
-            this.internalType = columntype.WA_UTF16_STRING;
+            this.internalType = columntype.HD_UTF16_STRING;
         }
         else if (dataTypeName.equalsIgnoreCase("CHAR") || dataTypeName.equalsIgnoreCase("VARCHAR2")) {
-            this.internalType = columntype.WA_STRING;
+            this.internalType = columntype.HD_STRING;
         }
         else if (dataTypeName.equalsIgnoreCase("DATE") || dataTypeName.startsWith("TIMESTAMP", 0)) {
-            this.internalType = columntype.WA_DATETIME;
+            this.internalType = columntype.HD_DATETIME;
         }
         else if (dataTypeName.equalsIgnoreCase("BINARY_FLOAT")) {
-            this.internalType = columntype.WA_FLOAT;
+            this.internalType = columntype.HD_FLOAT;
         }
         else if (dataTypeName.equalsIgnoreCase("BINARY_DOUBLE")) {
-            this.internalType = columntype.WA_DOUBLE;
+            this.internalType = columntype.HD_DOUBLE;
         }
         else if (dataTypeName.equalsIgnoreCase("RAW") || dataTypeName.equalsIgnoreCase("LONG RAW")) {
-            this.internalType = columntype.WA_STRING;
+            this.internalType = columntype.HD_STRING;
         }
         else if (dataTypeName.equalsIgnoreCase("BLOB")) {
-            this.internalType = columntype.WA_STRING;
+            this.internalType = columntype.HD_STRING;
         }
         else if (dataTypeName.equalsIgnoreCase("CLOB") || dataTypeName.equalsIgnoreCase("NCLOB")) {
-            this.internalType = columntype.WA_STRING;
+            this.internalType = columntype.HD_STRING;
         }
         else {
-            this.internalType = columntype.WA_STRING;
+            this.internalType = columntype.HD_STRING;
         }
     }
     

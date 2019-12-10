@@ -31,7 +31,7 @@ public class KafkaV11Reader extends KafkaReader {
 
 	@Override
 	public void setConsumerPosition(final List<TopicPartition> tpList, final int totalPartitionCount) {
-		if (this.posType == positiontype.WA_POSITION_OFFSET) {
+		if (this.posType == positiontype.HD_POSITION_OFFSET) {
 			final Map<TopicPartition, Long> beginOffsets = this.oneConsumerForAllPartitions.beginningOffsets(tpList);
 			final Map<TopicPartition, Long> lastOffsets = this.oneConsumerForAllPartitions.endOffsets(tpList);
 			this.oneConsumerForAllPartitions.seekToEnd(new ArrayList<TopicPartition>());
@@ -66,11 +66,11 @@ public class KafkaV11Reader extends KafkaReader {
 					super.oneConsumerForAllPartitions.seekToBeginning(Collections.singletonList(tp));
 				}
 			}
-		} else if (this.posType == positiontype.WA_POSITION_EOF) {
+		} else if (this.posType == positiontype.HD_POSITION_EOF) {
 			super.oneConsumerForAllPartitions.seekToEnd(new ArrayList<TopicPartition>());
-		} else if (this.posType == positiontype.WA_POSITION_SOF) {
+		} else if (this.posType == positiontype.HD_POSITION_SOF) {
 			super.oneConsumerForAllPartitions.seekToBeginning(new ArrayList<TopicPartition>());
-		} else if (this.posType == positiontype.WA_POSITION_TIMESTAMP) {
+		} else if (this.posType == positiontype.HD_POSITION_TIMESTAMP) {
 			final Map propMap = this.prop.propMap;
 			final KafkaProperty prop = this.prop;
 			final Object timeObj = propMap.get("startTimestamp");

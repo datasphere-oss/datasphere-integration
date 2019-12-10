@@ -110,7 +110,7 @@ public class Tungsten
     public static PrintFormat currentFormat;
     protected static String commandLineFormat;
     protected static Context ctx;
-    private static String WA_LOG;
+    private static String HD_LOG;
     private static Map<Keywords, String> enumMap;
     private static String SPOOL_ERROR_MSG;
     private static File file;
@@ -695,7 +695,7 @@ public class Tungsten
             return;
         }
         if (parts[1].equalsIgnoreCase("ON")) {
-            String fileName = Tungsten.WA_LOG;
+            String fileName = Tungsten.HD_LOG;
             boolean spoolConditionsMet = false;
             if (parts.length == 2) {
                 spoolConditionsMet = true;
@@ -1803,7 +1803,7 @@ public class Tungsten
         Tungsten.currentFormat = PrintFormat.JSON;
         Tungsten.commandLineFormat = "W (%A) > ";
         Tungsten.ctx = null;
-        Tungsten.WA_LOG = "WA.LOG";
+        Tungsten.HD_LOG = "WA.LOG";
         Tungsten.enumMap = new EnumMap<Keywords, String>(Keywords.class);
         Tungsten.SPOOL_ERROR_MSG = "Error on spool command.\n";
         Tungsten.query = null;
