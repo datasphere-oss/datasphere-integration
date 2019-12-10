@@ -13,15 +13,15 @@ public class HDEventMetadataLookup extends MetadataLookup
     
     @Override
     public List<Object> get(final Event event) {
-        final HDEvent waEvent = (HDEvent)event;
-        if (waEvent.metadata == null) {
+        final HDEvent hdEvent = (HDEvent)event;
+        if (hdEvent.metadata == null) {
             throw new RuntimeException("metadata field of HDEvent to be looked up is not intialized");
         }
-        if (!waEvent.metadata.containsKey(this.dataToBeLookedUp)) {
+        if (!hdEvent.metadata.containsKey(this.dataToBeLookedUp)) {
             throw new RuntimeException("metadata field of HDEvent to be looked up doesn't contain specified key " + this.dataToBeLookedUp);
         }
         final List<Object> dataList = new ArrayList<Object>();
-        dataList.add(waEvent.metadata.get(this.dataToBeLookedUp));
+        dataList.add(hdEvent.metadata.get(this.dataToBeLookedUp));
         return dataList;
     }
 }

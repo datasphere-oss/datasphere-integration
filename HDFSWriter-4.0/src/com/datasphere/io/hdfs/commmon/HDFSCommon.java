@@ -1,9 +1,9 @@
 package com.datasphere.io.hdfs.commmon;
 
-import com.datalliance.source.lib.prop.*;
+import com.datasphere.source.lib.prop.*;
 import org.apache.log4j.*;
 import org.apache.hadoop.conf.*;
-import com.datalliance.common.exc.*;
+import com.datasphere.common.exc.*;
 import java.net.*;
 import java.nio.file.*;
 import org.apache.hadoop.fs.*;
@@ -12,8 +12,8 @@ import org.apache.hadoop.fs.Path;
 
 import java.io.*;
 import org.apache.hadoop.security.*;
-import com.datalliance.common.errors.*;
-import com.datalliance.common.errors.Error;
+import com.datasphere.common.errors.*;
+import com.datasphere.common.errors.Error;
 
 import java.util.*;
 

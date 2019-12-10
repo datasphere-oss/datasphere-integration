@@ -11,7 +11,7 @@ import com.datasphere.intf.Formatter;
 import com.datasphere.metaRepository.MetaDataRepositoryException;
 import com.datasphere.metaRepository.MetadataRepository;
 import com.datasphere.runtime.meta.MetaInfo;
-import com.datasphere.security.WASecurityManager;
+import com.datasphere.security.HDSecurityManager;
 import com.datasphere.uuid.UUID;
 import com.datasphere.source.lib.prop.Property;
 
@@ -28,8 +28,8 @@ public abstract class BaseWriter extends BaseProcess
     
     public void onDeploy(final Map<String, Object> writerProperties, final Map<String, Object> formatterProperties, final Map<String, Object> parallelismProperties, final UUID inputStream) throws Exception {
         try {
-            final MetaInfo.Stream stream = (MetaInfo.Stream)MetadataRepository.getINSTANCE().getMetaObjectByUUID(inputStream, WASecurityManager.TOKEN);
-            final MetaInfo.Type dataType = (MetaInfo.Type)MetadataRepository.getINSTANCE().getMetaObjectByUUID(stream.dataType, WASecurityManager.TOKEN);
+            final MetaInfo.Stream stream = (MetaInfo.Stream)MetadataRepository.getINSTANCE().getMetaObjectByUUID(inputStream, HDSecurityManager.TOKEN);
+            final MetaInfo.Type dataType = (MetaInfo.Type)MetadataRepository.getINSTANCE().getMetaObjectByUUID(stream.dataType, HDSecurityManager.TOKEN);
             String typeName = dataType.name;
             if (formatterProperties == null || !formatterProperties.isEmpty()) {
                 formatterProperties.put("TypeName", typeName);
@@ -37,24 +37,24 @@ public abstract class BaseWriter extends BaseProcess
             final Class<?> typeClass = ClassLoader.getSystemClassLoader().loadClass(dataType.className);
             this.fields = typeClass.getDeclaredFields();
             if (typeClass.getSimpleName().equals("HDEvent")) {
-                final Field[] waEventFields = new Field[4];
+                final Field[] hdEventFields = new Field[4];
                 for (final Field field : this.fields) {
                     if (Modifier.isPublic(field.getModifiers())) {
                         if (field.getName().equals("metadata")) {
-                            waEventFields[0] = field;
+                            hdEventFields[0] = field;
                         }
                         else if (field.getName().equals("data")) {
-                            waEventFields[1] = field;
+                            hdEventFields[1] = field;
                         }
                         else if (field.getName().equals("before")) {
-                            waEventFields[2] = field;
+                            hdEventFields[2] = field;
                         }
                         else if (field.getName().equalsIgnoreCase("userdata")) {
-                            waEventFields[3] = field;
+                            hdEventFields[3] = field;
                         }
                     }
                 }
-                this.fields = waEventFields;
+                this.fields = hdEventFields;
                 if (formatterProperties == null || !formatterProperties.isEmpty()) {
                     formatterProperties.put("EventType", "HDEvent");
                 }

@@ -8,7 +8,7 @@ import org.apache.log4j.Logger;
 import com.datasphere.metaRepository.MetaDataRepositoryException;
 import com.datasphere.metaRepository.MetadataRepository;
 import com.datasphere.runtime.meta.MetaInfo;
-import com.datasphere.security.WASecurityManager;
+import com.datasphere.security.HDSecurityManager;
 import com.datasphere.uuid.UUID;
 import com.datasphere.proc.events.HDEvent;
 import com.datasphere.source.lib.utils.FieldModifier;
@@ -29,25 +29,25 @@ public abstract class CDCArrayFormatter extends FieldModifier
     public String modifyFieldValue(final Object fieldValue, final Object event) throws Exception {
         final Object object = this.field.get(event);
         if (object != null) {
-            final HDEvent waEvent = (HDEvent)event;
+            final HDEvent hdEvent = (HDEvent)event;
             Field[] fieldsOfThisTable = null;
-            if (waEvent.typeUUID != null) {
-                if (this.typeUUIDCache.containsKey(waEvent.typeUUID)) {
-                    fieldsOfThisTable = this.typeUUIDCache.get(waEvent.typeUUID);
+            if (hdEvent.typeUUID != null) {
+                if (this.typeUUIDCache.containsKey(hdEvent.typeUUID)) {
+                    fieldsOfThisTable = this.typeUUIDCache.get(hdEvent.typeUUID);
                 }
                 else {
                     try {
-                        final MetaInfo.Type dataType = (MetaInfo.Type)MetadataRepository.getINSTANCE().getMetaObjectByUUID(waEvent.typeUUID, WASecurityManager.TOKEN);
+                        final MetaInfo.Type dataType = (MetaInfo.Type)MetadataRepository.getINSTANCE().getMetaObjectByUUID(hdEvent.typeUUID, HDSecurityManager.TOKEN);
                         final Class<?> typeClass = ClassLoader.getSystemClassLoader().loadClass(dataType.className);
                         fieldsOfThisTable = typeClass.getDeclaredFields();
-                        this.typeUUIDCache.put(waEvent.typeUUID, fieldsOfThisTable);
+                        this.typeUUIDCache.put(hdEvent.typeUUID, fieldsOfThisTable);
                     }
                     catch (MetaDataRepositoryException | ClassNotFoundException e) {
-                        this.logger.warn((Object)("Unable to fetch the type for table " + waEvent.metadata.get("TableName") + e));
+                        this.logger.warn((Object)("Unable to fetch the type for table " + hdEvent.metadata.get("TableName") + e));
                     }
                 }
             }
-            return this.formatCDCArray(waEvent, (Object[])object, fieldsOfThisTable);
+            return this.formatCDCArray(hdEvent, (Object[])object, fieldsOfThisTable);
         }
         return null;
     }

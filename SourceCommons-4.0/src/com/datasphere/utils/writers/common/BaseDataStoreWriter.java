@@ -25,7 +25,7 @@ import com.datasphere.metaRepository.MetadataRepository;
 import com.datasphere.runtime.BuiltInFunc;
 import com.datasphere.runtime.components.Flow;
 import com.datasphere.runtime.meta.MetaInfo;
-import com.datasphere.security.WASecurityManager;
+import com.datasphere.security.HDSecurityManager;
 import com.datasphere.uuid.UUID;
 import com.datasphere.proc.BaseProcess;
 import com.datasphere.proc.events.HDEvent;
@@ -110,18 +110,18 @@ public abstract class BaseDataStoreWriter extends BaseProcess implements Acknowl
     }
     
     private void process(final Event event) throws Exception {
-        HDEvent waevent;
+        HDEvent event;
         if (this.typedEvent) {
-            waevent = this.convertTypedeventToWAevent(event);
+            event = this.convertTypedeventToHDevent(event);
         }
         else {
-            waevent = (HDEvent)event;
+            event = (HDEvent)event;
         }
-        this.updateAndExpireBatch(waevent);
+        this.updateAndExpireBatch(event);
     }
     //------暂时用以下替代  jack
-    private HDEvent convertTypedeventToWAevent(Event event) {
-    		HDEvent waEvent = null;
+    private HDEvent convertTypedeventToHDevent(Event event) {
+    		HDEvent hdEvent = null;
 		if (event instanceof HDEvent) {
 			HDEvent evt = (HDEvent) event;
 			if (evt.typeUUID == null) {
@@ -135,34 +135,34 @@ public abstract class BaseDataStoreWriter extends BaseProcess implements Acknowl
 					final Object[] payload = event.getPayload();
 					if (payload != null) {
 						final int payloadLength = payload.length;
-						waEvent = new HDEvent(payloadLength, (UUID) null);
-						waEvent.typeUUID = this.typeUUID;
-						waEvent.data = new Object[payloadLength];
+						hdEvent = new HDEvent(payloadLength, (UUID) null);
+						hdEvent.typeUUID = this.typeUUID;
+						hdEvent.data = new Object[payloadLength];
 						int i = 0;
 						for (final Object o : payload) {
-							waEvent.setData(i++, o);
+							hdEvent.setData(i++, o);
 						}
 					}
 				} else {
 					final Object[] payload = event.getPayload();
 					if (payload != null) {
 						final int payloadLength = payload.length;
-						waEvent = new HDEvent(payloadLength, (UUID) null);
-						waEvent.typeUUID = this.typeUUID;
-						waEvent.data = new Object[payloadLength];
+						hdEvent = new HDEvent(payloadLength, (UUID) null);
+						hdEvent.typeUUID = this.typeUUID;
+						hdEvent.data = new Object[payloadLength];
 						int i = 0;
 						for (final Object o : payload) {
-							waEvent.setData(i++, o);
+							hdEvent.setData(i++, o);
 						}
 					} else {
 						JSONArray objs = (JSONArray) object.get("data");
 						int payloadLength = objs.length();
-						waEvent = new HDEvent(payloadLength, (UUID) null);
-						waEvent.typeUUID = this.typeUUID;
-						waEvent.data = new Object[payloadLength];
+						hdEvent = new HDEvent(payloadLength, (UUID) null);
+						hdEvent.typeUUID = this.typeUUID;
+						hdEvent.data = new Object[payloadLength];
 						for (int i = 0; i < objs.length(); i++) {
 							Object obj = (Object) objs.get(i);
-							waEvent.setData(i, obj);
+							hdEvent.setData(i, obj);
 						}
 					}
 				}
@@ -171,24 +171,24 @@ public abstract class BaseDataStoreWriter extends BaseProcess implements Acknowl
 			}
 
 		}
-		return waEvent;
+		return hdEvent;
     }
     
-    protected void updateAndExpireBatch(final HDEvent waevent) throws Exception {
-        if (!waevent.metadata.containsKey("OperationName")) {
+    protected void updateAndExpireBatch(final HDEvent event) throws Exception {
+        if (!event.metadata.containsKey("OperationName")) {
             throw new AdapterException("Invalid HDEvent format. " + this.getClass().getSimpleName() + " supports HDEvent originating from CDC and database sources only. For other sources, please send the typed event stream.");
         }
-        if (!waevent.metadata.containsKey("TableName")) {
-            BaseDataStoreWriter.logger.warn((Object)("Ignoring event: " + waevent + " a field " + "TableName" + " is required in metadata"));
+        if (!event.metadata.containsKey("TableName")) {
+            BaseDataStoreWriter.logger.warn((Object)("Ignoring event: " + event + " a field " + "TableName" + " is required in metadata"));
             return;
         }
-        final String sourceTableName = waevent.metadata.get("TableName").toString();
-        final String isPKupdate = (String)waevent.metadata.get("PK_UPDATE");
+        final String sourceTableName = event.metadata.get("TableName").toString();
+        final String isPKupdate = (String)event.metadata.get("PK_UPDATE");
         if (isPKupdate != null && isPKupdate.trim().equalsIgnoreCase("true")) {
-            this.handlePKUpdateEvents(waevent, sourceTableName);
+            this.handlePKUpdateEvents(event, sourceTableName);
             return;
         }
-        final EventDataObject edo = this.getEventDataObject(waevent, waevent.data);
+        final EventDataObject edo = this.getEventDataObject(event, event.data);
         if (this.getSourceTargetMap().containsKey(sourceTableName)) {
             this.targetDataMap.get(this.getSourceTargetMap().get(sourceTableName)).add(edo);
         }
@@ -196,7 +196,7 @@ public abstract class BaseDataStoreWriter extends BaseProcess implements Acknowl
             this.targetDataMap.get(this.getSourceTargetMap().get("*")).add(edo);
         }
         else {
-            BaseDataStoreWriter.logger.warn((Object)("Ignoring event " + waevent + " No Mapping found, source not mapped with appropriate target"));
+            BaseDataStoreWriter.logger.warn((Object)("Ignoring event " + event + " No Mapping found, source not mapped with appropriate target"));
         }
         ++this.eventCounter;
         if (this.eventCounter >= this.writerProps.getBatchCount()) {
@@ -215,7 +215,7 @@ public abstract class BaseDataStoreWriter extends BaseProcess implements Acknowl
             }
             else {
                 try {
-                    final MetaInfo.Type dataType = (MetaInfo.Type)MetadataRepository.getINSTANCE().getMetaObjectByUUID(event.typeUUID, WASecurityManager.TOKEN);
+                    final MetaInfo.Type dataType = (MetaInfo.Type)MetadataRepository.getINSTANCE().getMetaObjectByUUID(event.typeUUID, HDSecurityManager.TOKEN);
                     keys = dataType.keyFields;
                     this.typeUUIDKeyCache.put(event.typeUUID, keys);
                     if (keys.isEmpty()) {
@@ -389,7 +389,7 @@ public abstract class BaseDataStoreWriter extends BaseProcess implements Acknowl
         }
         final MetadataRepository metadataRepository = MetadataRepository.getINSTANCE();
         try {
-            final MetaInfo.MetaObject object = metadataRepository.getMetaObjectByUUID(targetUUID, WASecurityManager.TOKEN);
+            final MetaInfo.MetaObject object = metadataRepository.getMetaObjectByUUID(targetUUID, HDSecurityManager.TOKEN);
             targetId = object.getFullName();
         }
         catch (MetaDataRepositoryException e) {

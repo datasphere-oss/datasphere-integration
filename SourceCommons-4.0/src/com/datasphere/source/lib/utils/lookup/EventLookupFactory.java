@@ -30,7 +30,7 @@ public class EventLookupFactory
     
     private static EventLookup validateAndInitializeMetadataLookup(final Field[] fields, final String lookupToken) throws Exception {
         final String incomingType = fields[0].getDeclaringClass().getSimpleName();
-        if (!incomingType.equalsIgnoreCase("waevent")) {
+        if (!incomingType.equalsIgnoreCase("event")) {
             throw new AdapterException("Failure in initializing writer. Metadata/Userdata lookup is supported for stream of type HDEvent and not supported for the type " + incomingType);
         }
         if (!lookupToken.contains("(") || !lookupToken.contains(")")) {

@@ -39,7 +39,7 @@ public abstract class FieldModifier
                 fieldModifier[i] = new MapFieldModifier(properties);
             }
             else if (field.getType().isArray()) {
-                if (field.getDeclaringClass().getSimpleName().equalsIgnoreCase("waevent")) {
+                if (field.getDeclaringClass().getSimpleName().equalsIgnoreCase("event")) {
                     if (formatterType.equalsIgnoreCase("dsv")) {
                         fieldModifier[i] = new DSVCDCArrayFormatter(field, properties);
                     }

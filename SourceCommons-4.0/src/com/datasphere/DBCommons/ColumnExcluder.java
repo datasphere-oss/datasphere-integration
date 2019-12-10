@@ -59,17 +59,17 @@ public class ColumnExcluder
         }
     }
     
-    public HDEvent excludeColumns(final HDEvent waevent) {
+    public HDEvent excludeColumns(final HDEvent event) {
         try {
-            final String tableName = waevent.metadata.get("TableName") == null ? null : waevent.metadata.get("TableName").toString();
+            final String tableName = event.metadata.get("TableName") == null ? null : event.metadata.get("TableName").toString();
             for (int i = 0; i < this.tableMap.get(tableName).size(); ++i) {
-                waevent.unsetData((int)this.tableMap.get(tableName).get(i));
+                event.unsetData((int)this.tableMap.get(tableName).get(i));
             }
         }
         catch (Exception e) {
             throw e;
         }
-        return waevent;
+        return event;
     }
     
     public boolean search(final String[] array, final String key) {

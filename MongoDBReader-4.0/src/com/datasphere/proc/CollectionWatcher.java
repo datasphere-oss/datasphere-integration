@@ -11,7 +11,7 @@ import org.bson.BsonTimestamp;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 
-import com.datalliance.runtime.BuiltInFunc;
+import com.datasphere.runtime.BuiltInFunc;
 import com.datasphere.mongodbreader.utils.Utilities;
 import com.datasphere.proc.events.JsonNodeEvent;
 import com.fasterxml.jackson.databind.JsonNode;

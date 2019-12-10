@@ -23,7 +23,7 @@ public class JSONCDCArrayFormatter extends CDCArrayFormatter
     }
     
     @Override
-    public String formatCDCArray(final HDEvent waEvent, final Object[] dataOrBeforeArray, final Field[] fields) {
+    public String formatCDCArray(final HDEvent hdEvent, final Object[] dataOrBeforeArray, final Field[] fields) {
         boolean addComma = false;
         final int lastIndex = dataOrBeforeArray.length - 1;
         if (lastIndex == -1) {
@@ -32,13 +32,13 @@ public class JSONCDCArrayFormatter extends CDCArrayFormatter
         final StringBuilder b = new StringBuilder();
         b.append("{" + this.jsonMemberDelimiter);
         for (int i = 0; i <= lastIndex; ++i) {
-            final boolean isPresent = BuiltInFunc.IS_PRESENT(waEvent, dataOrBeforeArray, i);
+            final boolean isPresent = BuiltInFunc.IS_PRESENT(hdEvent, dataOrBeforeArray, i);
             if (fields != null) {
                 if (isPresent) {
                     if (addComma) {
                         b.append("," + this.jsonMemberDelimiter);
                     }
-                    final String operationName = (String)BuiltInFunc.META(waEvent, Constant.OPERATION_TYPE);
+                    final String operationName = (String)BuiltInFunc.META(hdEvent, Constant.OPERATION_TYPE);
                     String columnName;
                     if (!operationName.isEmpty() && operationName.equalsIgnoreCase(Constant.DDL_OPERATION)) {
                         columnName = "DDLCommand";

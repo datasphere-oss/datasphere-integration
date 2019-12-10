@@ -23,7 +23,7 @@ public class DSVCDCArrayFormatter extends CDCArrayFormatter
     }
     
     @Override
-    public String formatCDCArray(final HDEvent waEvent, final Object[] dataOrBeforeArray, final Field[] fields) {
+    public String formatCDCArray(final HDEvent hdEvent, final Object[] dataOrBeforeArray, final Field[] fields) {
         final int lastIndex = dataOrBeforeArray.length - 1;
         if (lastIndex == -1) {
             return "";
@@ -31,7 +31,7 @@ public class DSVCDCArrayFormatter extends CDCArrayFormatter
         final StringBuilder b = new StringBuilder();
         for (int i = 0; i <= lastIndex; ++i) {
             if (fields != null) {
-                final boolean isPresent = BuiltInFunc.IS_PRESENT(waEvent, dataOrBeforeArray, i);
+                final boolean isPresent = BuiltInFunc.IS_PRESENT(hdEvent, dataOrBeforeArray, i);
                 if (isPresent) {
                     this.appendValue(dataOrBeforeArray[i], b);
                 }

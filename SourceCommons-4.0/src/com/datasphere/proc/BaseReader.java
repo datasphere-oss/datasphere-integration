@@ -24,7 +24,7 @@ import com.datasphere.runtime.compiler.TypeDefOrName;
 import com.datasphere.runtime.components.Flow;
 import com.datasphere.runtime.components.MonitorableComponent;
 import com.datasphere.runtime.monitor.MonitorEventsCollection;
-import com.datasphere.security.WASecurityManager;
+import com.datasphere.security.HDSecurityManager;
 import com.datasphere.uuid.UUID;
 import com.datasphere.recovery.BaseReaderSourcePosition;
 import com.datasphere.recovery.CheckpointDetail;
@@ -285,7 +285,7 @@ public class BaseReader extends SourceProcess implements Analyzer
             this.logger.debug((Object)("Not using startPosition...[" + startPosition + "]"));
         }
         if (this.sourceUUID != null) {
-            this.componentName = MetadataRepository.getINSTANCE().getMetaObjectByUUID(this.sourceUUID, WASecurityManager.TOKEN).getFullName();
+            this.componentName = MetadataRepository.getINSTANCE().getMetaObjectByUUID(this.sourceUUID, HDSecurityManager.TOKEN).getFullName();
         }
     }
     

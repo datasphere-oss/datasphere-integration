@@ -13,15 +13,15 @@ public class HDEventUserdataLookup extends MetadataLookup
     
     @Override
     public List<Object> get(final Event event) {
-        final HDEvent waEvent = (HDEvent)event;
-        if (waEvent.userdata == null) {
+        final HDEvent hdEvent = (HDEvent)event;
+        if (hdEvent.userdata == null) {
             throw new RuntimeException("userdata field of HDEvent to be looked up is not intialized");
         }
-        if (!waEvent.userdata.containsKey(this.dataToBeLookedUp)) {
+        if (!hdEvent.userdata.containsKey(this.dataToBeLookedUp)) {
             throw new RuntimeException("userdata field of HDEvent to be looked up doesn't contain specified key " + this.dataToBeLookedUp);
         }
         final List<Object> dataList = new ArrayList<Object>();
-        dataList.add(waEvent.userdata.get(this.dataToBeLookedUp));
+        dataList.add(hdEvent.userdata.get(this.dataToBeLookedUp));
         return dataList;
     }
 }

@@ -26,7 +26,7 @@ import com.datasphere.runtime.fileMetaExtension.FileMetadataExtension;
 import com.datasphere.runtime.meta.cdc.filters.FileMetadataFilter;
 import com.datasphere.runtime.monitor.MonitorEvent;
 import com.datasphere.runtime.monitor.MonitorEventsCollection;
-import com.datasphere.security.WASecurityManager;
+import com.datasphere.security.HDSecurityManager;
 import com.datasphere.uuid.UUID;
 import com.datasphere.recovery.CheckpointDetail;
 import com.datasphere.recovery.Path;
@@ -490,7 +490,7 @@ public class FileReader extends ReaderBase
     }
     
     protected void createOrUpdateFileMetadataEntry(final String filename, final String directoryName) {
-        final Set<FileMetadataExtension> list = (Set<FileMetadataExtension>)this.fileMetadataExtensionRepository.queryFileMetadataExtension(WASecurityManager.TOKEN, new FileMetadataFilter(this.componentName, this.componentUUID, directoryName, this.distributionID));
+        final Set<FileMetadataExtension> list = (Set<FileMetadataExtension>)this.fileMetadataExtensionRepository.queryFileMetadataExtension(HDSecurityManager.TOKEN, new FileMetadataFilter(this.componentName, this.componentUUID, directoryName, this.distributionID));
         if (list != null && list.size() > 0) {
             final Iterator<FileMetadataExtension> iterator = list.iterator();
             boolean isEntryInTheRepo = false;
@@ -504,7 +504,7 @@ public class FileReader extends ReaderBase
                         ++wrapNo;
                         fileMetadataExtension.setWrapNumber(wrapNo);
                         fileMetadataExtension.setStatus(FileMetadataExtension.Status.PROCESSING.toString());
-                        this.fileMetadataExtensionRepository.putFileMetadataExtension(WASecurityManager.TOKEN, fileMetadataExtension);
+                        this.fileMetadataExtensionRepository.putFileMetadataExtension(HDSecurityManager.TOKEN, fileMetadataExtension);
                         break;
                     }
                     continue;
@@ -532,7 +532,7 @@ public class FileReader extends ReaderBase
         this.fileMetadataExtension.setStatus(FileMetadataExtension.Status.PROCESSING.toString());
         this.fileMetadataExtension.setWrapNumber(1L);
         this.fileMetadataExtension.setDistributionID(this.distributionID);
-        this.fileMetadataExtensionRepository.putFileMetadataExtension(WASecurityManager.TOKEN, this.fileMetadataExtension);
+        this.fileMetadataExtensionRepository.putFileMetadataExtension(HDSecurityManager.TOKEN, this.fileMetadataExtension);
     }
     
     protected void updateFileMetadataEntry() {
@@ -542,7 +542,7 @@ public class FileReader extends ReaderBase
         this.fileMetadataExtension.setReasonForRollOver(FileMetadataExtension.ReasonForRollOver.EOF.toString());
         this.fileMetadataExtension.setRollOverTimeStamp(System.currentTimeMillis());
         this.fileMetadataExtension.setStatus(FileMetadataExtension.Status.COMPLETED.toString());
-        this.fileMetadataExtensionRepository.putFileMetadataExtension(WASecurityManager.TOKEN, this.fileMetadataExtension);
+        this.fileMetadataExtensionRepository.putFileMetadataExtension(HDSecurityManager.TOKEN, this.fileMetadataExtension);
     }
     
     @Override

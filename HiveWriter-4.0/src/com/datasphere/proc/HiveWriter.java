@@ -39,7 +39,7 @@ import com.datasphere.runtime.meta.MetaInfo.Stream;
 import com.datasphere.runtime.meta.MetaInfo.Target;
 import com.datasphere.runtime.meta.MetaInfo.Type;
 import com.datasphere.security.Password;
-import com.datasphere.security.WASecurityManager;
+import com.datasphere.security.HDSecurityManager;
 import com.datasphere.uuid.UUID;
 import com.datasphere.proc.entity.EventLog;
 import com.datasphere.proc.events.HDEvent;
@@ -92,14 +92,14 @@ public class HiveWriter extends BaseProcess{
 		super.init(properties, properties2, sourceUUID, distributionID);
 		try {
 			Stream stream = (Stream) MetadataRepository.getINSTANCE().getMetaObjectByUUID(sourceUUID,
-					WASecurityManager.TOKEN);
+					HDSecurityManager.TOKEN);
 			this.dataType = ((Type) MetadataRepository.getINSTANCE().getMetaObjectByUUID(stream.dataType,
-					WASecurityManager.TOKEN));
+					HDSecurityManager.TOKEN));
 
 			this.exceptionLogUtils = new PostgresqlUtils();
 			this.targetUUID = (UUID) properties.get("TargetUUID");
 			try {
-				Target current_stream = (Target) MetadataRepository.getINSTANCE().getMetaObjectByUUID(this.targetUUID, WASecurityManager.TOKEN);
+				Target current_stream = (Target) MetadataRepository.getINSTANCE().getMetaObjectByUUID(this.targetUUID, HDSecurityManager.TOKEN);
 				this.appUUID = current_stream.getCurrentApp().getUuid();
 				this.appName = current_stream.getCurrentApp().getName();
 			} catch (MetaDataRepositoryException e) {
@@ -336,7 +336,7 @@ public class HiveWriter extends BaseProcess{
 	}
 
 	private Event convertTypedEventToHDEvent(final Event event) {
-		HDEvent waEvent = null;
+		HDEvent hdEvent = null;
 		if (event instanceof HDEvent) {
 			HDEvent evt = (HDEvent) event;
 			if (evt.typeUUID == null) {
@@ -352,38 +352,38 @@ public class HiveWriter extends BaseProcess{
 					final Object[] payload = event.getPayload();
 					if (payload != null) {
 						final int payloadLength = payload.length;
-						waEvent = new HDEvent(payloadLength, (UUID) null);
-						waEvent.typeUUID = this.typeUUID;
-						waEvent.data = new Object[payloadLength];
-						waEvent.metadata = metadata;
+						hdEvent = new HDEvent(payloadLength, (UUID) null);
+						hdEvent.typeUUID = this.typeUUID;
+						hdEvent.data = new Object[payloadLength];
+						hdEvent.metadata = metadata;
 						
 						int i = 0;
 						for (final Object o : payload) {
-							waEvent.setData(i++, o);
+							hdEvent.setData(i++, o);
 						}
 					}
 				} else {
 					final Object[] payload = event.getPayload();
 					if (payload != null) {
 						final int payloadLength = payload.length;
-						waEvent = new HDEvent(payloadLength, (UUID) null);
-						waEvent.typeUUID = this.typeUUID;
-						waEvent.data = new Object[payloadLength];
-						waEvent.metadata = metadata;
+						hdEvent = new HDEvent(payloadLength, (UUID) null);
+						hdEvent.typeUUID = this.typeUUID;
+						hdEvent.data = new Object[payloadLength];
+						hdEvent.metadata = metadata;
 						int i = 0;
 						for (final Object o : payload) {
-							waEvent.setData(i++, o);
+							hdEvent.setData(i++, o);
 						}
 					} else {
 						JSONArray objs = (JSONArray) object.get("data");
 						int payloadLength = objs.length();
-						waEvent = new HDEvent(payloadLength, (UUID) null);
-						waEvent.typeUUID = this.typeUUID;
-						waEvent.data = new Object[payloadLength];
-						waEvent.metadata = metadata;
+						hdEvent = new HDEvent(payloadLength, (UUID) null);
+						hdEvent.typeUUID = this.typeUUID;
+						hdEvent.data = new Object[payloadLength];
+						hdEvent.metadata = metadata;
 						for (int i = 0; i < objs.length(); i++) {
 							Object obj = (Object) objs.get(i);
-							waEvent.setData(i, obj);
+							hdEvent.setData(i, obj);
 						}
 					}
 				}
@@ -392,7 +392,7 @@ public class HiveWriter extends BaseProcess{
 			}
 
 		}
-		return (Event) waEvent;
+		return (Event) hdEvent;
 	}
 	
 	private String filterStr(String str) {

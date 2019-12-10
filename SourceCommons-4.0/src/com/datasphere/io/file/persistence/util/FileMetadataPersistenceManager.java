@@ -10,7 +10,7 @@ import com.datasphere.common.exc.AdapterException;
 import com.datasphere.metaRepository.FileMetadataExtensionRepository;
 import com.datasphere.runtime.fileMetaExtension.FileMetadataExtension;
 import com.datasphere.runtime.meta.cdc.filters.FileMetadataFilter;
-import com.datasphere.security.WASecurityManager;
+import com.datasphere.security.HDSecurityManager;
 import com.datasphere.uuid.UUID;
 import com.datasphere.source.lib.rollingpolicy.property.RollOverProperty;
 
@@ -40,7 +40,7 @@ public class FileMetadataPersistenceManager
         final Map<String, Object> localPropertyMap = new TreeMap<String, Object>(String.CASE_INSENSITIVE_ORDER);
         localPropertyMap.putAll(this.adapterProperties);
         FileMetadataExtension fileMetadataExtension = null;
-        final Set<FileMetadataExtension> list = (Set<FileMetadataExtension>)this.fileMetadataExtensionRepository.queryFileMetadataExtension(WASecurityManager.TOKEN, new FileMetadataFilter(this.componentName, this.componentUUID, directoryName, this.distributionID));
+        final Set<FileMetadataExtension> list = (Set<FileMetadataExtension>)this.fileMetadataExtensionRepository.queryFileMetadataExtension(HDSecurityManager.TOKEN, new FileMetadataFilter(this.componentName, this.componentUUID, directoryName, this.distributionID));
         if (list != null && list.size() > 0) {
             fileMetadataExtension = list.iterator().next();
         }
@@ -50,7 +50,7 @@ public class FileMetadataPersistenceManager
             final String status = fileMetadataExtension.getStatus();
             if (status.equalsIgnoreCase(FileMetadataExtension.Status.CREATED.toString())) {
                 fileMetadataExtension.setStatus(FileMetadataExtension.Status.CRASHED.toString());
-                this.fileMetadataExtensionRepository.putFileMetadataExtension(WASecurityManager.TOKEN, fileMetadataExtension);
+                this.fileMetadataExtensionRepository.putFileMetadataExtension(HDSecurityManager.TOKEN, fileMetadataExtension);
             }
             if (sequenceNo != -1) {
                 int sequenceStart = 0;
@@ -90,11 +90,11 @@ public class FileMetadataPersistenceManager
     }
     
     public void createFileMetadataEntry(final FileMetadataExtension fileMetadataExtension) {
-        this.fileMetadataExtensionRepository.putFileMetadataExtension(WASecurityManager.TOKEN, fileMetadataExtension);
+        this.fileMetadataExtensionRepository.putFileMetadataExtension(HDSecurityManager.TOKEN, fileMetadataExtension);
     }
     
     public void updateFileMetadataEntry(final FileMetadataExtension fileMetadataExtension) {
-        this.fileMetadataExtensionRepository.putFileMetadataExtension(WASecurityManager.TOKEN, fileMetadataExtension);
+        this.fileMetadataExtensionRepository.putFileMetadataExtension(HDSecurityManager.TOKEN, fileMetadataExtension);
     }
     
     public FileMetadataExtension getFileMetadataExtension(final String key) {
