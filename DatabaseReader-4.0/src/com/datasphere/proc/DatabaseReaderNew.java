@@ -260,7 +260,7 @@ public class DatabaseReaderNew implements DatabaseReader {
 		if (properties.get("sourceUUID") != null) {
 			this.sourceUUID = (UUID) properties.get("sourceUUID");
 			Source current_stream = (Source) MetadataRepository.getINSTANCE().getMetaObjectByUUID(this.sourceUUID,
-					WASecurityManager.TOKEN);
+					HDSecurityManager.TOKEN);
 			this.appUUID = current_stream.getCurrentApp().getUuid();
 			this.appName = current_stream.getCurrentApp().getName();
 //			this.preRows = getPosition(this.appUUID.getUUIDString());

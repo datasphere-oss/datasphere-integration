@@ -116,7 +116,7 @@ public class DatabaseReaderOld implements DatabaseReader {
 		if (properties.get("sourceUUID") != null || properties.get("UUID") != null) {
 			this.sourceUUID = (UUID) (properties.get("sourceUUID") == null?properties.get("UUID"):properties.get("sourceUUID"));
 			current_stream = (Source) MetadataRepository.getINSTANCE().getMetaObjectByUUID(this.sourceUUID,
-					WASecurityManager.TOKEN);
+					HDSecurityManager.TOKEN);
 			this.appUUID = current_stream.getCurrentApp().getUuid();
 			this.appName = current_stream.getCurrentApp().getName();
 			
