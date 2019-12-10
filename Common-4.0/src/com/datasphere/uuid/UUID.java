@@ -10,7 +10,7 @@ import com.esotericsoftware.kryo.io.*;
 import java.nio.*;
 /*
  * IMPORTANCE:HIGH
- * UUID作为 idata 平台全局的唯一标识
+ * UUID作为 数据集成平台全局的唯一标识
  */
 public class UUID implements Comparable<UUID>, KryoSerializable, Serializable, Cloneable
 {
