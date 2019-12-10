@@ -34,13 +34,13 @@ import com.datasphere.metaRepository.MetaDataRepositoryException;
 import com.datasphere.metaRepository.MetadataRepository;
 import com.datasphere.recovery.Position;
 import com.datasphere.runtime.meta.MetaInfo.Target;
-import com.datasphere.security.WASecurityManager;
+import com.datasphere.security.HDSecurityManager;
 import com.datasphere.source.lib.prop.Property;
 import com.datasphere.uuid.UUID;
 import com.datasphere.proc.common.*;
 import com.datasphere.proc.entity.EventLog;
 import com.datasphere.proc.events.JsonNodeEvent;
-import com.datasphere.proc.events.WAEvent;
+import com.datasphere.proc.events.HDEvent;
 import com.datasphere.proc.utils.PostgresqlUtils;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.gson.JsonObject;
@@ -54,7 +54,7 @@ import com.google.gson.JsonParser;
 		@PropertyTemplateProperty(name = "HBaseConfigurationPath", type = String.class, required = true, defaultValue = ""),
 		@PropertyTemplateProperty(name = "Tables", type = String.class, required = true, defaultValue = ""),
 		@PropertyTemplateProperty(name = "Columns", type = String.class, required = false, defaultValue = "",label="列名称列表",description="以逗号分隔的字段列表"),
-		@PropertyTemplateProperty(name = "FamilyNames", type = String.class, required = true, defaultValue = "") }, outputType = WAEvent.class)
+		@PropertyTemplateProperty(name = "FamilyNames", type = String.class, required = true, defaultValue = "") }, outputType = HDEvent.class)
 public class HBaseWriter extends BaseProcess {
 	private static final Logger logger = Logger.getLogger(HBaseWriter.class);
 	private String hbaseConfigurationPath = "";
@@ -93,7 +93,7 @@ public class HBaseWriter extends BaseProcess {
 
 		this.exceptionLogUtils = new PostgresqlUtils();
 		try {
-			Target current_stream = (Target) MetadataRepository.getINSTANCE().getMetaObjectByUUID(this.targetUUID, WASecurityManager.TOKEN);
+			Target current_stream = (Target) MetadataRepository.getINSTANCE().getMetaObjectByUUID(this.targetUUID, HDSecurityManager.TOKEN);
 			this.appUUID = current_stream.getCurrentApp().getUuid();
 			this.appName = current_stream.getCurrentApp().getName();
 		} catch (MetaDataRepositoryException e) {
@@ -229,8 +229,8 @@ public class HBaseWriter extends BaseProcess {
 					map = null;
 				}
 				this.lastEvent = event;
-			} else if (event instanceof WAEvent) {
-				WAEvent out = (WAEvent) event;
+			} else if (event instanceof HDEvent) {
+				HDEvent out = (HDEvent) event;
 				if("".equalsIgnoreCase(columns) || "null".equalsIgnoreCase(this.columns)) {
 					if(out.metadata.containsKey("ColumnName") && out.metadata.get("ColumnName") != null) {
 						this.columns = out.metadata.get("ColumnName").toString();
