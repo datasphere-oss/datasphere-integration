@@ -53,7 +53,7 @@ import com.datasphere.proc.events.HDEvent;
 		@PropertyTemplateProperty(name = "rolloveronddl", type = Boolean.class, required = false, defaultValue = "true"),
 		@PropertyTemplateProperty(name = "rolloverpolicy", type = String.class, required = false, defaultValue = "eventcount:10000,interval:30s"),
 		@PropertyTemplateProperty(name = "flushpolicy", type = String.class, required = false, defaultValue = "eventcount:10000,interval:30"),
-		@PropertyTemplateProperty(name = "compressiontype", type = String.class, required = false, defaultValue = "") }, outputType = WAEvent.class, requiresFormatter = true)
+		@PropertyTemplateProperty(name = "compressiontype", type = String.class, required = false, defaultValue = "") }, outputType = HDEvent.class, requiresFormatter = true)
 public class FileWriter_1_0 extends BaseWriter implements RollOverObserver, Acknowledgeable {
 	private static final String ROLL_OVER_POLICY = "rolloverpolicy";
 	protected boolean append;
@@ -224,13 +224,13 @@ public class FileWriter_1_0 extends BaseWriter implements RollOverObserver, Ackn
 		if (this.rollOverOnDDL) {
 			final String eventType = prop.getString("EventType", (String) null);
 			if (eventType != null && !eventType.isEmpty()) {
-				if (!eventType.equalsIgnoreCase("WAEvent")) {
+				if (!eventType.equalsIgnoreCase("HDEvent")) {
 					this.rollOverOnDDL = false;
-					this.logger.warn((Object) "Rollover on DDL is only supported for incoming stream of type WAEvent.");
+					this.logger.warn((Object) "Rollover on DDL is only supported for incoming stream of type HDEvent.");
 				}
 			} else {
 				this.rollOverOnDDL = false;
-				this.logger.warn((Object) "Rollover on DDL is only supported for incoming stream of type WAEvent.");
+				this.logger.warn((Object) "Rollover on DDL is only supported for incoming stream of type HDEvent.");
 			}
 		}
 		this.fileMetadataRepositoryEnabled = Boolean
@@ -318,9 +318,9 @@ public class FileWriter_1_0 extends BaseWriter implements RollOverObserver, Ackn
 		synchronized (this.outputStream) {
 			try {
 				if (this.rollOverOnDDL) {
-					final WAEvent waevent = (WAEvent) event;
-					final String operationType = waevent.metadata.get("OperationType") == null ? null
-							: waevent.metadata.get("OperationType").toString();
+					final HDEvent hdevent = (HDEvent) event;
+					final String operationType = hdevent.metadata.get("OperationType") == null ? null
+							: hdevent.metadata.get("OperationType").toString();
 					if (operationType != null && !operationType.isEmpty()
 							&& operationType.equals(Constant.DDL_OPERATION)) {
 						if (this.flushCountEnabled || this.flushIntervalEnabled) {
