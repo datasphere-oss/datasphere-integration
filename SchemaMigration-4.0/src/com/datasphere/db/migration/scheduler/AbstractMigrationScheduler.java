@@ -30,6 +30,7 @@ public abstract class AbstractMigrationScheduler extends MigrationScheduler {
 		
 		List<Table> srcTables = sourceDao.getTables();
 		List<Table> destTables = new LinkedList<Table>();
+		// 源表转换为目标表
 		for(Table table: srcTables) {
 			Table temp = convert(table);
 			destDao.checkTable(table);
