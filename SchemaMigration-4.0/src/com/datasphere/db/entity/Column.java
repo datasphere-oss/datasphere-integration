@@ -8,7 +8,10 @@ public class Column implements Cloneable {
 
 	String type;
 	
-	Integer length;
+	Long length;
+	
+	// 主键约束
+	String constraint;
 	
 	Boolean notnull;
 	
@@ -84,14 +87,22 @@ public class Column implements Cloneable {
 		this.type = type;
 	}
 
-	public Integer getLength() {
+	public Long getLength() {
 		return length;
 	}
 
-	public void setLength(Integer length) {
+	public void setLength(Long length) {
 		this.length = length;
 	}
 
+	public String getConstraint() {
+		return constraint;
+	}
+
+	public void setConstraint(String constraint) {
+		this.constraint = constraint;
+	}
+	
 	public Boolean getNotnull() {
 		return notnull;
 	}
