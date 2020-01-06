@@ -9,6 +9,7 @@ import com.datasphere.db.dao.IBaseDao;
 import com.datasphere.db.entity.Column;
 import com.datasphere.db.entity.Schema;
 import com.datasphere.db.entity.Table;
+import com.datasphere.db.migration.scheduler.impl.Oracle2PGMigrationScheduler;
 
 public abstract class AbstractMigrationScheduler extends MigrationScheduler {
 
@@ -24,7 +25,9 @@ public abstract class AbstractMigrationScheduler extends MigrationScheduler {
 		List<Schema> srcSchemas = sourceDao.getSchemas();
 		List<Schema> destSchemas = new LinkedList<Schema>();
 		for(Schema schema: srcSchemas) {
-			destSchemas.add(convert(schema));
+			destSchemas.add(schema);
+//			不进行模式转换
+//			destSchemas.add(convert(schema));
 		}
 		destDao.createSchemas(destSchemas);
 		
@@ -32,21 +35,23 @@ public abstract class AbstractMigrationScheduler extends MigrationScheduler {
 		List<Table> destTables = new LinkedList<Table>();
 		// 源表转换为目标表
 		for(Table table: srcTables) {
-			Table temp = convert(table);
+//			Table temp = convert(table);
 			destDao.checkTable(table);
-			destTables.add(temp);
+			destTables.add(table);
 		}
 		destDao.createTables(destTables);
 		
-		for(int index = 0; index < srcTables.size(); index++) {
-			Table srcTable = srcTables.get(index);
-			Table destTable = destTables.get(index);
-			Object[][] data = sourceDao.getData(srcTable);
-			if(data != null) {
-				convert(srcTable.getColumns(), destTable.getColumns(), data);
-				destDao.putData(destTable, data);
-			}
-		}
+		Oracle2PGMigrationScheduler scheduler = (Oracle2PGMigrationScheduler)this.getMigration().getMigrationScheduler();
+		scheduler.copyData();
+//		for(int index = 0; index < srcTables.size(); index++) {
+//			Table srcTable = srcTables.get(index);
+//			Table destTable = destTables.get(index);
+//			Object[][] data = sourceDao.getData(srcTable);
+//			if(data != null) {
+////				convert(srcTable.getColumns(), destTable.getColumns(), data);
+//				destDao.putData(destTable, data);
+//			}
+//		}
 	}
 	
 	public Schema convert(Schema schema) {
@@ -71,7 +76,7 @@ public abstract class AbstractMigrationScheduler extends MigrationScheduler {
 	public String convertSchemaName(String schemaName) {
 		DBConfig srcConfig = this.getMigration().getSourceConfig();
 		String prefix = srcConfig.getHost().replace(".", "_");
-		return "HOSTT_" + prefix + "_" + srcConfig.getPort() + "_" + schemaName + "_";
+		return "HOST_" + prefix + "_" + srcConfig.getPort() + "_" + schemaName + "_";
 	}
 	
 	public String convertTableName(String tableName) {

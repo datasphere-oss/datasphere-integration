@@ -13,7 +13,7 @@ import com.datasphere.db.entity.Column;
 import com.datasphere.db.exception.ColumnTypeUnsurported;
 import com.datasphere.db.migration.scheduler.AbstractMigrationScheduler;
 
-public class PGSql2HiveMigrationScheduler extends AbstractMigrationScheduler {
+public class PG2HiveMigrationScheduler extends AbstractMigrationScheduler {
 	
 	public static int HIVE_CHAR_MAX_LENGTH = 254;
 	public static int HIVE_NUMERIC_MAX_PRECISION = 127;
@@ -26,7 +26,8 @@ public class PGSql2HiveMigrationScheduler extends AbstractMigrationScheduler {
 		Column newColumn = super.convert(column);
 		String columnType = column.getType();
 		columnType = column.getType().startsWith(TYPE_TIMESTAMP) ? TYPE_TIMESTAMP : columnType;
-		switch (columnType.toLowerCase()) {
+		String type = columnType.toLowerCase().substring(0,columnType.indexOf("(")>-1?columnType.indexOf("("):columnType.length());
+		switch (type) {
 		
 			// 处理二进制类型
 			case "binary":
