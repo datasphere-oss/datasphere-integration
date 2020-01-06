@@ -3,35 +3,65 @@ package com.datasphere.db.dao.impl;
 import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.Date;
+import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Time;
 import java.sql.Timestamp;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
-
-import org.apache.commons.dbcp.BasicDataSource;
+import java.util.Map;
+import java.util.Set;
 
 import com.datasphere.common.utils.JDBCUtils;
 import com.datasphere.common.utils.O;
-import com.datasphere.db.config.SnappyConfig;
+import com.datasphere.db.config.MySQLConfig;
 import com.datasphere.db.dao.AbstractBaseDao;
 import com.datasphere.db.entity.Column;
 import com.datasphere.db.entity.Schema;
 import com.datasphere.db.entity.Table;
 import com.datasphere.db.exception.ColumnTypeUnsurported;
+import com.mysql.cj.jdbc.MysqlConnectionPoolDataSource;
+
 
 public class MySQLDao extends AbstractBaseDao {
 
-	BasicDataSource bds;
+	private final static String SQL_SELECT_TABLE_ATTR = "select COLUMN_NAME,DATA_TYPE,CHARACTER_MAXIMUM_LENGTH,IS_NULLABLE,NUMERIC_PRECISION,NUMERIC_SCALE,column_comment from information_schema.columns where table_schema = ? and table_name = ?";
+	MysqlConnectionPoolDataSource  mysqlConnectionPoolDataSource;
 	
-	public List<Schema> getSchemas() throws Exception{
-		try(Connection conn = getConnection()) {
-			
-			return null;
+	public Connection getConnection() {
+		try {
+			return getDataSource().getConnection();
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
 		}
 	}
+	
+	MysqlConnectionPoolDataSource getDataSource() throws SQLException {
+		if(mysqlConnectionPoolDataSource == null) {
+			MySQLConfig mysqlConfig = getConfig();
+			mysqlConnectionPoolDataSource = new MysqlConnectionPoolDataSource();
+			mysqlConnectionPoolDataSource.setServerName(mysqlConfig.getHost());
+			mysqlConnectionPoolDataSource.setPortNumber(mysqlConfig.getPort());
+			mysqlConnectionPoolDataSource.setDatabaseName(mysqlConfig.getDatabaseName());
+			mysqlConnectionPoolDataSource.setUser(mysqlConfig.getUser());
+			mysqlConnectionPoolDataSource.setPassword(mysqlConfig.getPassword());
+		}
+		return mysqlConnectionPoolDataSource;
+	}
+	
+	public List<Schema> getSchemas() throws Exception{
+		List<Schema> schemas = new LinkedList<Schema>();
+		for(String schema : getSchemaTables().keySet()){
+			schemas.add(new Schema(schema));
+		}
+		return schemas;
+	}
+
 
 	/**
 	 * 创建schema
@@ -40,13 +70,13 @@ public class MySQLDao extends AbstractBaseDao {
 		try (Connection conn = getConnection(); Statement statement = conn.createStatement();) {
 			for (Schema schema : destSchemas) {
 				try {
-					String isScheamsExistQuery="select count(*) mun from sys.sysschemas where schemaname= '"+schema.getName().toUpperCase()+"'";
-					//创建mysql 的Schemas
+					String isScheamsExistQuery="select count(distinct(table_schema)) from information_schema.tables where table_schema= '"+schema.getName().toLowerCase()+"'";
+					//创建MySQL的Schemas
 					ResultSet isScheamsExistRset = statement.executeQuery(isScheamsExistQuery);
 					if (isScheamsExistRset.next()) {
 						int isScheamsExist = isScheamsExistRset.getInt(1);
 						if(isScheamsExist==0){
-							statement.executeUpdate("create schema " + schema.getName());
+							statement.executeUpdate("create schema " + schema.getName() +" default character set utf8");
 						}
 					}
 				} catch (Exception e) {
@@ -56,10 +86,72 @@ public class MySQLDao extends AbstractBaseDao {
 		}
 	}
 
-	public List<Table> getTables() throws Exception{
-		try(Connection conn = getConnection()) {
+	/**
+	 * 查询库中所有表
+	 * 
+	 * @return
+	 * @throws Exception
+	 */
+	public HashMap<String, Set<String>> getSchemaTables() throws Exception{
+		HashMap<String,Set<String>> tableMap = new HashMap<>();
+		try(Connection conn = getConnection();PreparedStatement pst = conn.prepareStatement("select table_schema,table_name from information_schema.tables");) {
+			ResultSet rset = pst.executeQuery();
+			while (rset.next()) {
+				String schemaName = rset.getString(1);
+				String tableName = rset.getString(2);
+				if(!tableMap.containsKey(schemaName)){
+					Set<String> tns = new HashSet<String>();
+					tns.add(tableName);
+					tableMap.put(schemaName, tns);
+				}else{
+					Set<String> tns = tableMap.get(schemaName);
+					tns.add(tableName);
+				}
+			}
 			
-			return null;
+			return tableMap;
+		}
+
+	}
+	
+	@Override
+	public List<Table> getTables() throws Exception{
+		try(
+				Connection conn = getConnection();
+				PreparedStatement pst = conn.prepareStatement(SQL_SELECT_TABLE_ATTR)) {
+				List<Table> tables = new LinkedList<Table>();
+				HashMap<String,Set<String>> schemaTables = getSchemaTables();
+				for(String schemaName : schemaTables.keySet()){
+					for(String tableName : schemaTables.get(schemaName)){
+						Table table = new Table(tableName,schemaName);
+						pst.setString(1, schemaName);
+						pst.setString(2, tableName);
+						ResultSet set = pst.executeQuery();
+						while(set.next()) {
+							Column column = new Column();
+							String columnName = set.getString(1);
+							String columnType = set.getString(2);
+							Long columnLength = set.getLong(3);
+							Boolean isNotNull = "YES".equals(set.getString(4)) ? true : false;
+							Integer precision = set.getInt(5);
+							Integer scale = set.getInt(6);
+							String comments = set.getString(7);
+							
+							column.setTableName(tableName);
+							column.setName(columnName);
+							column.setType(columnType);
+							column.setLength(columnLength);
+							column.setNotnull(isNotNull);
+							column.setPrecision(precision);
+							column.setScale(scale);
+							column.setComment(comments);
+							O.log(column);
+							table.addColumn(column);
+						}
+						tables.add(table);
+					}
+				}
+				return tables;
 		}
 	}
 
@@ -162,27 +254,20 @@ public class MySQLDao extends AbstractBaseDao {
 		}
 	}
 
-	public Connection getConnection() throws SQLException {
-		SnappyConfig config = getConfig();
-		if(bds == null) {
-			bds = new BasicDataSource();
-			bds.setUrl(config.getUrl());
-			bds.setDriverClassName("com.mysql.jdbc.Driver");
-			bds.setUsername(config.getUser());
-			bds.setPassword(config.getPassword());
-			bds.setMaxActive(100);
-		}
-		return bds.getConnection();
-	}
 	
- 
 	public void addFieldValue(String fieldType, int fieldPosition, Object fieldValue,
 			PreparedStatement commandStatement) throws Exception {
-		switch (fieldType.toLowerCase()) {
+		String type = fieldType.toLowerCase().substring(0,fieldType.indexOf("(")>-1?fieldType.indexOf("("):fieldType.length());
+		switch (type) {
+		case "boolean":
+			Integer booleanValue = (Integer) fieldValue;
+			if (booleanValue == null) {
+				commandStatement.setNull(fieldPosition, java.sql.Types.TINYINT);
+			} else {
+				commandStatement.setInt(fieldPosition, booleanValue);
+			}
+			break;
 		case "blob":
-		case "char for big data":
-		case "long varchar for big data":
-		case "varchar for big data":
 			byte[] byteValue = (byte[]) fieldValue;
 			if (byteValue == null) {
 				commandStatement.setNull(fieldPosition, java.sql.Types.BLOB);
@@ -207,16 +292,7 @@ public class MySQLDao extends AbstractBaseDao {
 				commandStatement.setString(fieldPosition, strValues);
 			}
 			break;
-		case "long varchar":
-			String strLongValues = (String) fieldValue;
-			if ((strLongValues == null || strLongValues.isEmpty()) || (strLongValues.equals("null"))
-					|| (strLongValues.equals("NULL"))) {
-				commandStatement.setNull(fieldPosition, java.sql.Types.LONGNVARCHAR);
-			} else {
-				commandStatement.setString(fieldPosition, strLongValues);
-			}
-			break;
-		case "xml":
+		case "text":
 			String txtValue = (String) fieldValue;
 			if ((txtValue == null || txtValue.isEmpty()) || (txtValue.equals("null")) || (txtValue.equals("NULL"))) {
 				commandStatement.setNull(fieldPosition, java.sql.Types.CLOB);
@@ -224,6 +300,15 @@ public class MySQLDao extends AbstractBaseDao {
 				commandStatement.setString(fieldPosition, txtValue);
 			}
 			break;
+			
+		case "tinyint":
+			Short tinyValue = (Short) fieldValue;
+			if (tinyValue == null) {
+				commandStatement.setNull(fieldPosition, java.sql.Types.TINYINT);
+			} else {
+				commandStatement.setInt(fieldPosition, tinyValue);
+			}
+			break;	
 		case "smallint":
 			Short shortValue = (Short) fieldValue;
 			if (shortValue == null) {
@@ -232,7 +317,7 @@ public class MySQLDao extends AbstractBaseDao {
 				commandStatement.setInt(fieldPosition, shortValue);
 			}
 			break;
-		case "integer":
+		case "int":
 			Integer intValue = (Integer) fieldValue;
 			if (intValue == null) {
 				commandStatement.setNull(fieldPosition, java.sql.Types.INTEGER);
@@ -250,14 +335,6 @@ public class MySQLDao extends AbstractBaseDao {
 			}
 			break;
 
-		case "real":
-			Float realValue = (Float) fieldValue;
-			if (realValue == null) {
-				commandStatement.setNull(fieldPosition, java.sql.Types.REAL);
-			} else {
-				commandStatement.setFloat(fieldPosition, realValue);
-			}
-			break;
 		case "float":
 			Float floatValue = (Float) fieldValue;
 			if (floatValue == null) {
@@ -275,7 +352,6 @@ public class MySQLDao extends AbstractBaseDao {
 			}
 			break;
 		case "decimal":
-		case "numeric":
 			BigDecimal numbericValue = (BigDecimal) fieldValue;
 			if ((numbericValue == null) || (numbericValue.equals("null")) || (numbericValue.equals("NULL"))) {
 				commandStatement.setNull(fieldPosition, java.sql.Types.NUMERIC);
@@ -284,6 +360,7 @@ public class MySQLDao extends AbstractBaseDao {
 			}
 			break;
 		case "date":
+		
 			Date dateValue = (Date) fieldValue;
 			if (dateValue == null) {
 				commandStatement.setNull(fieldPosition, java.sql.Types.DATE);
@@ -300,6 +377,7 @@ public class MySQLDao extends AbstractBaseDao {
 				commandStatement.setTime(fieldPosition, timeValue);
 			}
 			break;
+		case "datetime":	
 		case "timestamp":
 			Timestamp timestampValue = (Timestamp) fieldValue;
 			if (timestampValue == null) {
@@ -318,4 +396,80 @@ public class MySQLDao extends AbstractBaseDao {
 		
 		}
 	}
+	
+	public String getMySQLType(String sourceType, Integer sourceLength)
+	   {
+	     String MySQLType = "";
+	     switch (sourceType.toUpperCase())
+	     {
+	   
+		  case "BINARY":
+		  case "VARBINARY":
+			  	  
+			 MySQLType = "blob";
+	        break;
+		  case "BIT":
+		  case "BOOLEAN":
+			 MySQLType = "boolean";
+			 break;
+		  case "CHAR":
+			 MySQLType = "char(" + sourceLength + ")";
+			 break; 
+		  case "NCHAR":
+		  case "VARCHAR":
+		  case "NVARCHAR":  
+		  case "SYSNAME":
+			  MySQLType = "varchar(" + sourceLength + ")";
+		    break;
+
+		  case "TEXT":
+		  case "NTEXT":
+			  MySQLType = "text";
+	       break;
+		  case "TINYINT":
+			  MySQLType = "tinyint";
+			break;
+		  case "SMALLINT":
+			  MySQLType = "smallint";
+			break;
+		  case "INT":
+		  case "INTEGER":
+			  MySQLType = "int";
+				break;
+		  case "BIGINT":
+			  MySQLType = "bigint";
+				break;
+		  case "DOUBLE":
+			  MySQLType = "double";
+				break;
+						
+		  case "FLOAT":
+			  MySQLType = "float";
+				break;
+		  case "REAL":
+		  case "SMALLMONEY":
+		  case "MONEY":
+		  case "NUMERIC":
+		  case "DECIMAL":
+			  MySQLType = "decimal";
+				break;
+		  case "DATE":
+			  MySQLType = "date";
+				break;
+		  case "TIME":
+			  MySQLType = "time";
+				break;
+		  case "SMALLDATETIME":
+		  case "DATETIME":
+			  MySQLType = "datetime";
+				break;
+		  case "TIMESTAMP":
+			  MySQLType = "timestamp";
+				break;
+		      	
+	     }
+	 
+	     return MySQLType;
+	   }
+	
 }

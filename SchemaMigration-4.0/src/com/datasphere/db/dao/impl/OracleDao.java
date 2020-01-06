@@ -16,6 +16,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.CountDownLatch;
 
 import com.datasphere.common.utils.JDBCUtils;
 import com.datasphere.common.utils.O;
@@ -30,16 +31,23 @@ import oracle.jdbc.pool.OracleConnectionPoolDataSource;
 
 public class OracleDao extends AbstractBaseDao {
 	
-	private final static String SQL_SELECT_SCHEMA_AND_TABLE = "SELECT OWNER,TABLE_NAME FROM DBA_TABLES WHERE OWNER NOT IN ('MDSYS','OUTLN','FLOWS_FILES','SYSTEM','EXFSYS','APEX_030200','DBSNMP','ORDSYS','APPQOSSYS','XDB','ORDDATA','SYS','WMSYS')";
+	 
+	private final static String SQL_SELECT_SCHEMA_AND_TABLE = "SELECT * FROM DBA_TABLES WHERE OWNER NOT IN ('MDSYS','OUTLN','FLOWS_FILES','SYSTEM','EXFSYS','APEX_030200','DBSNMP','ORDSYS','APPQOSSYS','XDB','ORDDATA','SYS','WMSYS','CTXSYS','SYSMAN','ANONYMOUS','HR','OE','PM','SCOTT','SH')";
 	private final static String SQL_SELECT_TABLE_ATTR = "SELECT COLUMN_NAME, DATA_TYPE, DATA_LENGTH, NULLABLE ,DATA_PRECISION ,DATA_SCALE FROM DBA_TAB_COLUMNS WHERE  OWNER = ? AND  TABLE_NAME = ? ORDER BY COLUMN_ID";
+	private final static String SQL_SELECT_CONSTRAINTS = "select a.column_name , a.constraint_name from user_cons_columns a, user_constraints b  where a.constraint_name = b.constraint_name and b.constraint_type = 'P' and a.table_name = ? ";
 	private final static String SQL_SELECT_COMMENTS = "SELECT COLUMN_NAME,COMMENTS FROM dba_col_comments WHERE TABLE_NAME = ? AND OWNER = ?";
 
-	private final static String SQL_SELECT_TOTAL_BLOCKS = "SELECT sum(blocks) as total_blocks FROM dba_extents WHERE OWNER=upper(?) and SEGMENT_NAME = upper(?)";
-	private final static String SQL_SELECT_OBJECT_ID = "SELECT data_object_id FROM dba_objects WHERE owner=upper(?) and object_name=upper(?)";
-	private final static String SQL_SELECT_DBA_EXTENDS = "select file_id,block_id from dba_extents  where owner=upper(?) AND SEGMENT_NAME=upper(?) ORDER BY FILE_ID,BLOCK_ID";
-	private final static String SQL_SELECT_ROWID_CREATE = "select DBMS_ROWID.ROWID_CREATE (1,?,?,?,?) rowid from dual";
+	public final static String SQL_SELECT_ROWID_CREATE = "select DBMS_ROWID.ROWID_CREATE (1,?,?,?,?) myrowid from dual";
+	public final static String SQL_SELECT_TOTAL_BLOCKS = "SELECT sum(blocks) as total_blocks FROM dba_extents WHERE OWNER=upper(?) and SEGMENT_NAME = upper(?)";
+	public final static String SQL_SELECT_OBJECT_ID = "SELECT data_object_id FROM dba_objects WHERE owner=upper(?) and object_name=upper(?)";
+	public final static String SQL_SELECT_DBA_EXTENDS = "select file_id,block_id from dba_extents  where owner=upper(?) AND SEGMENT_NAME=upper(?) ORDER BY FILE_ID,BLOCK_ID";
+	
+	public String startScn;
 	
 	OracleConnectionPoolDataSource oracleConnectionPoolDataSource;
+	
+	ArrayList<ArrayList> tablesToSync = new ArrayList();
+	public List<Table> tables = new LinkedList<Table>();
 	
 	OracleConnectionPoolDataSource getDataSource() throws SQLException {
 		
@@ -55,6 +63,28 @@ public class OracleDao extends AbstractBaseDao {
 		}
 		return oracleConnectionPoolDataSource;
 	}
+	
+	/**
+	 * 获取表的主键约束
+	 * 
+	 * @param schemaName
+	 * @param tableName
+	 * @return
+	 * @throws Exception
+	 */
+	public Map<String,String> getConstraints(String tableName)throws Exception{
+		Map<String,String> constraints = new HashMap<>();
+		try(Connection conn = getConnection();Statement stat = conn.createStatement();) {
+			PreparedStatement pst = conn.prepareStatement(SQL_SELECT_CONSTRAINTS);
+			pst.setString(1, tableName);
+			ResultSet set = pst.executeQuery();
+			while(set.next()){
+				constraints.put(set.getString(1),set.getString(2));
+			}
+			return constraints;
+		}
+	}
+	
 	/**
 	 * 获取表字段的注释
 	 * 
@@ -84,23 +114,23 @@ public class OracleDao extends AbstractBaseDao {
 	 * @throws Exception
 	 */
 	public HashMap<String, Set<String>> getSchemaTables() throws Exception{
-		HashMap<String,Set<String>> tableMap = new HashMap<>();
+		HashMap<String,Set<String>> schemaTables = new HashMap<>();
 		try(Connection conn = getConnection();PreparedStatement pst = conn.prepareStatement(SQL_SELECT_SCHEMA_AND_TABLE);) {
 			ResultSet rset = pst.executeQuery();
 			while (rset.next()) {
 				String schemaName = rset.getString(1);
 				String tableName = rset.getString(2);
-				if(!tableMap.containsKey(schemaName)){
+				if(!schemaTables.containsKey(schemaName)){
 					Set<String> tns = new HashSet<String>();
 					tns.add(tableName);
-					tableMap.put(schemaName, tns);
+					schemaTables.put(schemaName, tns);
 				}else{
-					Set<String> tns = tableMap.get(schemaName);
+					Set<String> tns = schemaTables.get(schemaName);
 					tns.add(tableName);
 				}
 			}
 			
-			return tableMap;
+			return schemaTables;
 		}
 
 	}
@@ -127,11 +157,12 @@ public class OracleDao extends AbstractBaseDao {
 		Connection conn = getConnection();
 		PreparedStatement pst = conn.prepareStatement(SQL_SELECT_TABLE_ATTR);
 		try{
-			List<Table> tables = new LinkedList<Table>();
+			
 			HashMap<String,Set<String>> schemaTables = getSchemaTables();
 			for(String schemaName : schemaTables.keySet()){
 				for(String tableName : schemaTables.get(schemaName)){
 					Table table = new Table(tableName,schemaName);
+					Map<String,String> constraints = getConstraints(tableName);
 					Map<String,String> comments = getComments(tableName,schemaName);
 					pst.setString(1, schemaName);
 					pst.setString(2, tableName);
@@ -148,6 +179,7 @@ public class OracleDao extends AbstractBaseDao {
 						column.setTableName(tableName);
 						column.setType(columnType);
 						column.setLength(columnLength);
+						column.setConstraint(constraints.get(columnName));
 						column.setNotnull(isNotNull);
 						column.setComment(comments.get(columnName));
 						column.setPrecision(precision);
@@ -168,6 +200,8 @@ public class OracleDao extends AbstractBaseDao {
 	@Override
 	public void createTables(List<Table> destTables) throws Exception{}
 
+	
+	
 	@Override
 	public Object[][] getData(Table table) throws Exception{
 		try(Connection conn = getConnection();Statement stat = conn.createStatement();) {
@@ -206,11 +240,12 @@ public class OracleDao extends AbstractBaseDao {
 		}
 	}
 	// 通过类型获得结果集
-	private Object resultsetGetBytype(String type,ResultSet rs,int index) throws SQLException{
-		if(type.startsWith(Oracle2HiveMigrationScheduler.TYPE_TIMESTAMP)){
+	private Object resultsetGetBytype(String fieldType,ResultSet rs,int index) throws SQLException{
+		if(fieldType.startsWith(Oracle2HiveMigrationScheduler.TYPE_TIMESTAMP)){
 			return rs.getTimestamp(index);
 		}
 		Object data = null;
+		String type = fieldType.toUpperCase().substring(0,fieldType.indexOf("(")>-1?fieldType.indexOf("("):fieldType.length());
 		switch(type){
 			case "BLOB" :
 				data = rs.getBytes(index);
@@ -244,89 +279,7 @@ public class OracleDao extends AbstractBaseDao {
 	public void putData(Table table, Object[][] data) throws Exception {}
 	
 	
-	private String genRowid(int[] sqlParam) throws SQLException {
-		try(Connection conn = getConnection();){
-			PreparedStatement pst = conn.prepareStatement(SQL_SELECT_ROWID_CREATE);
-			pst.setInt(1, sqlParam[0]);
-			pst.setInt(2, sqlParam[1]);
-			pst.setInt(3, sqlParam[2]);
-			pst.setInt(4, sqlParam[3]);
-			ResultSet rset = pst.executeQuery();
-			rset.next();
-			String generatedRowid = rset.getString("rowid");
-			rset.close();
-			pst.close();
-			return generatedRowid;
-		}
-	}
 	
-	public ArrayList<String[]> splitWork(String schemaName, String tableName,int parallelism) throws SQLException {
-
-		ArrayList<String[]> oraRowsRangeList = new ArrayList<>();
-		if(parallelism <= 0){
-			oraRowsRangeList.add(new String[]{"MINROWID", "MAXROWID"});
-			return oraRowsRangeList;
-		}
-		
-		try(Connection conn = getConnection();){
-			PreparedStatement pst = conn.prepareStatement(SQL_SELECT_TOTAL_BLOCKS);
-			pst.setString(1, schemaName);
-			pst.setString(2, tableName);
-			ResultSet rset = pst.executeQuery();
-			rset.next();
-			int totalBlocks = rset.getInt("total_blocks");
-			rset.close();
-			pst.close();
-			int basicWorkUnit = totalBlocks / parallelism;
-			
-			pst = conn.prepareStatement(SQL_SELECT_OBJECT_ID);
-			pst.setString(1, schemaName);
-			pst.setString(2, tableName);
-			rset = pst.executeQuery();
-			rset.next();
-			int objectId = rset.getInt("data_object_id");
-			rset.close();
-			pst.close();
-			
-			pst = conn.prepareStatement(SQL_SELECT_DBA_EXTENDS);
-			pst.setString(1, schemaName);
-			pst.setString(2, tableName);
-			rset = pst.executeQuery();
-			rset.next();
-			int prevFileId = rset.getInt("file_id");
-			int prevBlockId = rset.getInt("block_id");
-			rset.close();
-			pst.close();
-			
-			String previousRowid = genRowid(new int[]{objectId, prevFileId, prevBlockId, 0});
-			Statement stmt = getConnection().createStatement();
-			String query = "select * from (select extent_id,file_id,block_id+blocks block_id,blocks,sum (blocks) over(order by file_id,block_id) sofarBlocks, sum (blocks) over(order by file_id,block_id)-blocks lastSofarBlocks  from dba_extents  where owner=upper('"
-					+ schemaName + "')" + " AND SEGMENT_NAME=upper('" + tableName + "')" + " ) "
-					+ " where (sofarBlocks >=" + basicWorkUnit + "  and lastSofarBlocks < " + basicWorkUnit + " )";
-
-			if (parallelism > 1) {
-				int runningWorkUnit = 0;
-				for (int i = 2; i <= parallelism; i++) {
-					runningWorkUnit = basicWorkUnit * i;
-					query = query + "OR (sofarBlocks >= " + runningWorkUnit + "  and lastSofarBlocks < "
-							+ runningWorkUnit + ")";
-				}
-			}
-			query = query + " ORDER BY FILE_ID,block_id";
-			rset = stmt.executeQuery(query);
-			while (rset.next()) {
-				int nextFileId = rset.getInt("file_id");
-				int nextBlockId = rset.getInt("block_id");
-				String nextRowid = genRowid(new int[]{objectId, nextFileId, nextBlockId, 0});
-				oraRowsRangeList.add(new String[]{previousRowid, nextRowid});
-				previousRowid = nextRowid;
-			}
-			rset.close();
-			stmt.close();
-		}
-		
-		return oraRowsRangeList;
-	}
 	
 	
 	
@@ -589,5 +542,14 @@ public class OracleDao extends AbstractBaseDao {
 		       break;
 	     }
 	   }
+	   
+	   
+	   public String getStartScn() {
+			return startScn;
+		}
+
+		public void setStartScn(String startScn) {
+			this.startScn = startScn;
+		}
 	
 }

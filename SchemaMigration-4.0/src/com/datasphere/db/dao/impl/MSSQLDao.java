@@ -99,7 +99,7 @@ public class MSSQLDao extends AbstractBaseDao {
 					ResultSet rsetObjectColumns = objectColumns.executeQuery();
 					String columnName = "";
 					String columnType = "";
-					String columnLength = "";
+					Long columnLength = 0L;
 					Integer precision = 0;
 					Integer scale = 0;
 					int columnNulls = 1;
@@ -107,7 +107,7 @@ public class MSSQLDao extends AbstractBaseDao {
 					while (rsetObjectColumns.next()) {
 						columnName = rsetObjectColumns.getString(2);
 						columnType = rsetObjectColumns.getString(3).trim();
-						columnLength = rsetObjectColumns.getString(4);
+						columnLength = rsetObjectColumns.getLong(4);
 						precision = rsetObjectColumns.getInt(5);
 						scale = rsetObjectColumns.getInt(6);
 						columnNulls = rsetObjectColumns.getInt(7);
@@ -115,7 +115,7 @@ public class MSSQLDao extends AbstractBaseDao {
 						column.setName(columnName);
 						column.setTableName(tables.getName());
 						column.setType(columnType);
-						column.setLength(Integer.valueOf(columnLength));
+						column.setLength(columnLength);
 						column.setPrecision(precision);
 						column.setScale(scale);
 						column.setNotnull(Boolean.valueOf(""+columnNulls));
