@@ -7,6 +7,10 @@ public class PGConfig extends DBConfig {
 	String user;
 	
 	String password;
+	
+	
+
+	boolean isDistribution;
 
 	public String getDatabaseName() {
 		return databaseName;
@@ -30,5 +34,13 @@ public class PGConfig extends DBConfig {
 
 	public void setPassword(String password) {
 		this.password = password;
+	}
+	
+	public boolean isDistribution() {
+		return isDistribution;
+	}
+
+	public void setDistribution(boolean isDistribution) {
+		this.isDistribution = isDistribution;
 	}
 }

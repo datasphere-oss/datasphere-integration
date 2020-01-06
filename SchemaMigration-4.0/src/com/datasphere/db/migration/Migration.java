@@ -14,8 +14,8 @@ import com.datasphere.db.migration.scheduler.MigrationSchedulerFactory;
 public class Migration implements Runnable {
 
 	DBConfig sourceConfig;
-	
 	DBConfig destConfig;
+	MigrationScheduler scheduler;
 
 	public DBConfig getSourceConfig() {
 		return sourceConfig;
@@ -33,9 +33,13 @@ public class Migration implements Runnable {
 		this.destConfig = destConfig;
 	}
 
+	public MigrationScheduler getMigrationScheduler() {
+		return scheduler;
+	}
+	
 	@Override
 	public void run() {
-		MigrationScheduler scheduler = MigrationSchedulerFactory.createMigrationScheduler(this);
+		scheduler = MigrationSchedulerFactory.createMigrationScheduler(this);
 		try {
 			scheduler.doSchedule();
 		} catch(Exception e) {
