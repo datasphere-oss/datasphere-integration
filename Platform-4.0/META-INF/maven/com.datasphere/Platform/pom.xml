@@ -411,7 +411,7 @@
     <dependency>
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-validator</artifactId>
-      <version>4.0.1.GA</version>
+      <version>5.3.5.Final</version>
     </dependency>
     <!-- jars for hibernate : end here -->
     <!-- jars for unit testing -->
